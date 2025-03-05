@@ -1,3 +1,4 @@
+
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -34,9 +35,9 @@ const Classes = () => {
             {/* Left Side: Image and Description */}
             <div>
               <img
-                src="https://via.placeholder.com/600x400"
+                src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
                 alt="Financial Literacy Class"
-                className="rounded-lg shadow-md mb-6"
+                className="rounded-lg shadow-md mb-6 object-cover h-[400px] w-full"
               />
               <p className="text-gray-600 mb-4">
                 Our comprehensive financial literacy course covers everything
@@ -127,9 +128,9 @@ const Classes = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://via.placeholder.com/50x50"
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
                     alt="Student 1"
-                    className="rounded-full mr-3"
+                    className="rounded-full w-12 h-12 object-cover mr-3"
                   />
                   <div>
                     <p className="font-medium">Sarah Johnson</p>
@@ -147,9 +148,9 @@ const Classes = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://via.placeholder.com/50x50"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
                     alt="Student 2"
-                    className="rounded-full mr-3"
+                    className="rounded-full w-12 h-12 object-cover mr-3"
                   />
                   <div>
                     <p className="font-medium">Michael Davis</p>
@@ -167,9 +168,9 @@ const Classes = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://via.placeholder.com/50x50"
+                    src="https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
                     alt="Student 3"
-                    className="rounded-full mr-3"
+                    className="rounded-full w-12 h-12 object-cover mr-3"
                   />
                   <div>
                     <p className="font-medium">Emily White</p>
