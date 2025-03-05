@@ -15,6 +15,7 @@ import Classes from "./pages/Classes";
 import Advocate from "./pages/Advocate";
 import AllWays from "./pages/AllWays";
 import AllNews from "./pages/AllNews";
+import Housing from "./pages/Housing";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/advocate" element={<Advocate />} />
           <Route path="/all-ways" element={<AllWays />} />
           <Route path="/all-news" element={<AllNews />} />
+          <Route path="/housing" element={<Housing />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
