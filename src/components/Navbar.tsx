@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,8 +28,8 @@ export const Navbar = () => {
       submenu: [
         { name: "Emergency Shelter", link: "/emergency" },
         { name: "Transitional Housing", link: "/housing" },
-        { name: "Affordable Housing", link: "/housing" },
-        { name: "Rental Assistance", link: "/emergency" },
+        { name: "Affordable Housing", link: "/affordable-housing" },
+        { name: "Rental Assistance", link: "/rental-assistance" },
         { name: "Housing Placement", link: "/housing" }
       ]
     },
@@ -38,10 +37,10 @@ export const Navbar = () => {
       title: "Support Programs",
       submenu: [
         { name: "Financial Literacy", link: "/classes" },
-        { name: "Job Training", link: "/classes" },
-        { name: "Mental Health Services", link: "/emergency" },
-        { name: "Case Management", link: "/emergency" },
-        { name: "Family Support", link: "/emergency" }
+        { name: "Job Training", link: "/job-training" },
+        { name: "Mental Health Services", link: "/mental-health" },
+        { name: "Case Management", link: "/case-management" },
+        { name: "Family Support", link: "/family-support" }
       ]
     },
     {
@@ -85,7 +84,6 @@ export const Navbar = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center">
             <div className="text-blue-600 font-bold text-2xl flex items-center">
               <img
@@ -97,7 +95,6 @@ export const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center space-x-1">
             {menuItems.map((item, index) => (
               <div key={index} className="relative group">
@@ -122,9 +119,7 @@ export const Navbar = () => {
             ))}
           </nav>
 
-          {/* Right Side Actions */}
           <div className="flex items-center">
-            {/* Search */}
             <div className="mr-4 relative">
               {searchOpen ? (
                 <div className="animate-fade-in absolute right-0 top-0 w-64">
@@ -152,7 +147,6 @@ export const Navbar = () => {
               )}
             </div>
 
-            {/* Donate Button */}
             <Link
               to="/donate"
               className="hidden sm:inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-colors"
@@ -160,7 +154,6 @@ export const Navbar = () => {
               Donate Now
             </Link>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-gray-700 rounded-md lg:hidden hover:text-blue-600"
@@ -175,7 +168,6 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white shadow-xl animate-slide-in">
           <div className="py-4 px-4 space-y-4">
