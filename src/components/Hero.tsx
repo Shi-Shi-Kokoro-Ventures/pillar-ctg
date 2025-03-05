@@ -19,11 +19,11 @@ const Hero = () => {
           </span>
           
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4 text-shadow">
-            Together, We Can Save Lives
+            Changing The Game, One Good Deed At A Time
           </h1>
           
           <p className="text-xl md:text-2xl mb-8 max-w-xl text-white/90">
-            The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers.
+            Pillar prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers, because the world's on level hard mode.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">

@@ -60,8 +60,8 @@ export const Navbar = () => {
           {/* Logo */}
           <a href="/" className="flex items-center">
             <div className="text-redcross font-bold text-2xl flex items-center">
-              <div className="h-8 w-8 bg-redcross mr-2 rounded"></div>
-              Red Cross
+              <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="Pillar Logo" className="h-12 mr-2" />
+              <span className="hidden sm:inline">Pillar</span>
             </div>
           </a>
 
