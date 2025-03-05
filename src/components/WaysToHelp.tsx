@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Heart, Home, Clock, DollarSign, GraduationCap, Users } from "lucide-react";
 import { Link } from "react-router-dom";
