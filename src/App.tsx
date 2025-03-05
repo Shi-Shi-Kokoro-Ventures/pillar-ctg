@@ -22,6 +22,19 @@ import JobTraining from "./pages/JobTraining";
 import MentalHealth from "./pages/MentalHealth";
 import CaseManagement from "./pages/CaseManagement";
 import FamilySupport from "./pages/FamilySupport";
+import HousingVouchers from "./pages/HousingVouchers";
+import TenantRights from "./pages/TenantRights";
+import HousingCrisisHotline from "./pages/HousingCrisisHotline";
+import AssistanceApplication from "./pages/AssistanceApplication";
+import OurMission from "./pages/OurMission";
+import Leadership from "./pages/Leadership";
+import Partners from "./pages/Partners";
+import Careers from "./pages/Careers";
+import ContactUs from "./pages/ContactUs";
+import FinancialLiteracy from "./pages/FinancialLiteracy";
+import CommunityEvents from "./pages/CommunityEvents";
+import CorporatePartnerships from "./pages/CorporatePartnerships";
+import CommunityResources from "./pages/CommunityResources";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +62,19 @@ const App = () => (
           <Route path="/mental-health" element={<MentalHealth />} />
           <Route path="/case-management" element={<CaseManagement />} />
           <Route path="/family-support" element={<FamilySupport />} />
+          <Route path="/housing-vouchers" element={<HousingVouchers />} />
+          <Route path="/tenant-rights" element={<TenantRights />} />
+          <Route path="/housing-crisis-hotline" element={<HousingCrisisHotline />} />
+          <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
+          <Route path="/our-mission" element={<OurMission />} />
+          <Route path="/leadership" element={<Leadership />} />
+          <Route path="/partners" element={<Partners />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/financial-literacy" element={<FinancialLiteracy />} />
+          <Route path="/community-events" element={<CommunityEvents />} />
+          <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
+          <Route path="/community-resources" element={<CommunityResources />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
