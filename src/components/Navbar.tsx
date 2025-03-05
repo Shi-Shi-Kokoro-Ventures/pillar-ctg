@@ -41,7 +41,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <div className="text-blue-600 font-bold text-2xl flex items-center">
-              <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="Pillar Logo" className="h-12 mr-2 object-cover" />
+              <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="Pillar Logo" className="h-12 mr-2" />
               <span className="hidden sm:inline text-blue-700">Pillar</span>
             </div>
           </Link>
