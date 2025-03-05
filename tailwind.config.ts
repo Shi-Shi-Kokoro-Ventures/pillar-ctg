@@ -26,9 +26,9 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				redcross: {
-					DEFAULT: '#E41B2C',
-					dark: '#C01020',
-					light: '#F04050'
+					DEFAULT: '#1EAEDB',
+					dark: '#0D8CBF',
+					light: '#33C3F0'
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
