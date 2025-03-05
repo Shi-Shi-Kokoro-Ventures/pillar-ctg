@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -18,21 +19,21 @@ const Footer = () => {
               The P.I.L.L.A.R. Initiative is changing the game, one home at a time. We're dedicated to ending homelessness through affordable housing solutions, support services, and community empowerment programs that build foundations for lasting independence.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+              <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+              </Link>
+              <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+              </Link>
+              <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+              </Link>
+              <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Youtube className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+              </Link>
+              <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Linkedin className="h-5 w-5" />
-              </a>
+              </Link>
             </div>
           </div>
           
@@ -40,12 +41,19 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white">Quick Links</h3>
             <ul className="space-y-3">
-              {["About Us", "Find Your Local Office", "Housing Programs", "Ways to Donate", "Volunteer", "Careers"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-400 hover:text-white flex items-center transition-colors">
+              {[
+                { name: "About Us", link: "/" },
+                { name: "Find Your Local Office", link: "/all-ways" },
+                { name: "Housing Programs", link: "/emergency" },
+                { name: "Ways to Donate", link: "/donate" },
+                { name: "Volunteer", link: "/volunteer" },
+                { name: "Careers", link: "/volunteer" }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.link} className="text-gray-400 hover:text-white flex items-center transition-colors">
                     <ChevronRight className="h-4 w-4 mr-2 text-redcross" />
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -55,12 +63,19 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white">Services</h3>
             <ul className="space-y-3">
-              {["Transitional Housing", "Financial Education", "Job Training", "Mental Health Services", "Community Programs", "Advocacy"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-400 hover:text-white flex items-center transition-colors">
+              {[
+                { name: "Transitional Housing", link: "/emergency" },
+                { name: "Financial Education", link: "/classes" },
+                { name: "Job Training", link: "/classes" },
+                { name: "Mental Health Services", link: "/emergency" },
+                { name: "Community Programs", link: "/all-ways" },
+                { name: "Advocacy", link: "/advocate" }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.link} className="text-gray-400 hover:text-white flex items-center transition-colors">
                     <ChevronRight className="h-4 w-4 mr-2 text-redcross" />
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -103,10 +118,10 @@ const Footer = () => {
               © {new Date().getFullYear()} P.I.L.L.A.R. Initiative. All rights reserved. 501(c)(3) Nonprofit Organization.
             </div>
             <div className="flex flex-wrap gap-4 text-gray-400 text-sm">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors">Accessibility</a>
-              <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+              <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="#" className="hover:text-white transition-colors">Accessibility</Link>
+              <Link to="#" className="hover:text-white transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
