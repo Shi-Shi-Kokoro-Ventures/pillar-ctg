@@ -19,6 +19,7 @@ const Footer = () => {
               The P.I.L.L.A.R. Initiative is changing the game, one home at a time. We're dedicated to ending homelessness through affordable housing solutions, support services, and community empowerment programs that build foundations for lasting independence.
             </p>
             <div className="flex space-x-4">
+              {/* Social media links - these remain as placeholders but with proper Link components */}
               <Link to="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
                 <Facebook className="h-5 w-5" />
               </Link>
