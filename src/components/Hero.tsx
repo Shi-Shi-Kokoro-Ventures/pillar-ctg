@@ -1,6 +1,7 @@
 
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -27,20 +28,20 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
-            <a 
-              href="#donate" 
+            <Link 
+              to="/donate" 
               className="bg-redcross hover:bg-redcross-dark text-white font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-lg flex items-center justify-center"
             >
               Donate Now
               <ArrowRight className="ml-2 h-5 w-5" />
-            </a>
+            </Link>
             
-            <a 
-              href="#volunteer" 
+            <Link 
+              to="/volunteer" 
               className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm hover:bg-opacity-30 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-lg"
             >
               Volunteer With Us
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -57,9 +58,9 @@ const Hero = () => {
       <div className="absolute bottom-0 left-0 right-0 bg-redcross py-4 text-white">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <p className="font-medium">Emergency: Hurricane Relief Efforts Underway</p>
-          <a href="#emergency" className="text-sm underline flex items-center">
+          <Link to="/emergency" className="text-sm underline flex items-center">
             Learn how to help <ArrowRight className="ml-1 h-4 w-4" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

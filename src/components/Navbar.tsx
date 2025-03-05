@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,12 +59,12 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <div className="text-redcross font-bold text-2xl flex items-center">
               <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="Pillar Logo" className="h-12 mr-2" />
               <span className="hidden sm:inline">Pillar</span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center space-x-1">
@@ -76,13 +77,13 @@ export const Navbar = () => {
                 <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="py-1">
                     {item.submenu.map((subItem, subIndex) => (
-                      <a
+                      <Link
                         key={subIndex}
-                        href="#"
+                        to="#"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         {subItem}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -121,12 +122,12 @@ export const Navbar = () => {
             </div>
 
             {/* Donate Button */}
-            <a
-              href="#donate"
+            <Link
+              to="/donate"
               className="hidden sm:inline-flex items-center px-4 py-2 bg-redcross text-white font-medium rounded-full button-hover"
             >
               Donate Now
-            </a>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -155,24 +156,24 @@ export const Navbar = () => {
                 </button>
                 <div className="pl-4 mt-1 space-y-1 border-l-2 border-gray-200">
                   {item.submenu.map((subItem, subIndex) => (
-                    <a
+                    <Link
                       key={subIndex}
-                      href="#"
+                      to="#"
                       className="block py-2 text-sm text-gray-600 hover:text-redcross"
                     >
                       {subItem}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
             ))}
             <div className="pt-2">
-              <a
-                href="#donate"
+              <Link
+                to="/donate"
                 className="block w-full py-3 bg-redcross text-white text-center font-medium rounded-md button-hover"
               >
                 Donate Now
-              </a>
+              </Link>
             </div>
           </div>
         </div>
