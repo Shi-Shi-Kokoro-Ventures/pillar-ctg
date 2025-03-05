@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Heart, Droplet, Clock, DollarSign, GraduationCap, Users } from "lucide-react";
+import { Heart, Home, Clock, DollarSign, GraduationCap, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface HelpCardProps {
@@ -46,30 +46,30 @@ const WaysToHelp = () => {
           </span>
           <h2 className="text-3xl font-bold mb-4">Ways You Can Help</h2>
           <p className="text-gray-600 text-lg">
-            There are many ways you can make a difference in your community and beyond. Every action, big or small, matters.
+            There are many ways you can support our mission to provide stable housing and transform lives. Every contribution creates lasting change.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <HelpCard 
             title="Donate Funds" 
-            description="Your financial gift enables the Red Cross to prepare for, respond to, and help people recover from disasters." 
+            description="Your financial gift enables the P.I.L.L.A.R. Initiative to develop affordable housing and provide essential support services." 
             icon={<DollarSign className="w-7 h-7" />}
             bgColor="bg-redcross"
             link="/donate"
           />
           
           <HelpCard 
-            title="Give Blood" 
-            description="Blood donations are essential for surgeries, cancer treatment, chronic illnesses, and traumatic injuries."
-            icon={<Droplet className="w-7 h-7" />}
+            title="Donate Goods" 
+            description="Contribute furniture, appliances, and household items to help furnish homes for families transitioning from homelessness."
+            icon={<Home className="w-7 h-7" />}
             bgColor="bg-blue-600"
-            link="/blood"
+            link="/donate-goods"
           />
           
           <HelpCard 
             title="Volunteer" 
-            description="Join the millions of people who help their communities through the American Red Cross."
+            description="Join our network of dedicated volunteers who help with housing renovation, mentorship programs, and skills workshops."
             icon={<Heart className="w-7 h-7" />}
             bgColor="bg-blue-500"
             link="/volunteer"
@@ -77,7 +77,7 @@ const WaysToHelp = () => {
           
           <HelpCard 
             title="Take a Class" 
-            description="Get certified in CPR, First Aid, BLS, water safety, babysitting, and other life-saving skills."
+            description="Get certified to teach financial literacy, housing navigation, or job-readiness workshops in your community."
             icon={<GraduationCap className="w-7 h-7" />}
             bgColor="bg-blue-700"
             link="/classes"
@@ -85,18 +85,18 @@ const WaysToHelp = () => {
           
           <HelpCard 
             title="Donate Time" 
-            description="Even a few hours of your time can make a significant impact on your community."
+            description="Even a few hours of your time can make a significant impact in helping families secure stable housing."
             icon={<Clock className="w-7 h-7" />}
             bgColor="bg-blue-800"
             link="/time"
           />
           
           <HelpCard 
-            title="Host a Drive" 
-            description="Organize a blood drive in your community, workplace, or school and help save lives."
+            title="Become an Advocate" 
+            description="Help raise awareness about affordable housing issues and lobby for policy changes in your community."
             icon={<Users className="w-7 h-7" />}
             bgColor="bg-blue-900"
-            link="/host"
+            link="/advocate"
           />
         </div>
         

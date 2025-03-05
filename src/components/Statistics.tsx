@@ -41,28 +41,28 @@ const Statistics = () => {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Our Impact</h2>
           <p className="text-lg text-gray-600">
-            Every day, the American Red Cross provides hope and comfort to people in their darkest hours.
+            Every day, the P.I.L.L.A.R. Initiative works to provide stable housing and support services to those in need, building foundations for lasting independence.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Stat 
-            number="500M+" 
-            label="People Served Annually" 
+            number="500+" 
+            label="Families Assisted Annually" 
             delay={0}
           />
           <Stat 
-            number="40%" 
-            label="of U.S. Blood Supply Collected" 
+            number="100+" 
+            label="Affordable Housing Units Developed" 
             delay={200}
           />
           <Stat 
-            number="75,000+" 
-            label="Disasters Responded To Yearly" 
+            number="1,000+" 
+            label="Individuals Trained in Financial Literacy" 
             delay={400}
           />
           <Stat 
-            number="20M+" 
+            number="5,000+" 
             label="Volunteer Hours" 
             delay={600}
           />

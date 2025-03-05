@@ -25,8 +25,8 @@ const MissionStatement = () => {
               <div className="absolute -top-6 -left-6 w-24 h-24 bg-redcross/10 rounded-full"></div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-redcross/10 rounded-full"></div>
               <img 
-                src="https://images.unsplash.com/photo-1643321945941-2f787077a5de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" 
-                alt="Red Cross Volunteers" 
+                src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" 
+                alt="Housing Support Volunteers" 
                 className="rounded-lg shadow-xl relative z-10 object-cover w-full h-[500px]"
               />
             </div>
@@ -45,15 +45,15 @@ const MissionStatement = () => {
             
             <div className="space-y-6 text-gray-700">
               <p className="text-lg">
-                The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors.
+                The P.I.L.L.A.R. Initiative is dedicated to ending homelessness through sustainable housing solutions, comprehensive support services, and community empowerment programs.
               </p>
               
               <blockquote className="pl-4 border-l-4 border-redcross italic">
-                "The Red Cross is not just an emergency response organization. We're in communities every day, helping people prepare for and recover from emergencies."
+                "We believe that secure housing is the foundation for rebuilding lives and creating pathways to long-term independence and dignity."
               </blockquote>
               
               <p>
-                For more than 140 years, we've dedicated ourselves to humanitarian service, providing relief to victims of disaster, supporting service members and their families, teaching lifesaving skills, collecting and distributing blood, and more.
+                Our comprehensive approach includes transitional housing, financial literacy education, job training, mental health resources, and community-building programs that address the root causes of housing insecurity.
               </p>
               
               <div className="pt-4">
@@ -61,7 +61,7 @@ const MissionStatement = () => {
                   href="#learn-more" 
                   className="inline-flex items-center text-redcross hover:text-redcross-dark font-medium transition-colors"
                 >
-                  Learn more about our history
+                  Learn more about our approach
                   <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                   </svg>

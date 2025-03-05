@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -5,23 +6,23 @@ import { Link } from "react-router-dom";
 const newsItems = [
   {
     id: 1,
-    title: "Red Cross Responds to Devastating Hurricane",
-    excerpt: "Red Cross volunteers and staff are working around the clock to help thousands of people forced to leave their homes due to Hurricane Ian.",
-    image: "https://images.unsplash.com/photo-1587029899257-82f5878981e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
+    title: "P.I.L.L.A.R. Opens New Transitional Housing Complex",
+    excerpt: "Our new 24-unit transitional housing complex will provide safe, stable housing for families while they receive comprehensive support services.",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
     date: "Sept 28, 2023"
   },
   {
     id: 2,
-    title: "Urgent Need for Blood Donors as Supplies Drop",
-    excerpt: "The Red Cross is experiencing an emergency blood shortage as the number of trauma cases, organ transplants and elective surgeries rise.",
-    image: "https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
+    title: "Financial Literacy Program Reaches Milestone",
+    excerpt: "Our financial education program has now helped over 500 individuals develop budgeting skills, repair credit, and prepare for homeownership.",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
     date: "Aug 15, 2023"
   },
   {
     id: 3,
-    title: "Red Cross Launches New Disaster App",
-    excerpt: "The new emergency app consolidates more than 35 types of severe weather and emergency alerts and provides step-by-step instructions.",
-    image: "https://images.unsplash.com/photo-1586769852044-692d6e3703f2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "P.I.L.L.A.R. Partners with Local Employers",
+    excerpt: "Our new job placement program connects clients with local employers, providing living-wage employment opportunities and career advancement.",
+    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     date: "July 2, 2023"
   }
 ];
@@ -89,9 +90,9 @@ const NewsUpdates = () => {
         <div className="mt-16 bg-gray-50 rounded-xl p-8 md:p-10">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-2/3 mb-6 md:mb-0 md:pr-10">
-              <h3 className="text-2xl font-bold mb-3">Stay Informed</h3>
+              <h3 className="text-2xl font-bold mb-3">Stay Connected</h3>
               <p className="text-gray-600 mb-4">
-                Subscribe to our newsletter to receive updates on our work, ways to get involved, and information on emergency preparedness.
+                Subscribe to our newsletter to receive updates on new housing projects, success stories, volunteer opportunities, and community events.
               </p>
               <form className="flex flex-col sm:flex-row gap-3 max-w-md">
                 <input 

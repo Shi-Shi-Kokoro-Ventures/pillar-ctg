@@ -15,7 +15,7 @@ const Footer = () => {
               <span className="text-2xl font-bold">Pillar</span>
             </div>
             <p className="text-gray-400 mb-6">
-              Pillar is changing the game, one good deed at a time, because the world's on level hard mode. We prevent and alleviate human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors.
+              The P.I.L.L.A.R. Initiative is changing the game, one home at a time. We're dedicated to ending homelessness through affordable housing solutions, support services, and community empowerment programs that build foundations for lasting independence.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
@@ -40,7 +40,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white">Quick Links</h3>
             <ul className="space-y-3">
-              {["About Us", "Find Your Local Office", "Training & Certification", "Ways to Donate", "Volunteer", "Careers"].map((item) => (
+              {["About Us", "Find Your Local Office", "Housing Programs", "Ways to Donate", "Volunteer", "Careers"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-gray-400 hover:text-white flex items-center transition-colors">
                     <ChevronRight className="h-4 w-4 mr-2 text-redcross" />
@@ -55,7 +55,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white">Services</h3>
             <ul className="space-y-3">
-              {["Blood Donation", "Disaster Relief", "Military Families", "Training Services", "International Services", "Missing Persons"].map((item) => (
+              {["Transitional Housing", "Financial Education", "Job Training", "Mental Health Services", "Community Programs", "Advocacy"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-gray-400 hover:text-white flex items-center transition-colors">
                     <ChevronRight className="h-4 w-4 mr-2 text-redcross" />
@@ -73,9 +73,9 @@ const Footer = () => {
               <li className="flex">
                 <MapPin className="h-5 w-5 mr-3 text-redcross shrink-0" />
                 <span className="text-gray-400">
-                  Pillar National Headquarters<br />
-                  431 18th Street, NW<br />
-                  Washington, DC 20006
+                  P.I.L.L.A.R. Initiative Headquarters<br />
+                  431 Main Street<br />
+                  Portland, OR 97205
                 </span>
               </li>
               <li className="flex items-center">
@@ -100,7 +100,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} Pillar. All rights reserved.
+              © {new Date().getFullYear()} P.I.L.L.A.R. Initiative. All rights reserved. 501(c)(3) Nonprofit Organization.
             </div>
             <div className="flex flex-wrap gap-4 text-gray-400 text-sm">
               <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
@@ -116,7 +116,7 @@ const Footer = () => {
       <div className="bg-redcross py-3 px-4 text-white text-center">
         <div className="container mx-auto">
           <p className="text-sm">
-            <strong>Emergency:</strong> Call 1-800-PILLAR for immediate assistance
+            <strong>Housing Support:</strong> Call 1-800-PILLAR for immediate housing assistance
           </p>
         </div>
       </div>
