@@ -1,8 +1,7 @@
-
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Heart, Home, Clock, DollarSign, GraduationCap, Users, Briefcase, Share2, Gift, Tool, MessageSquare, Handshake } from "lucide-react";
+import { Heart, Home, Clock, DollarSign, GraduationCap, Users, Briefcase, Share2, Gift, Wrench, MessageSquare, Handshake } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -122,7 +121,7 @@ const AllWays = () => {
               <HelpOption 
                 title="Professional Services" 
                 description="Offer your professional expertise in areas like legal services, accounting, IT support, or construction."
-                icon={<Tool className="w-7 h-7" />}
+                icon={<Wrench className="w-7 h-7" />}
                 linkText="Offer Services"
                 linkTo="/donate-goods"
                 bgColor="bg-blue-800"
