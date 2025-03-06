@@ -37,28 +37,28 @@ const Partners = () => {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="City Government" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1535921587207-1b858a52a88f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="City Government" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Community Foundation" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1601761902945-c25354a3af20?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Community Foundation" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Regional Hospital" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Regional Hospital" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Corporate Sponsor" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Corporate Sponsor" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Housing Authority" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Housing Authority" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Local Bank" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1622126807280-9b5b32b28e77?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Local Bank" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Community College" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1580983553587-86b6f9e94e67?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Community College" className="max-h-20" />
                 </div>
                 <div className="p-4 flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="Faith Organization" className="max-h-20" />
+                  <img src="https://images.unsplash.com/photo-1591758879097-01d8eb4bb922?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Faith Organization" className="max-h-20" />
                 </div>
               </div>
             </div>
@@ -136,7 +136,9 @@ const Partners = () => {
                     "Our partnership with P.I.L.L.A.R has allowed us to make a meaningful impact in addressing homelessness in our community. Their expertise and dedication make them an invaluable ally in our efforts to create more affordable housing."
                   </p>
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 mr-4"></div>
+                    <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80" alt="James Wilson" className="w-full h-full object-cover" />
+                    </div>
                     <div>
                       <p className="font-bold">James Wilson</p>
                       <p className="text-sm text-gray-500">Director, City Housing Authority</p>
@@ -149,7 +151,9 @@ const Partners = () => {
                     "As a healthcare provider, we've seen firsthand how stable housing improves health outcomes. P.I.L.L.A.R's work complements our mission by addressing a fundamental social determinant of health. We're proud to support their efforts."
                   </p>
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 mr-4"></div>
+                    <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+                      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80" alt="Dr. Maria Rodriguez" className="w-full h-full object-cover" />
+                    </div>
                     <div>
                       <p className="font-bold">Dr. Maria Rodriguez</p>
                       <p className="text-sm text-gray-500">Community Health Director, Regional Medical Center</p>

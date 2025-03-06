@@ -39,7 +39,7 @@ const Careers = () => {
       <Navbar />
       
       <main className="flex-grow pt-20">
-        {/* Hero Section */}
+        {/* Hero Section with background image */}
         <section className="bg-blue-50 py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">

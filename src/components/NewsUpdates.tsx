@@ -22,7 +22,7 @@ const newsItems = [
     id: 3,
     title: "P.I.L.L.A.R. Partners with Local Employers",
     excerpt: "Our new job placement program connects clients with local employers, providing living-wage employment opportunities and career advancement.",
-    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
     date: "July 2, 2023"
   }
 ];
