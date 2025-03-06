@@ -43,12 +43,12 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-6 text-white">Quick Links</h3>
             <ul className="space-y-3">
               {[
-                { name: "About Us", link: "/" },
+                { name: "About Us", link: "/our-mission" },
                 { name: "Find Your Local Office", link: "/all-ways" },
-                { name: "Housing Programs", link: "/emergency" },
+                { name: "Housing Programs", link: "/housing" },
                 { name: "Ways to Donate", link: "/donate" },
                 { name: "Volunteer", link: "/volunteer" },
-                { name: "Careers", link: "/volunteer" }
+                { name: "Careers", link: "/careers" }
               ].map((item) => (
                 <li key={item.name}>
                   <Link to={item.link} className="text-gray-400 hover:text-white flex items-center transition-colors">
@@ -65,11 +65,11 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-6 text-white">Services</h3>
             <ul className="space-y-3">
               {[
-                { name: "Transitional Housing", link: "/emergency" },
-                { name: "Financial Education", link: "/classes" },
-                { name: "Job Training", link: "/classes" },
-                { name: "Mental Health Services", link: "/emergency" },
-                { name: "Community Programs", link: "/all-ways" },
+                { name: "Transitional Housing", link: "/affordable-housing" },
+                { name: "Financial Education", link: "/financial-literacy" },
+                { name: "Job Training", link: "/job-training" },
+                { name: "Mental Health Services", link: "/mental-health" },
+                { name: "Community Programs", link: "/community-events" },
                 { name: "Advocacy", link: "/advocate" }
               ].map((item) => (
                 <li key={item.name}>
@@ -119,10 +119,10 @@ const Footer = () => {
               © {new Date().getFullYear()} P.I.L.L.A.R. Initiative. All rights reserved. 501(c)(3) Nonprofit Organization.
             </div>
             <div className="flex flex-wrap gap-4 text-gray-400 text-sm">
-              <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link to="#" className="hover:text-white transition-colors">Accessibility</Link>
-              <Link to="#" className="hover:text-white transition-colors">Cookie Policy</Link>
+              <Link to="/contact-us" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="/contact-us" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="/contact-us" className="hover:text-white transition-colors">Accessibility</Link>
+              <Link to="/contact-us" className="hover:text-white transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@ const Footer = () => {
       <div className="bg-redcross py-3 px-4 text-white text-center">
         <div className="container mx-auto">
           <p className="text-sm">
-            <strong>Housing Support:</strong> Call 1-800-PILLAR for immediate housing assistance
+            <strong>Housing Support:</strong> Call <a href="tel:1-800-PILLAR" className="underline">1-800-PILLAR</a> for immediate housing assistance
           </p>
         </div>
       </div>
