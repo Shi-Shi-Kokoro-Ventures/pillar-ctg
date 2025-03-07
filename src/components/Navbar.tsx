@@ -1,7 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -149,7 +151,7 @@ export const Navbar = () => {
 
             <Link
               to="/donate"
-              className="hidden sm:inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-colors"
+              className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-md px-3 py-1.5 shadow-sm hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-md"
             >
               Donate Now
             </Link>
@@ -193,7 +195,7 @@ export const Navbar = () => {
             <div className="pt-2">
               <Link
                 to="/donate"
-                className="block w-full py-3 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700 transition-colors"
+                className="block w-full py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-center font-medium rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm"
               >
                 Donate Now
               </Link>
