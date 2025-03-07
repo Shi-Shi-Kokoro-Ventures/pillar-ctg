@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -966,5 +967,27 @@ const AssistanceApplication = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <div>
-                    <Button
+                  <div className="pt-4">
+                    <Button 
+                      type="submit" 
+                      className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+                    >
+                      Submit Application
+                    </Button>
+                    <p className="text-sm text-gray-500 mt-4">
+                      After submission, you will be contacted within 3-5 business days by one of our case managers.
+                    </p>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default AssistanceApplication;
