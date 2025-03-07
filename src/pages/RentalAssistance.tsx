@@ -13,9 +13,9 @@ const RentalAssistance = () => {
       <main className="flex-grow pt-20">
         {/* Hero Section */}
         <section className="bg-blue-50 py-16 md:py-24 bg-cover bg-center relative" 
-                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80')" }}>
+                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&q=80')" }}>
           {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/50"></div>
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
