@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -27,7 +26,7 @@ const Volunteer = () => {
               Your time and skills can help transform lives and rebuild communities.
             </p>
             <Button 
-              className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg"
+              className="bg-redcross hover:bg-redcross/90 px-6 py-2 text-base"
               onClick={openVolunteerForm}
             >
               Apply to Volunteer
@@ -234,14 +233,14 @@ const Volunteer = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg"
+                className="bg-redcross hover:bg-redcross/90 px-6 py-2"
                 onClick={openVolunteerForm}
               >
                 Apply to Volunteer
               </Button>
               <Button 
                 variant="outline" 
-                className="px-8 py-6 text-lg"
+                className="px-6 py-2"
                 onClick={() => window.location.href = "/contact-us"}
               >
                 Contact Us With Questions
