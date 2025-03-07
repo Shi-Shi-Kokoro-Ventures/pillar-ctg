@@ -1,11 +1,18 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Wrench, BookOpen, Heart, Star } from "lucide-react";
+import VolunteerApplicationForm from "@/components/VolunteerApplicationForm";
 
 const Volunteer = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  
+  const openVolunteerForm = () => {
+    setIsFormOpen(true);
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -19,7 +26,10 @@ const Volunteer = () => {
               Be a part of the solution to homelessness by volunteering with the P.I.L.L.A.R. Initiative. 
               Your time and skills can help transform lives and rebuild communities.
             </p>
-            <Button className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg">
+            <Button 
+              className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg"
+              onClick={openVolunteerForm}
+            >
               Apply to Volunteer
             </Button>
           </div>
@@ -55,7 +65,13 @@ const Volunteer = () => {
                     <span>Background check required</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full">Learn More</Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={openVolunteerForm}
+                >
+                  Learn More
+                </Button>
               </div>
               
               {/* Opportunity 2 */}
@@ -82,7 +98,13 @@ const Volunteer = () => {
                     <span>Great for groups and corporate teams</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full">Learn More</Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={openVolunteerForm}
+                >
+                  Learn More
+                </Button>
               </div>
               
               {/* Opportunity 3 */}
@@ -109,7 +131,13 @@ const Volunteer = () => {
                     <span>Curriculum and materials provided</span>
                   </li>
                 </ul>
-                <Button variant="outline" className="w-full">Learn More</Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={openVolunteerForm}
+                >
+                  Learn More
+                </Button>
               </div>
             </div>
           </div>
@@ -156,7 +184,13 @@ const Volunteer = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gray-200 w-12 h-12 rounded-full mr-4"></div>
+                  <div className="bg-gray-200 w-12 h-12 rounded-full mr-4 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" 
+                      alt="Sarah Johnson" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <h4 className="font-bold">Sarah Johnson</h4>
                     <p className="text-gray-600 text-sm">Mentorship Program Volunteer</p>
@@ -170,7 +204,13 @@ const Volunteer = () => {
               
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gray-200 w-12 h-12 rounded-full mr-4"></div>
+                  <div className="bg-gray-200 w-12 h-12 rounded-full mr-4 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                      alt="Michael Chen" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <h4 className="font-bold">Michael Chen</h4>
                     <p className="text-gray-600 text-sm">Housing Renovation Volunteer</p>
@@ -193,10 +233,17 @@ const Volunteer = () => {
               Join our team of dedicated volunteers and help us create lasting solutions to homelessness in our community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg">
+              <Button 
+                className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg"
+                onClick={openVolunteerForm}
+              >
                 Apply to Volunteer
               </Button>
-              <Button variant="outline" className="px-8 py-6 text-lg">
+              <Button 
+                variant="outline" 
+                className="px-8 py-6 text-lg"
+                onClick={() => window.location.href = "/contact-us"}
+              >
                 Contact Us With Questions
               </Button>
             </div>
@@ -205,6 +252,12 @@ const Volunteer = () => {
       </main>
       
       <Footer />
+      
+      {/* Volunteer Application Form Dialog */}
+      <VolunteerApplicationForm 
+        open={isFormOpen} 
+        onOpenChange={setIsFormOpen} 
+      />
     </div>
   );
 };
