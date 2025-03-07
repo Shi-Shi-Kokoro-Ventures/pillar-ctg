@@ -7,6 +7,12 @@ import { CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Donate = () => {
+  // Function to handle donation amount selection
+  const handleAmountSelection = (amount: string, type: 'one-time' | 'monthly') => {
+    console.log(`Selected ${type} donation amount: ${amount}`);
+    // Here you would typically update state to track the selected amount
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -41,7 +47,7 @@ const Donate = () => {
                       key={amount}
                       variant={amount === "$100" ? "default" : "outline"}
                       className={amount === "$100" ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => console.log(`Selected amount: ${amount}`)}
+                      onClick={() => handleAmountSelection(amount, 'one-time')}
                     >
                       {amount}
                     </Button>
@@ -49,7 +55,7 @@ const Donate = () => {
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("Donate Now clicked")}
+                  onClick={() => console.log("One-time donation processing initiated")}
                 >
                   Donate Now
                 </Button>
@@ -67,7 +73,7 @@ const Donate = () => {
                       key={amount}
                       variant={amount === "$25" ? "default" : "outline"}
                       className={amount === "$25" ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => console.log(`Selected monthly amount: ${amount}`)}
+                      onClick={() => handleAmountSelection(amount, 'monthly')}
                     >
                       {amount}
                     </Button>
@@ -75,7 +81,7 @@ const Donate = () => {
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("Monthly Donor clicked")}
+                  onClick={() => console.log("Monthly donation subscription initiated")}
                 >
                   Become a Monthly Donor
                 </Button>
@@ -102,8 +108,9 @@ const Donate = () => {
                   ))}
                 </ul>
                 <Button 
+                  asChild
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("Contact Us clicked")}
+                  onClick={() => console.log("Navigating to Contact Us page")}
                 >
                   <Link to="/contact-us">Contact Us</Link>
                 </Button>
@@ -148,7 +155,7 @@ const Donate = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  onClick={() => console.log("Learn More about Planned Giving clicked")}
+                  onClick={() => console.log("Planned giving information requested")}
                 >
                   Learn More
                 </Button>
@@ -162,7 +169,7 @@ const Donate = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  onClick={() => console.log("Get Details clicked")}
+                  onClick={() => console.log("DAF information requested")}
                 >
                   Get Details
                 </Button>
