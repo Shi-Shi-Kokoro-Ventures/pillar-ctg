@@ -1,16 +1,54 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Donate = () => {
-  // Function to handle donation amount selection
-  const handleAmountSelection = (amount: string, type: 'one-time' | 'monthly') => {
-    console.log(`Selected ${type} donation amount: ${amount}`);
-    // Here you would typically update state to track the selected amount
+  const { toast } = useToast();
+  const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
+  const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
+
+  // Function to handle one-time donation amount selection
+  const handleOneTimeSelection = (amount: string) => {
+    setSelectedOneTimeAmount(amount);
+    console.log(`Selected one-time donation amount: ${amount}`);
+  };
+
+  // Function to handle monthly donation amount selection
+  const handleMonthlySelection = (amount: string) => {
+    setSelectedMonthlyAmount(amount);
+    console.log(`Selected monthly donation amount: ${amount}`);
+  };
+
+  // Function to handle donation submission
+  const handleDonateNow = () => {
+    toast({
+      title: "Thank you for your donation!",
+      description: `Your one-time donation of ${selectedOneTimeAmount} is being processed.`,
+    });
+    console.log(`Processing one-time donation of ${selectedOneTimeAmount}`);
+  };
+
+  // Function to handle monthly donation subscription
+  const handleMonthlyDonation = () => {
+    toast({
+      title: "Thank you for becoming a monthly donor!",
+      description: `Your monthly donation of ${selectedMonthlyAmount} has been set up.`,
+    });
+    console.log(`Setting up monthly donation of ${selectedMonthlyAmount}`);
+  };
+
+  // Function to handle information requests
+  const handleInfoRequest = (type: string) => {
+    toast({
+      title: "Information Request Received",
+      description: `We'll send you more information about our ${type} shortly.`,
+    });
+    console.log(`${type} information requested`);
   };
 
   return (
@@ -45,9 +83,9 @@ const Donate = () => {
                   {["$25", "$50", "$100", "$250", "$500", "Other"].map((amount) => (
                     <Button
                       key={amount}
-                      variant={amount === "$100" ? "default" : "outline"}
-                      className={amount === "$100" ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => handleAmountSelection(amount, 'one-time')}
+                      variant={amount === selectedOneTimeAmount ? "default" : "outline"}
+                      className={amount === selectedOneTimeAmount ? "bg-redcross hover:bg-redcross/90" : ""}
+                      onClick={() => handleOneTimeSelection(amount)}
                     >
                       {amount}
                     </Button>
@@ -55,7 +93,7 @@ const Donate = () => {
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("One-time donation processing initiated")}
+                  onClick={handleDonateNow}
                 >
                   Donate Now
                 </Button>
@@ -71,9 +109,9 @@ const Donate = () => {
                   {["$10", "$25", "$50", "$100", "$200", "Other"].map((amount) => (
                     <Button
                       key={amount}
-                      variant={amount === "$25" ? "default" : "outline"}
-                      className={amount === "$25" ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => handleAmountSelection(amount, 'monthly')}
+                      variant={amount === selectedMonthlyAmount ? "default" : "outline"}
+                      className={amount === selectedMonthlyAmount ? "bg-redcross hover:bg-redcross/90" : ""}
+                      onClick={() => handleMonthlySelection(amount)}
                     >
                       {amount}
                     </Button>
@@ -81,7 +119,7 @@ const Donate = () => {
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("Monthly donation subscription initiated")}
+                  onClick={handleMonthlyDonation}
                 >
                   Become a Monthly Donor
                 </Button>
@@ -110,7 +148,6 @@ const Donate = () => {
                 <Button 
                   asChild
                   className="w-full bg-redcross hover:bg-redcross/90"
-                  onClick={() => console.log("Navigating to Contact Us page")}
                 >
                   <Link to="/contact-us">Contact Us</Link>
                 </Button>
@@ -155,7 +192,7 @@ const Donate = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  onClick={() => console.log("Planned giving information requested")}
+                  onClick={() => handleInfoRequest("planned giving")}
                 >
                   Learn More
                 </Button>
@@ -169,7 +206,7 @@ const Donate = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  onClick={() => console.log("DAF information requested")}
+                  onClick={() => handleInfoRequest("donor-advised funds")}
                 >
                   Get Details
                 </Button>
