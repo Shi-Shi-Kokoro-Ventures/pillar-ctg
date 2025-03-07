@@ -3,14 +3,16 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Donate = () => {
   const { toast } = useToast();
   const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
+  const [loading, setLoading] = useState<string | null>(null);
 
   // Function to handle one-time donation amount selection
   const handleOneTimeSelection = (amount: string) => {
@@ -24,22 +26,85 @@ const Donate = () => {
     console.log(`Selected monthly donation amount: ${amount}`);
   };
 
+  // Function to handle custom amount input for "Other" option
+  const handleCustomAmount = (event: React.ChangeEvent<HTMLInputElement>, type: "oneTime" | "monthly") => {
+    const value = event.target.value;
+    if (value === "" || /^\$?\d*$/.test(value)) {
+      const formattedValue = value.startsWith("$") ? value : `$${value}`;
+      if (type === "oneTime") {
+        setSelectedOneTimeAmount(formattedValue);
+      } else {
+        setSelectedMonthlyAmount(formattedValue);
+      }
+    }
+  };
+
+  // Function to create a Stripe checkout session and redirect to payment page
+  const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
+    try {
+      setLoading(donationType);
+      
+      // Make sure we have a valid amount
+      if (amount === "$" || amount === "$0" || amount === "") {
+        toast({
+          title: "Invalid amount",
+          description: "Please enter a valid donation amount",
+          variant: "destructive",
+        });
+        setLoading(null);
+        return;
+      }
+      
+      // Handle "Other" amount
+      let processedAmount = amount;
+      if (processedAmount === "Other") {
+        processedAmount = donationType === "one-time" ? "$100" : "$25";
+      }
+      
+      // Create the success and cancel URLs
+      const origin = window.location.origin;
+      const successUrl = `${origin}/donate?status=success&type=${donationType}&amount=${encodeURIComponent(processedAmount)}`;
+      const cancelUrl = `${origin}/donate?status=canceled`;
+      
+      // Call the Supabase Edge Function to create a checkout session
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          amount: processedAmount,
+          donationType: donationType,
+          successUrl,
+          cancelUrl,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Redirect to Stripe checkout
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast({
+        title: "Payment Error",
+        description: "There was an error processing your donation. Please try again.",
+        variant: "destructive",
+      });
+      setLoading(null);
+    }
+  };
+
   // Function to handle donation submission
-  const handleDonateNow = () => {
-    toast({
-      title: "Thank you for your donation!",
-      description: `Your one-time donation of ${selectedOneTimeAmount} is being processed.`,
-    });
-    console.log(`Processing one-time donation of ${selectedOneTimeAmount}`);
+  const handleDonateNow = async () => {
+    await createCheckoutSession(selectedOneTimeAmount, "one-time");
   };
 
   // Function to handle monthly donation subscription
-  const handleMonthlyDonation = () => {
-    toast({
-      title: "Thank you for becoming a monthly donor!",
-      description: `Your monthly donation of ${selectedMonthlyAmount} has been set up.`,
-    });
-    console.log(`Setting up monthly donation of ${selectedMonthlyAmount}`);
+  const handleMonthlyDonation = async () => {
+    await createCheckoutSession(selectedMonthlyAmount, "monthly");
   };
 
   // Function to handle information requests
@@ -50,6 +115,32 @@ const Donate = () => {
     });
     console.log(`${type} information requested`);
   };
+
+  // Check for success or canceled payment status in URL
+  React.useEffect(() => {
+    const url = new URL(window.location.href);
+    const status = url.searchParams.get("status");
+    const type = url.searchParams.get("type");
+    const amount = url.searchParams.get("amount");
+
+    if (status === "success" && type && amount) {
+      toast({
+        title: "Thank you for your donation!",
+        description: `Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`,
+      });
+
+      // Clean the URL without reloading the page
+      window.history.replaceState({}, document.title, "/donate");
+    } else if (status === "canceled") {
+      toast({
+        title: "Donation Canceled",
+        description: "Your donation has been canceled. No charges were made.",
+      });
+
+      // Clean the URL without reloading the page
+      window.history.replaceState({}, document.title, "/donate");
+    }
+  }, [toast]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -81,21 +172,49 @@ const Donate = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {["$25", "$50", "$100", "$250", "$500", "Other"].map((amount) => (
-                    <Button
-                      key={amount}
-                      variant={amount === selectedOneTimeAmount ? "default" : "outline"}
-                      className={amount === selectedOneTimeAmount ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => handleOneTimeSelection(amount)}
-                    >
-                      {amount}
-                    </Button>
+                    <div key={amount} className="relative">
+                      {amount === "Other" && selectedOneTimeAmount !== "Other" ? (
+                        <Button
+                          variant={selectedOneTimeAmount === amount ? "default" : "outline"}
+                          className={selectedOneTimeAmount === amount ? "bg-redcross hover:bg-redcross/90 w-full" : "w-full"}
+                          onClick={() => handleOneTimeSelection(amount)}
+                        >
+                          {amount}
+                        </Button>
+                      ) : amount === "Other" || selectedOneTimeAmount === "Other" ? (
+                        <input
+                          type="text"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          value={selectedOneTimeAmount === "Other" ? selectedOneTimeAmount : ""}
+                          onChange={(e) => handleCustomAmount(e, "oneTime")}
+                          placeholder="Other amount"
+                          onClick={() => setSelectedOneTimeAmount("Other")}
+                        />
+                      ) : (
+                        <Button
+                          variant={selectedOneTimeAmount === amount ? "default" : "outline"}
+                          className={selectedOneTimeAmount === amount ? "bg-redcross hover:bg-redcross/90 w-full" : "w-full"}
+                          onClick={() => handleOneTimeSelection(amount)}
+                        >
+                          {amount}
+                        </Button>
+                      )}
+                    </div>
                   ))}
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleDonateNow}
+                  disabled={loading === "one-time"}
                 >
-                  Donate Now
+                  {loading === "one-time" ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Donate Now"
+                  )}
                 </Button>
               </div>
               
@@ -107,21 +226,49 @@ const Donate = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {["$10", "$25", "$50", "$100", "$200", "Other"].map((amount) => (
-                    <Button
-                      key={amount}
-                      variant={amount === selectedMonthlyAmount ? "default" : "outline"}
-                      className={amount === selectedMonthlyAmount ? "bg-redcross hover:bg-redcross/90" : ""}
-                      onClick={() => handleMonthlySelection(amount)}
-                    >
-                      {amount}
-                    </Button>
+                    <div key={amount} className="relative">
+                      {amount === "Other" && selectedMonthlyAmount !== "Other" ? (
+                        <Button
+                          variant={selectedMonthlyAmount === amount ? "default" : "outline"}
+                          className={selectedMonthlyAmount === amount ? "bg-redcross hover:bg-redcross/90 w-full" : "w-full"}
+                          onClick={() => handleMonthlySelection(amount)}
+                        >
+                          {amount}
+                        </Button>
+                      ) : amount === "Other" || selectedMonthlyAmount === "Other" ? (
+                        <input
+                          type="text"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          value={selectedMonthlyAmount === "Other" ? selectedMonthlyAmount : ""}
+                          onChange={(e) => handleCustomAmount(e, "monthly")}
+                          placeholder="Other amount"
+                          onClick={() => setSelectedMonthlyAmount("Other")}
+                        />
+                      ) : (
+                        <Button
+                          variant={selectedMonthlyAmount === amount ? "default" : "outline"}
+                          className={selectedMonthlyAmount === amount ? "bg-redcross hover:bg-redcross/90 w-full" : "w-full"}
+                          onClick={() => handleMonthlySelection(amount)}
+                        >
+                          {amount}
+                        </Button>
+                      )}
+                    </div>
                   ))}
                 </div>
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleMonthlyDonation}
+                  disabled={loading === "monthly"}
                 >
-                  Become a Monthly Donor
+                  {loading === "monthly" ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Become a Monthly Donor"
+                  )}
                 </Button>
               </div>
               
