@@ -1,8 +1,10 @@
+
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Donate = () => {
   return (
@@ -39,12 +41,18 @@ const Donate = () => {
                       key={amount}
                       variant={amount === "$100" ? "default" : "outline"}
                       className={amount === "$100" ? "bg-redcross hover:bg-redcross/90" : ""}
+                      onClick={() => console.log(`Selected amount: ${amount}`)}
                     >
                       {amount}
                     </Button>
                   ))}
                 </div>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Donate Now</Button>
+                <Button 
+                  className="w-full bg-redcross hover:bg-redcross/90"
+                  onClick={() => console.log("Donate Now clicked")}
+                >
+                  Donate Now
+                </Button>
               </div>
               
               {/* Monthly Giving */}
@@ -59,12 +67,18 @@ const Donate = () => {
                       key={amount}
                       variant={amount === "$25" ? "default" : "outline"}
                       className={amount === "$25" ? "bg-redcross hover:bg-redcross/90" : ""}
+                      onClick={() => console.log(`Selected monthly amount: ${amount}`)}
                     >
                       {amount}
                     </Button>
                   ))}
                 </div>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Become a Monthly Donor</Button>
+                <Button 
+                  className="w-full bg-redcross hover:bg-redcross/90"
+                  onClick={() => console.log("Monthly Donor clicked")}
+                >
+                  Become a Monthly Donor
+                </Button>
               </div>
               
               {/* Corporate Giving */}
@@ -87,7 +101,12 @@ const Donate = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Contact Us</Button>
+                <Button 
+                  className="w-full bg-redcross hover:bg-redcross/90"
+                  onClick={() => console.log("Contact Us clicked")}
+                >
+                  <Link to="/contact-us">Contact Us</Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -127,7 +146,12 @@ const Donate = () => {
                   Leave a lasting legacy by including P.I.L.L.A.R. Initiative in your estate planning. 
                   Your planned gift will help ensure that our work continues for generations to come.
                 </p>
-                <Button variant="outline">Learn More</Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => console.log("Learn More about Planned Giving clicked")}
+                >
+                  Learn More
+                </Button>
               </div>
               
               <div className="bg-white rounded-lg shadow-md p-8">
@@ -136,7 +160,12 @@ const Donate = () => {
                   Recommend a grant to P.I.L.L.A.R. Initiative through your donor-advised fund (DAF). 
                   It's an easy way to support our housing programs and receive tax benefits.
                 </p>
-                <Button variant="outline">Get Details</Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => console.log("Get Details clicked")}
+                >
+                  Get Details
+                </Button>
               </div>
             </div>
           </div>
