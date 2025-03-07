@@ -12,11 +12,15 @@ const RentalAssistance = () => {
       
       <main className="flex-grow pt-20">
         {/* Hero Section */}
-        <section className="bg-blue-50 py-16 md:py-24">
-          <div className="container mx-auto px-4">
+        <section className="bg-blue-50 py-16 md:py-24 bg-cover bg-center relative" 
+                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80')" }}>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Rental Assistance Programs</h1>
-              <p className="text-xl text-gray-600 mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white text-shadow">Rental Assistance Programs</h1>
+              <p className="text-xl text-white mb-8 text-shadow">
                 Emergency and long-term rental assistance to help individuals and families maintain stable housing.
               </p>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
