@@ -199,22 +199,548 @@ const AssistanceApplication = () => {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   {/* Personal Information */}
-                  {/* ... keep existing code (personal information section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Personal Information
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              First Name <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="John" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Last Name <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Doe" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="dob"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Date of Birth <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="ssn"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Last 4 of SSN <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="XXXX" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Phone Number <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="tel" placeholder="555-555-5555" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Email Address <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="john.doe@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Household Information */}
-                  {/* ... keep existing code (household information section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Household Information
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="householdSize"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Household Size <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="1" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="householdIncome"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Household Income <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="50000" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="incomePeriod"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Income Period <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select income period" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="weekly">Weekly</SelectItem>
+                                <SelectItem value="bi-weekly">Bi-Weekly</SelectItem>
+                                <SelectItem value="monthly">Monthly</SelectItem>
+                                <SelectItem value="yearly">Yearly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Current Housing */}
-                  {/* ... keep existing code (current housing section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Current Housing
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="currentAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Current Address <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="123 Main St" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              City <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Anytown" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="state"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              State <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="CA" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="zip"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              ZIP Code <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="12345" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="housingStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Housing Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select housing status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="renting">Renting</SelectItem>
+                                <SelectItem value="owning">Owning</SelectItem>
+                                <SelectItem value="living-with-family">Living with Family</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="monthlyRent"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Monthly Rent <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="1000" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="rentDue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Rent Due
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="evictionNotice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Eviction Notice <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Government Assistance */}
-                  {/* ... keep existing code (government assistance section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <HelpCircle className="mr-2 h-5 w-5" />
+                      Government Assistance
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="receivingAssistance"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Receiving Assistance? <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="assistanceTypes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Types of Assistance
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="SNAP, TANF, etc." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Emergency Contact */}
-                  {/* ... keep existing code (emergency contact section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <HelpCircle className="mr-2 h-5 w-5" />
+                      Emergency Contact
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="emergencyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Emergency Contact Name <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Jane Doe" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="emergencyPhone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Emergency Contact Phone <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="tel" placeholder="555-555-5555" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="emergencyRelation"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Relationship <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Friend" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Demographic Information */}
-                  {/* ... keep existing code (demographic information section) */
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <HelpCircle className="mr-2 h-5 w-5" />
+                      Demographic Information
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Gender <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="male">Male</SelectItem>
+                                <SelectItem value="female">Female</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="ethnicity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Ethnicity <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select ethnicity" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="hispanic">Hispanic or Latino</SelectItem>
+                                <SelectItem value="non-hispanic">Not Hispanic or Latino</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="race"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Race <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select race" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="white">White</SelectItem>
+                                <SelectItem value="black">Black or African American</SelectItem>
+                                <SelectItem value="asian">Asian</SelectItem>
+                                <SelectItem value="native">American Indian or Alaska Native</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="veteran"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Veteran Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="disability"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Disability Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   {/* Required Documents */}
                   <div className="border-b pb-6">
@@ -441,59 +967,4 @@ const AssistanceApplication = () => {
 
                   {/* Submit Button */}
                   <div>
-                    <Button 
-                      type="submit" 
-                      className="w-full sm:w-auto px-6 py-3"
-                    >
-                      Submit Application
-                    </Button>
-                    <p className="text-sm text-gray-500 mt-4">
-                      <span className="text-red-500">*</span> Indicates a required field
-                    </p>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-10 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
-              
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h3 className="text-lg font-bold mb-2 flex items-center">
-                    <HelpCircle className="h-5 w-5 mr-2 text-blue-600" />
-                    What happens after I submit my application?
-                  </h3>
-                  <p className="text-gray-600">
-                    Our staff will review your application within 3-5 business days. You'll be contacted for verification 
-                    and to schedule an intake appointment to continue the process.
-                  </p>
-                </div>
-                
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h3 className="text-lg font-bold mb-2 flex items-center">
-                    <HelpCircle className="h-5 w-5 mr-2 text-blue-600" />
-                    What documents will I need to provide?
-                  </h3>
-                  <p className="text-gray-600">
-                    You'll need to provide ID for all household members, proof of income, current lease or rental agreement, 
-                    utility bills, and any eviction notices if applicable.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default AssistanceApplication;
+                    <Button
