@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { DollarSign, CheckCircle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RentalAssistance = () => {
   return (
@@ -23,9 +24,11 @@ const RentalAssistance = () => {
               <p className="text-xl text-white mb-8 text-shadow">
                 Emergency and long-term rental assistance to help individuals and families maintain stable housing.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
-                Apply for Assistance
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
+                  Apply for Assistance
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -99,12 +102,16 @@ const RentalAssistance = () => {
               Contact us today to learn about eligibility requirements and how to apply.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100">
-                Apply for Assistance
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-blue-700">
-                Schedule a Consultation
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-white text-blue-600 hover:bg-gray-100">
+                  Apply for Assistance
+                </Button>
+              </Link>
+              <Link to="/contact-us">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                  Schedule a Consultation
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
