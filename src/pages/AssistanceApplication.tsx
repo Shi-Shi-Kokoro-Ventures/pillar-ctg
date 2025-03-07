@@ -1,12 +1,11 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckSquare, HelpCircle, Calendar, Info } from "lucide-react";
+import { FileText, CheckSquare, HelpCircle, Calendar, Info, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Form,
@@ -67,16 +66,34 @@ const formSchema = z.object({
   veteran: z.string().min(1, "Veteran status is required for federal reporting"),
   disability: z.string().min(1, "Disability status is required for federal reporting"),
   
-  // Certification
-  certifyTrue: z.literal(true, {
-    errorMap: () => ({ message: "You must certify that information is true" }),
+  // Required Documents
+  identificationDoc: z.instanceof(FileList).optional().refine(files => !files || files.length > 0, "Identification document is required"),
+  proofOfIncomeDoc: z.instanceof(FileList).optional().refine(files => !files || files.length > 0, "Proof of income document is required"),
+  housingDoc: z.instanceof(FileList).optional().refine(files => !files || files.length > 0, "Housing document is required"),
+  additionalDocs: z.instanceof(FileList).optional(),
+  
+  // Certification - Changed from literal(true) to boolean() to fix type errors
+  certifyTrue: z.boolean().refine(val => val === true, {
+    message: "You must certify that information is true",
   }),
-  consentToShare: z.literal(true, {
-    errorMap: () => ({ message: "You must consent to share information" }),
+  consentToShare: z.boolean().refine(val => val === true, {
+    message: "You must consent to share information",
   }),
 });
 
 const AssistanceApplication = () => {
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    identification: File[] | null,
+    income: File[] | null,
+    housing: File[] | null,
+    additional: File[] | null
+  }>({
+    identification: null,
+    income: null,
+    housing: null,
+    additional: null
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -114,8 +131,44 @@ const AssistanceApplication = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    
+    // Create a FormData object to handle file uploads
+    const formData = new FormData();
+    
+    // Append all form values to FormData
+    Object.entries(values).forEach(([key, value]) => {
+      if (value instanceof FileList) {
+        for (let i = 0; i < value.length; i++) {
+          formData.append(key, value[i]);
+        }
+      } else {
+        formData.append(key, value.toString());
+      }
+    });
+    
+    // Log FormData (for debugging)
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+    
     toast.success("Application submitted successfully! We'll contact you within 3-5 business days.");
   }
+
+  // Helper function to display filenames
+  const renderFileNames = (files: FileList | null) => {
+    if (!files || files.length === 0) return null;
+    
+    return (
+      <div className="mt-2">
+        {Array.from(files).map((file, index) => (
+          <div key={index} className="text-sm text-blue-600 flex items-center gap-1">
+            <FileText className="h-3 w-3" />
+            {file.name}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -146,547 +199,179 @@ const AssistanceApplication = () => {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   {/* Personal Information */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Personal Information
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="firstName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>First Name <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="First Name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Last Name <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Last Name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="dob"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Date of Birth <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input type="date" placeholder="MM/DD/YYYY" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="ssn"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Last 4 digits of SSN <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input maxLength={4} placeholder="Last 4 digits only" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                              Required for government reporting
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Phone Number <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input type="tel" placeholder="(xxx) xxx-xxxx" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email Address <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input type="email" placeholder="email@example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  {/* ... keep existing code (personal information section) */
 
                   {/* Household Information */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Household Information
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="householdSize"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Number of people in household <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select household size" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                                  <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="householdIncome"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Total Household Income <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Dollar amount" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="incomePeriod"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Income Period <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select period" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="weekly">Weekly</SelectItem>
-                                <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                                <SelectItem value="monthly">Monthly</SelectItem>
-                                <SelectItem value="annually">Annually</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  {/* ... keep existing code (household information section) */
 
                   {/* Current Housing */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Current Housing
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="currentAddress"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Street Address <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Street address" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="city"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>City <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="City" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="state"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>State <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="State" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="zip"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>ZIP Code <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="ZIP Code" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="housingStatus"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Current Housing Status <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select housing status" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="renting">Renting</SelectItem>
-                                <SelectItem value="staying_with_family">Staying with family/friends</SelectItem>
-                                <SelectItem value="temporary">Temporary housing</SelectItem>
-                                <SelectItem value="homeless">Homeless</SelectItem>
-                                <SelectItem value="eviction">Facing eviction</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="monthlyRent"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Monthly Rent Amount <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Monthly rent" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="rentDue"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Rent Due Date</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="evictionNotice"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Have you received an eviction notice? <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select yes or no" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  {/* ... keep existing code (current housing section) */
 
                   {/* Government Assistance */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Other Government Assistance
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="receivingAssistance"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Are you currently receiving government assistance? <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select yes or no" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="assistanceTypes"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>If yes, which programs? (Select all that apply)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., SNAP, TANF, SSI, etc." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  {/* ... keep existing code (government assistance section) */
 
                   {/* Emergency Contact */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Emergency Contact
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="emergencyName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Emergency Contact Name <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Full name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="emergencyPhone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Emergency Contact Phone <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Phone number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="emergencyRelation"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Relationship <span className="text-red-500">*</span></FormLabel>
-                            <FormControl>
-                              <Input placeholder="Relationship to you" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  {/* ... keep existing code (emergency contact section) */
 
-                  {/* Demographic Information (Required for Government Reporting) */}
+                  {/* Demographic Information */}
+                  {/* ... keep existing code (demographic information section) */
+
+                  {/* Required Documents */}
                   <div className="border-b pb-6">
                     <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <FileText className="mr-2 h-5 w-5" />
-                      Demographic Information (Required for Federal Reporting)
+                      <Upload className="mr-2 h-5 w-5" />
+                      Required Documents
                     </h2>
-                    <div className="bg-gray-50 p-3 rounded mb-4">
-                      <p className="text-sm text-gray-600">
-                        This information is required by the U.S. Department of Housing and Urban Development (HUD) 
-                        for demographic reporting purposes. Your answers will not affect your eligibility.
+                    <div className="bg-amber-50 p-3 rounded mb-6">
+                      <p className="text-sm text-amber-600 flex items-start">
+                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                        <span>
+                          Please upload the following documents to complete your application. 
+                          Accepted file formats: PDF, JPG, PNG. Maximum file size: 10MB per file.
+                        </span>
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="gender"
-                        render={({ field }) => (
+                        name="identificationDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
                           <FormItem>
-                            <FormLabel>Gender <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="transgender">Transgender</SelectItem>
-                                <SelectItem value="non_binary">Non-binary/Non-conforming</SelectItem>
-                                <SelectItem value="different">Different identity</SelectItem>
-                                <SelectItem value="decline">Decline to answer</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <FormLabel>
+                              Identification Document <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        identification: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                    {...rest}
+                                  />
+                                </div>
+                                {renderFileNames(value as unknown as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Government-issued ID, driver's license, passport, etc.
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={form.control}
-                        name="ethnicity"
-                        render={({ field }) => (
+                        name="proofOfIncomeDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
                           <FormItem>
-                            <FormLabel>Ethnicity <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select ethnicity" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="hispanic">Hispanic/Latino</SelectItem>
-                                <SelectItem value="not_hispanic">Not Hispanic/Latino</SelectItem>
-                                <SelectItem value="decline">Decline to answer</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <FormLabel>
+                              Proof of Income <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        income: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                    {...rest}
+                                  />
+                                </div>
+                                {renderFileNames(value as unknown as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Pay stubs, tax returns, benefit statements, etc.
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={form.control}
-                        name="race"
-                        render={({ field }) => (
+                        name="housingDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
                           <FormItem>
-                            <FormLabel>Race <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select race" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="american_indian">American Indian/Alaska Native</SelectItem>
-                                <SelectItem value="asian">Asian</SelectItem>
-                                <SelectItem value="black">Black/African American</SelectItem>
-                                <SelectItem value="pacific_islander">Native Hawaiian/Pacific Islander</SelectItem>
-                                <SelectItem value="white">White</SelectItem>
-                                <SelectItem value="multiple">Multiple races</SelectItem>
-                                <SelectItem value="decline">Decline to answer</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <FormLabel>
+                              Housing Document <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        housing: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                    {...rest}
+                                  />
+                                </div>
+                                {renderFileNames(value as unknown as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Lease agreement, mortgage statement, eviction notice, etc.
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={form.control}
-                        name="veteran"
-                        render={({ field }) => (
+                        name="additionalDocs"
+                        render={({ field: { onChange, value, ...rest } }) => (
                           <FormItem>
-                            <FormLabel>Veteran Status <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select veteran status" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                                <SelectItem value="decline">Decline to answer</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="disability"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Disability Status <span className="text-red-500">*</span></FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select disability status" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                                <SelectItem value="decline">Decline to answer</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <FormLabel>
+                              Additional Documents (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    multiple
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        additional: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                    {...rest}
+                                  />
+                                </div>
+                                {renderFileNames(value as unknown as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Utility bills, medical expenses, other relevant documentation
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -772,7 +457,7 @@ const AssistanceApplication = () => {
           </div>
         </section>
 
-        {/* FAQ Section (simplified, kept just for reference) */}
+        {/* FAQ Section */}
         <section className="py-10 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
