@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -10,10 +11,11 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Overlay from 'ol/Overlay';
 import 'ol/ol.css';
-import { Home, Phone, HeartPulse, Utensils, MapPin, AlertTriangle } from "lucide-react";
+import { Home, Phone, HeartPulse, Utensils, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
+// Resource location interface
 interface ResourceLocation {
   id: number;
   name: string;
@@ -24,6 +26,7 @@ interface ResourceLocation {
   lng: number;
 }
 
+// Sample resource locations
 const resourceLocations: ResourceLocation[] = [
   {
     id: 1,
@@ -114,52 +117,42 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   fullScreen = false,
   onViewFullMap
 }) => {
-  console.log("Rendering InteractiveMap component");
+  console.log("Rendering InteractiveMap component with simplified approach");
   
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<Map | null>(null);
+  const mapElement = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<Map | null>(null);
   const popupOverlayRef = useRef<Overlay | null>(null);
+  
   const [selectedResource, setSelectedResource] = useState<ResourceLocation | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false);
   const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [mapInitAttempts, setMapInitAttempts] = useState<number>(0);
-  const [isContainerReady, setIsContainerReady] = useState<boolean>(false);
-  const containerCheckInterval = useRef<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [mapError, setMapError] = useState<string | null>(null);
 
+  // Get marker color based on category
   const getMarkerColor = (category: string): string => {
     switch (category) {
-      case "shelter":
-        return "#3b82f6";
-      case "healthcare":
-        return "#ef4444";
-      case "food":
-        return "#22c55e";
-      case "crisis":
-        return "#f59e0b";
-      default:
-        return "#6b7280";
+      case "shelter": return "#3b82f6";
+      case "healthcare": return "#ef4444";
+      case "food": return "#22c55e";
+      case "crisis": return "#f59e0b";
+      default: return "#6b7280";
     }
   };
 
+  // Get category icon component
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "shelter":
-        return <Home className="h-5 w-5" />;
-      case "healthcare":
-        return <HeartPulse className="h-5 w-5" />;
-      case "food":
-        return <Utensils className="h-5 w-5" />;
-      case "crisis":
-        return <Phone className="h-5 w-5" />;
-      default:
-        return <MapPin className="h-5 w-5" />;
+      case "shelter": return <Home className="h-5 w-5" />;
+      case "healthcare": return <HeartPulse className="h-5 w-5" />;
+      case "food": return <Utensils className="h-5 w-5" />;
+      case "crisis": return <Phone className="h-5 w-5" />;
+      default: return <MapPin className="h-5 w-5" />;
     }
   };
 
+  // Create marker icon as canvas
   const createMarkerIcon = (category: string): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
     canvas.width = 32;
@@ -182,6 +175,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     return canvas;
   };
 
+  // Filter resources by category
   const filterByCategory = (category: string | null) => {
     console.log(`Filtering by category: ${category || 'all'}`);
     setSelectedCategory(category);
@@ -192,8 +186,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       setVisibleResources(resourceLocations.filter(resource => resource.category === category));
     }
     
-    if (mapLoaded && mapInstanceRef.current) {
-      const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
+    if (mapRef.current) {
+      const vectorLayer = mapRef.current.getLayers().getArray().find(
         layer => layer instanceof VectorLayer
       ) as VectorLayer<VectorSource> | undefined;
       
@@ -218,112 +212,42 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
+  // Initialize map
   useEffect(() => {
-    console.log("Checking if container is ready");
-    
-    const checkContainer = () => {
-      if (mapRef.current) {
-        const width = mapRef.current.offsetWidth;
-        const height = mapRef.current.offsetHeight;
-        
-        console.log('Map container dimensions:', width, 'x', height);
-        
-        if (width > 0 && height > 0) {
-          console.log('Container is sized and ready');
-          setIsContainerReady(true);
-          return true;
-        }
-      }
-      return false;
-    };
-
-    if (checkContainer()) {
-      if (containerCheckInterval.current) {
-        clearInterval(containerCheckInterval.current);
-        containerCheckInterval.current = null;
-      }
+    if (!mapElement.current) {
+      console.error("Map container not available");
       return;
     }
+
+    console.log("Initializing map with simple approach");
+    setIsLoading(true);
+    setMapError(null);
+
+    // Create vector source for markers
+    const vectorSource = new VectorSource();
     
-    containerCheckInterval.current = window.setInterval(() => {
-      if (checkContainer()) {
-        if (containerCheckInterval.current) {
-          clearInterval(containerCheckInterval.current);
-          containerCheckInterval.current = null;
-        }
-      }
-    }, 250);
-    
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-          console.log('Container now has dimensions:', 
-            entry.contentRect.width, 'x', entry.contentRect.height);
-          setIsContainerReady(true);
-          
-          if (containerCheckInterval.current) {
-            clearInterval(containerCheckInterval.current);
-            containerCheckInterval.current = null;
-          }
-        }
-      }
+    // Create vector layer for markers
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      zIndex: 10
     });
-    
-    if (mapRef.current) {
-      observer.observe(mapRef.current);
-    }
-    
-    return () => {
-      if (containerCheckInterval.current) {
-        clearInterval(containerCheckInterval.current);
-        containerCheckInterval.current = null;
-      }
-      observer.disconnect();
-    };
-  }, []);
 
-  const initializeMap = () => {
-    console.log('Initializing map, container ready:', isContainerReady);
-    
-    if (!mapRef.current || !isContainerReady) {
-      console.error('Map container ref is not available or not sized');
-      if (mapInitAttempts > 5) {
-        setError('Unable to initialize map: container not available or not sized');
-        setIsLoading(false);
-      } else {
-        setTimeout(() => {
-          setMapInitAttempts(prev => prev + 1);
-          initializeMap();
-        }, 500);
-      }
-      return;
-    }
+    // Base map with OSM tiles
+    const baseLayer = new TileLayer({
+      source: new OSM()
+    });
 
+    // Initialize map
     try {
-      console.log('Initializing OpenLayers map...');
-      console.log('Container dimensions:', mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
-      setIsLoading(true);
-      setError(null);
-
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.setTarget(undefined);
-        mapInstanceRef.current = null;
+      // If map already exists, destroy it first
+      if (mapRef.current) {
+        mapRef.current.setTarget(undefined);
       }
 
-      const vectorSource = new VectorSource();
-      const vectorLayer = new VectorLayer({
-        source: vectorSource,
-        zIndex: 10
-      });
-
+      // Create new map
       const map = new Map({
-        target: mapRef.current,
-        layers: [
-          new TileLayer({
-            source: new OSM()
-          }),
-          vectorLayer
-        ],
+        target: mapElement.current,
+        layers: [baseLayer, vectorLayer],
         view: new View({
           center: fromLonLat([initialLng, initialLat]),
           zoom: initialZoom
@@ -331,6 +255,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         controls: []
       });
 
+      mapRef.current = map;
+
+      // Add popup overlay if reference exists
       if (popupRef.current) {
         popupOverlayRef.current = new Overlay({
           element: popupRef.current,
@@ -341,25 +268,25 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         map.addOverlay(popupOverlayRef.current);
       }
 
+      // Add markers for each resource
       resourceLocations.forEach(location => {
         const feature = new Feature({
           geometry: new Point(fromLonLat([location.lng, location.lat])),
           properties: location
         });
 
-        const markerCanvas = createMarkerIcon(location.category);
-        
-        const style = new Style({
+        // Set marker style
+        feature.setStyle(new Style({
           image: new Icon({
-            img: markerCanvas,
+            img: createMarkerIcon(location.category),
             scale: 1
           })
-        });
+        }));
 
-        feature.setStyle(style);
         vectorSource.addFeature(feature);
       });
 
+      // Handle map click
       map.on('click', (event) => {
         const feature = map.forEachFeatureAtPixel(event.pixel, feature => feature);
 
@@ -383,88 +310,76 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         }
       });
 
-      mapInstanceRef.current = map;
-
-      map.updateSize();
-
+      // Force map to update its size after rendering
       setTimeout(() => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.updateSize();
-          setMapLoaded(true);
+        if (mapRef.current) {
+          mapRef.current.updateSize();
           setIsLoading(false);
-          
-          if (selectedCategory) {
-            filterByCategory(selectedCategory);
-          }
-          console.log('Map initialization complete and successful');
+          console.log("Map initialized successfully");
         }
-      }, 500);
+      }, 300);
 
     } catch (error) {
-      console.error('Error initializing OpenLayers map:', error);
-      setError(`Map initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Error initializing map:", error);
+      setMapError(`Failed to initialize map: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsLoading(false);
     }
-  };
 
-  useEffect(() => {
-    if (isContainerReady) {
-      console.log('Container is ready, initializing map');
-      initializeMap();
-    }
-    
+    // Cleanup
     return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.setTarget(undefined);
-        mapInstanceRef.current = null;
+      if (mapRef.current) {
+        mapRef.current.setTarget(undefined);
+        mapRef.current = null;
       }
     };
-  }, [isContainerReady, initialLat, initialLng, initialZoom]);
+  }, [initialLat, initialLng, initialZoom]);
 
+  // Update markers when category changes
   useEffect(() => {
-    if (mapLoaded && mapInstanceRef.current) {
+    if (mapRef.current) {
       filterByCategory(selectedCategory);
     }
-  }, [selectedCategory, mapLoaded]);
+  }, [selectedCategory]);
 
-  if (error) {
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (mapRef.current) {
+        mapRef.current.updateSize();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Display error message
+  if (mapError) {
     return (
-      <div className="w-full p-6 bg-red-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
+      <div className="w-full p-6 bg-red-50 rounded-lg shadow-inner flex items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
         <div className="text-center">
-          <div className="bg-red-100 p-3 rounded-full mx-auto mb-4">
-            <AlertTriangle className="h-8 w-8 text-red-500" />
-          </div>
-          <p className="text-red-600 font-medium mb-2">Failed to load map</p>
-          <p className="text-sm text-red-500 mb-4">{error}</p>
-          <Button onClick={() => {
-            setMapInitAttempts(0);
-            setError(null);
-            setIsContainerReady(false);
-            setTimeout(() => {
-              if (mapRef.current && mapRef.current.offsetWidth > 0 && mapRef.current.offsetHeight > 0) {
-                setIsContainerReady(true);
-              }
-            }, 500);
-          }}>
-            Retry
+          <p className="text-red-600 font-medium mb-4">{mapError}</p>
+          <Button onClick={() => window.location.reload()}>
+            Reload Page
           </Button>
         </div>
       </div>
     );
   }
 
+  // Display loading state
   if (isLoading) {
     return (
-      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
+      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Loading map resources...</p>
-          <p className="text-sm text-gray-500">Initializing map</p>
+          <p className="text-gray-600">Loading map resources...</p>
         </div>
       </div>
     );
   }
 
+  // Render map and controls
   return (
     <div className="w-full">
       <div className="mb-4 flex flex-wrap gap-2">
@@ -565,8 +480,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       </div>
       
       <div className="relative">
+        {/* Map Container */}
         <div 
-          ref={mapRef} 
+          ref={mapElement} 
           className="w-full rounded-lg overflow-hidden bg-gray-100 shadow-inner"
           style={{ 
             height: fullScreen ? '600px' : '400px',
@@ -574,6 +490,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           }}
         ></div>
         
+        {/* Popup Overlay */}
         <div 
           ref={popupRef} 
           className="absolute bg-white rounded-lg shadow-lg p-4 transform -translate-x-1/2 z-50"
@@ -602,6 +519,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           )}
         </div>
         
+        {/* View Full Map Button */}
         {!fullScreen && onViewFullMap && (
           <div className="absolute bottom-3 right-3">
             <Button 
@@ -616,6 +534,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
       </div>
       
+      {/* Legend (for full screen view) */}
       {fullScreen && (
         <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-100">
           <h3 className="font-bold mb-2">Map Legend</h3>
@@ -635,6 +554,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
       
+      {/* Resource list (for full screen view) */}
       {fullScreen && (
         <div className="mt-4">
           <h3 className="font-bold mb-3">
@@ -650,32 +570,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 className="p-3 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md cursor-pointer transition-shadow"
                 onClick={() => {
                   setSelectedResource(resource);
-                  if (mapInstanceRef.current) {
-                    const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
-                      layer => layer instanceof VectorLayer
-                    ) as VectorLayer<VectorSource> | undefined;
+                  if (mapRef.current) {
+                    mapRef.current.getView().animate({
+                      center: fromLonLat([resource.lng, resource.lat]),
+                      zoom: 15,
+                      duration: 500
+                    });
                     
-                    if (vectorLayer && vectorLayer.getSource()) {
-                      const features = vectorLayer.getSource()?.getFeatures() || [];
-                      const resourceFeature = features.find(feature => {
-                        const properties = feature.get('properties') as ResourceLocation;
-                        return properties.id === resource.id;
-                      });
-                      
-                      if (resourceFeature) {
-                        const geometry = resourceFeature.getGeometry();
-                        if (geometry && geometry.getType() === 'Point') {
-                          const coordinates = (geometry as Point).getCoordinates();
-                          mapInstanceRef.current.getView().animate({
-                            center: coordinates,
-                            zoom: 15,
-                            duration: 500
-                          });
-                          if (popupOverlayRef.current) {
-                            popupOverlayRef.current.setPosition(coordinates);
-                          }
-                        }
-                      }
+                    if (popupOverlayRef.current) {
+                      popupOverlayRef.current.setPosition(
+                        fromLonLat([resource.lng, resource.lat])
+                      );
                     }
                   }
                 }}
