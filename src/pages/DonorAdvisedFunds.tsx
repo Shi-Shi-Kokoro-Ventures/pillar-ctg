@@ -80,8 +80,8 @@ const DonorAdvisedFunds: React.FC = () => {
                 <div>Recommend a grant to:</div>
                 <ul className="mt-2 space-y-1 ml-2">
                   <li><strong>Organization Name:</strong> P.I.L.L.A.R. Initiative</li>
-                  <li><strong>Tax ID/EIN:</strong> 82-3456789</li>
-                  <li><strong>Address:</strong> 1234 Hope Street, Seattle, WA 98101</li>
+                  <li><strong>Tax ID/EIN:</strong> 33-3833739</li>
+                  <li><strong>Address:</strong> 1201 Orange St #600, Wilmington, DE 19801</li>
                 </ul>
               </div>
             </li>
