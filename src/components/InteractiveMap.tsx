@@ -133,15 +133,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const getMarkerColor = (category: string): string => {
     switch (category) {
       case "shelter":
-        return "#3b82f6"; // blue
+        return "#3b82f6";
       case "healthcare":
-        return "#ef4444"; // red
+        return "#ef4444";
       case "food":
-        return "#22c55e"; // green
+        return "#22c55e";
       case "crisis":
-        return "#f59e0b"; // amber
+        return "#f59e0b";
       default:
-        return "#6b7280"; // gray
+        return "#6b7280";
     }
   };
 
@@ -162,11 +162,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   const createMarkerIcon = (category: string): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
-    canvas.width = 32; // Increased size for better visibility
+    canvas.width = 32;
     canvas.height = 32;
     const context = canvas.getContext('2d');
     if (context) {
-      // Draw a circle with border
       context.beginPath();
       context.arc(16, 16, 12, 0, 2 * Math.PI);
       context.fillStyle = getMarkerColor(category);
@@ -175,13 +174,48 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       context.lineWidth = 3;
       context.stroke();
       
-      // Add an inner dot for better visibility
       context.beginPath();
       context.arc(16, 16, 4, 0, 2 * Math.PI);
       context.fillStyle = 'white';
       context.fill();
     }
     return canvas;
+  };
+
+  const filterByCategory = (category: string | null) => {
+    console.log(`Filtering by category: ${category || 'all'}`);
+    setSelectedCategory(category);
+    
+    if (category === null) {
+      setVisibleResources(resourceLocations);
+    } else {
+      setVisibleResources(resourceLocations.filter(resource => resource.category === category));
+    }
+    
+    if (mapLoaded && mapInstanceRef.current) {
+      const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
+        layer => layer instanceof VectorLayer
+      ) as VectorLayer<VectorSource> | undefined;
+      
+      if (vectorLayer && vectorLayer.getSource()) {
+        const features = vectorLayer.getSource()?.getFeatures() || [];
+        
+        features.forEach(feature => {
+          const properties = feature.get('properties') as ResourceLocation;
+          
+          if (category === null || properties.category === category) {
+            feature.setStyle(new Style({
+              image: new Icon({
+                img: createMarkerIcon(properties.category),
+                scale: 1
+              })
+            }));
+          } else {
+            feature.setStyle(new Style({}));
+          }
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -203,7 +237,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       return false;
     };
 
-    // Check immediately
     if (checkContainer()) {
       if (containerCheckInterval.current) {
         clearInterval(containerCheckInterval.current);
@@ -212,7 +245,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       return;
     }
     
-    // Set up an interval to periodically check the container
     containerCheckInterval.current = window.setInterval(() => {
       if (checkContainer()) {
         if (containerCheckInterval.current) {
@@ -222,7 +254,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       }
     }, 250);
     
-    // Also set up a resize observer to detect changes
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
@@ -256,13 +287,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     
     if (!mapRef.current || !isContainerReady) {
       console.error('Map container ref is not available or not sized');
-      
-      // If we've tried too many times, show an error
       if (mapInitAttempts > 5) {
         setError('Unable to initialize map: container not available or not sized');
         setIsLoading(false);
       } else {
-        // Try again in a moment
         setTimeout(() => {
           setMapInitAttempts(prev => prev + 1);
           initializeMap();
@@ -277,20 +305,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       setIsLoading(true);
       setError(null);
 
-      // Clear any existing map instance
       if (mapInstanceRef.current) {
         mapInstanceRef.current.setTarget(undefined);
         mapInstanceRef.current = null;
       }
 
-      // Create vector source and layer for markers
       const vectorSource = new VectorSource();
       const vectorLayer = new VectorLayer({
         source: vectorSource,
-        zIndex: 10 // Ensure markers appear above the base map
+        zIndex: 10
       });
 
-      // Create map
       const map = new Map({
         target: mapRef.current,
         layers: [
@@ -306,7 +331,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         controls: []
       });
 
-      // Create popup overlay
       if (popupRef.current) {
         popupOverlayRef.current = new Overlay({
           element: popupRef.current,
@@ -317,11 +341,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         map.addOverlay(popupOverlayRef.current);
       }
 
-      // Add markers for each location
       resourceLocations.forEach(location => {
         const feature = new Feature({
           geometry: new Point(fromLonLat([location.lng, location.lat])),
-          properties: location // Store location data directly
+          properties: location
         });
 
         const markerCanvas = createMarkerIcon(location.category);
@@ -337,7 +360,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         vectorSource.addFeature(feature);
       });
 
-      // Add click interaction
       map.on('click', (event) => {
         const feature = map.forEachFeatureAtPixel(event.pixel, feature => feature);
 
@@ -361,24 +383,19 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         }
       });
 
-      // Store map instance
       mapInstanceRef.current = map;
 
-      // Force map size update
       map.updateSize();
 
-      // Set timeout to ensure map is fully rendered
       setTimeout(() => {
         if (mapInstanceRef.current) {
           mapInstanceRef.current.updateSize();
           setMapLoaded(true);
           setIsLoading(false);
           
-          // Filter markers by category if needed
           if (selectedCategory) {
             filterByCategory(selectedCategory);
           }
-          
           console.log('Map initialization complete and successful');
         }
       }, 500);
@@ -396,7 +413,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       initializeMap();
     }
     
-    // Cleanup on unmount
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.setTarget(undefined);
