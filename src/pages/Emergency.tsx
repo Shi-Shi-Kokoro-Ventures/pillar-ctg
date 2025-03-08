@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,16 @@ const Emergency = () => {
   const handleCloseFullMap = () => {
     setIsFullMapVisible(false);
   };
+  
+  // Re-render map on layout change
+  useEffect(() => {
+    // Give the layout time to adjust before forcing a resize event
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [isFullMapVisible]);
   
   // If full map is visible, show only that
   if (isFullMapVisible) {

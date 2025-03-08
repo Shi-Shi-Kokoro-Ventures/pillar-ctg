@@ -225,7 +225,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       resourceLocations.forEach(location => {
         const feature = new Feature({
           geometry: new Point(fromLonLat([location.lng, location.lat])),
-          properties: { ...location }
+          properties: location
         });
         
         const style = new Style({
@@ -250,8 +250,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           if (popupOverlayRef.current) {
             const geometry = feature.getGeometry();
             if (geometry && geometry instanceof Point) {
-              const coordinate = geometry.getCoordinates();
-              popupOverlayRef.current.setPosition(coordinate);
+              const coordinates = geometry.getCoordinates();
+              popupOverlayRef.current.setPosition(coordinates);
             }
           }
         } else {
@@ -267,6 +267,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       mapInstanceRef.current = map;
       
       console.log('OpenLayers map initialized successfully');
+      map.updateSize(); // Force map to update its size
       setMapLoaded(true);
       setIsLoading(false);
       
@@ -277,13 +278,25 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       // Clean up
       return () => {
-        map.dispose();
+        if (map) {
+          map.setTarget(undefined);
+        }
       };
     } catch (error) {
       console.error('Error initializing OpenLayers map:', error);
       setIsLoading(false);
     }
   }, [initialLat, initialLng, initialZoom]);
+
+  // Force map to update its size when container dimensions change
+  useEffect(() => {
+    if (mapInstanceRef.current && mapLoaded) {
+      setTimeout(() => {
+        mapInstanceRef.current?.updateSize();
+        console.log('Map size updated');
+      }, 100);
+    }
+  }, [mapLoaded, fullScreen]);
 
   // Filter features by category
   const filterByCategory = (category: string | null) => {
@@ -363,7 +376,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Loading state
   if (isLoading) {
     return (
-      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center">
+      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-600 mb-2">Loading map resources...</p>
@@ -428,7 +441,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       <div className="relative">
         <div 
           ref={mapRef} 
-          className={`w-full ${fullScreen ? 'h-[600px]' : 'h-96'} rounded-lg overflow-hidden bg-gray-100`}
+          className={`w-full rounded-lg overflow-hidden bg-gray-100`}
+          style={{ height: fullScreen ? '600px' : '400px' }}
         >
           {!mapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center">
