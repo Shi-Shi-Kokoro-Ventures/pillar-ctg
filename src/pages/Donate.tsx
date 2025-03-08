@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,19 +13,16 @@ const Donate = () => {
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
   const [loading, setLoading] = useState<string | null>(null);
 
-  // Function to handle one-time donation amount selection
   const handleOneTimeSelection = (amount: string) => {
     setSelectedOneTimeAmount(amount);
     console.log(`Selected one-time donation amount: ${amount}`);
   };
 
-  // Function to handle monthly donation amount selection
   const handleMonthlySelection = (amount: string) => {
     setSelectedMonthlyAmount(amount);
     console.log(`Selected monthly donation amount: ${amount}`);
   };
 
-  // Function to handle custom amount input for "Other" option
   const handleCustomAmount = (event: React.ChangeEvent<HTMLInputElement>, type: "oneTime" | "monthly") => {
     const value = event.target.value;
     if (value === "" || /^\$?\d*$/.test(value)) {
@@ -39,12 +35,10 @@ const Donate = () => {
     }
   };
 
-  // Function to create a Stripe checkout session and redirect to payment page
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
       setLoading(donationType);
       
-      // Make sure we have a valid amount
       if (amount === "$" || amount === "$0" || amount === "") {
         toast({
           title: "Invalid amount",
@@ -55,18 +49,15 @@ const Donate = () => {
         return;
       }
       
-      // Handle "Other" amount
       let processedAmount = amount;
       if (processedAmount === "Other") {
         processedAmount = donationType === "one-time" ? "$100" : "$25";
       }
       
-      // Create the success and cancel URLs
       const origin = window.location.origin;
       const successUrl = `${origin}/donate?status=success&type=${donationType}&amount=${encodeURIComponent(processedAmount)}`;
       const cancelUrl = `${origin}/donate?status=canceled`;
       
-      // Call the Supabase Edge Function to create a checkout session
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           amount: processedAmount,
@@ -80,7 +71,6 @@ const Donate = () => {
         throw new Error(error.message);
       }
 
-      // Redirect to Stripe checkout
       if (data?.url) {
         window.location.href = data.url;
       } else {
@@ -97,17 +87,14 @@ const Donate = () => {
     }
   };
 
-  // Function to handle donation submission
   const handleDonateNow = async () => {
     await createCheckoutSession(selectedOneTimeAmount, "one-time");
   };
 
-  // Function to handle monthly donation subscription
   const handleMonthlyDonation = async () => {
     await createCheckoutSession(selectedMonthlyAmount, "monthly");
   };
 
-  // Function to handle information requests
   const handleInfoRequest = (type: string) => {
     toast({
       title: "Information Request Received",
@@ -116,7 +103,6 @@ const Donate = () => {
     console.log(`${type} information requested`);
   };
 
-  // Check for success or canceled payment status in URL
   React.useEffect(() => {
     const url = new URL(window.location.href);
     const status = url.searchParams.get("status");
@@ -129,7 +115,6 @@ const Donate = () => {
         description: `Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`,
       });
 
-      // Clean the URL without reloading the page
       window.history.replaceState({}, document.title, "/donate");
     } else if (status === "canceled") {
       toast({
@@ -137,7 +122,6 @@ const Donate = () => {
         description: "Your donation has been canceled. No charges were made.",
       });
 
-      // Clean the URL without reloading the page
       window.history.replaceState({}, document.title, "/donate");
     }
   }, [toast]);
@@ -147,7 +131,6 @@ const Donate = () => {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero Section */}
         <section className="bg-gray-50 py-20">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Make a Difference Today</h1>
@@ -158,13 +141,11 @@ const Donate = () => {
           </div>
         </section>
 
-        {/* Donation Options */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Ways to Give</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* One-Time Donation */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">One-Time Donation</h3>
                 <p className="text-gray-600 mb-6">
@@ -218,7 +199,6 @@ const Donate = () => {
                 </Button>
               </div>
               
-              {/* Monthly Giving */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">Monthly Giving</h3>
                 <p className="text-gray-600 mb-6">
@@ -272,7 +252,6 @@ const Donate = () => {
                 </Button>
               </div>
               
-              {/* Corporate Giving */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">Corporate Partnerships</h3>
                 <p className="text-gray-600 mb-6">
@@ -303,29 +282,41 @@ const Donate = () => {
           </div>
         </section>
         
-        {/* Impact Section */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Your Donation's Impact</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-redcross text-5xl font-bold mb-2">$50</div>
-                <p className="text-gray-700">Provides emergency housing assistance for one night</p>
+            <div className="flex flex-col md:flex-row items-center gap-12 mb-12">
+              <div className="w-full md:w-1/2">
+                <div className="relative rounded-lg overflow-hidden shadow-xl">
+                  <img 
+                    src="/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png" 
+                    alt="Donation center with food and supplies" 
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-redcross text-5xl font-bold mb-2">$250</div>
-                <p className="text-gray-700">Supplies a month of financial literacy training for 5 individuals</p>
-              </div>
-              <div className="text-center">
-                <div className="text-redcross text-5xl font-bold mb-2">$1,000</div>
-                <p className="text-gray-700">Helps furnish a new affordable housing unit for a family</p>
+              
+              <div className="w-full md:w-1/2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="text-center">
+                    <div className="text-redcross text-5xl font-bold mb-2">$50</div>
+                    <p className="text-gray-700">Provides emergency housing assistance for one night</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-redcross text-5xl font-bold mb-2">$250</div>
+                    <p className="text-gray-700">Supplies a month of financial literacy training for 5 individuals</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-redcross text-5xl font-bold mb-2">$1,000</div>
+                    <p className="text-gray-700">Helps furnish a new affordable housing unit for a family</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
         
-        {/* Other Ways to Give */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Other Ways to Support Our Mission</h2>
