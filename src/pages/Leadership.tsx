@@ -2,198 +2,179 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Users, Briefcase, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Facebook, Linkedin, Mail, Twitter } from "lucide-react";
 
 const Leadership = () => {
+  const leadershipTeam = [
+    {
+      name: "Dr. Maya Richardson",
+      title: "Executive Director & Founder",
+      bio: "Dr. Richardson founded the P.I.L.L.A.R. Initiative after 15 years working in urban housing policy. With a Ph.D. in Social Welfare and background in community organizing, she leads our strategic vision and oversees all program development.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        twitter: "#",
+        email: "maya@pillar.org"
+      }
+    },
+    {
+      name: "James Wilson",
+      title: "Chief Operations Officer",
+      bio: "James brings 20 years of nonprofit management experience to P.I.L.L.A.R. Previously the Regional Director at Urban Housing Alliance, he oversees our day-to-day operations, ensuring our programs run efficiently and effectively.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        email: "james@pillar.org"
+      }
+    },
+    {
+      name: "Sophia Martinez",
+      title: "Director of Housing Programs",
+      bio: "Sophia has dedicated her career to affordable housing advocacy. With a Master's in Urban Planning and previous experience at the Department of Housing, she leads our housing placement and rental assistance programs.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        twitter: "#",
+        email: "sophia@pillar.org"
+      }
+    },
+    {
+      name: "Michael Foster",
+      title: "Chief Financial Officer",
+      bio: "Michael oversees all financial operations and funding strategies. With an MBA and 15 years in nonprofit finance, he ensures P.I.L.L.A.R.'s fiscal health while maximizing the impact of every donation dollar.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        email: "michael@pillar.org"
+      }
+    },
+    {
+      name: "Dr. Aisha Johnson",
+      title: "Director of Support Services",
+      bio: "Dr. Johnson leads our mental health and family support programs. With a background in clinical psychology and previous work at community mental health centers, she ensures holistic support for all program participants.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        twitter: "#",
+        email: "aisha@pillar.org"
+      }
+    },
+    {
+      name: "Robert Chen",
+      title: "Director of Community Engagement",
+      bio: "Robert coordinates our volunteer programs and community partnerships. With extensive experience in grassroots organizing, he builds relationships with local organizations and businesses to expand our impact.",
+      image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
+      socialLinks: {
+        linkedin: "#",
+        facebook: "#",
+        email: "robert@pillar.org"
+      }
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
       <main className="flex-grow pt-20">
         {/* Hero Section */}
-        <section className="bg-blue-50 py-16 md:py-24">
+        <section className="bg-blue-50 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Leadership Team</h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Meet the dedicated professionals guiding P.I.L.L.A.R's mission to provide housing and support to those in need.
+              <p className="text-xl text-gray-600">
+                Meet the dedicated professionals guiding P.I.L.L.A.R.'s mission to end homelessness and build stronger communities.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Executive Team */}
+        {/* Leadership Team */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-12 text-center">Executive Leadership</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div className="text-center">
-                  <div className="w-48 h-48 mx-auto rounded-full bg-gray-200 mb-6 overflow-hidden">
-                    <img src="/placeholder.svg" alt="CEO" className="w-full h-full object-cover" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {leadershipTeam.map((leader, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="h-64 bg-gray-200 flex items-center justify-center">
+                    <img 
+                      src={leader.image} 
+                      alt={leader.name}
+                      className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold mb-1">Sarah Johnson</h3>
-                  <p className="text-blue-600 font-medium mb-3">Chief Executive Officer</p>
-                  <p className="text-gray-600 text-sm">
-                    With over 20 years of experience in nonprofit leadership, Sarah has dedicated her career to addressing homelessness and poverty.
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-48 h-48 mx-auto rounded-full bg-gray-200 mb-6 overflow-hidden">
-                    <img src="/placeholder.svg" alt="COO" className="w-full h-full object-cover" />
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-1">{leader.name}</h3>
+                    <p className="text-blue-600 font-medium mb-4">{leader.title}</p>
+                    <p className="text-gray-600 mb-5">{leader.bio}</p>
+                    <div className="flex space-x-3">
+                      {leader.socialLinks.linkedin && (
+                        <a href={leader.socialLinks.linkedin} className="text-gray-500 hover:text-blue-600" aria-label={`${leader.name}'s LinkedIn`}>
+                          <Linkedin className="h-5 w-5" />
+                        </a>
+                      )}
+                      {leader.socialLinks.twitter && (
+                        <a href={leader.socialLinks.twitter} className="text-gray-500 hover:text-blue-500" aria-label={`${leader.name}'s Twitter`}>
+                          <Twitter className="h-5 w-5" />
+                        </a>
+                      )}
+                      {leader.socialLinks.facebook && (
+                        <a href={leader.socialLinks.facebook} className="text-gray-500 hover:text-blue-700" aria-label={`${leader.name}'s Facebook`}>
+                          <Facebook className="h-5 w-5" />
+                        </a>
+                      )}
+                      {leader.socialLinks.email && (
+                        <a href={`mailto:${leader.socialLinks.email}`} className="text-gray-500 hover:text-red-500" aria-label={`Email ${leader.name}`}>
+                          <Mail className="h-5 w-5" />
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-1">Michael Rodriguez</h3>
-                  <p className="text-blue-600 font-medium mb-3">Chief Operations Officer</p>
-                  <p className="text-gray-600 text-sm">
-                    Michael oversees the day-to-day operations of our programs, ensuring effective service delivery and organizational efficiency.
-                  </p>
                 </div>
-                
-                <div className="text-center">
-                  <div className="w-48 h-48 mx-auto rounded-full bg-gray-200 mb-6 overflow-hidden">
-                    <img src="/placeholder.svg" alt="CFO" className="w-full h-full object-cover" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-1">Amara Williams</h3>
-                  <p className="text-blue-600 font-medium mb-3">Chief Financial Officer</p>
-                  <p className="text-gray-600 text-sm">
-                    Amara brings extensive financial management experience to ensure P.I.L.L.A.R's resources are maximized for community impact.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Department Directors */}
+        {/* Board of Directors Section */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-12 text-center">Program Directors</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="flex items-center bg-white p-6 rounded-lg shadow-md">
-                  <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gray-200 overflow-hidden mr-6">
-                    <img src="/placeholder.svg" alt="Housing Director" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-1">David Chen</h3>
-                    <p className="text-blue-600 font-medium mb-3">Director of Housing Services</p>
-                    <p className="text-gray-600 text-sm">
-                      David leads our housing programs, including emergency shelter, transitional housing, and permanent supportive housing initiatives.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center bg-white p-6 rounded-lg shadow-md">
-                  <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gray-200 overflow-hidden mr-6">
-                    <img src="/placeholder.svg" alt="Support Services Director" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-1">Jasmine Foster</h3>
-                    <p className="text-blue-600 font-medium mb-3">Director of Support Services</p>
-                    <p className="text-gray-600 text-sm">
-                      Jasmine oversees our comprehensive support services, including case management, mental health services, and job training programs.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center bg-white p-6 rounded-lg shadow-md">
-                  <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gray-200 overflow-hidden mr-6">
-                    <img src="/placeholder.svg" alt="Development Director" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-1">Robert Thompson</h3>
-                    <p className="text-blue-600 font-medium mb-3">Director of Development</p>
-                    <p className="text-gray-600 text-sm">
-                      Robert leads our fundraising and donor relations efforts to secure the resources needed to sustain and expand our programs.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center bg-white p-6 rounded-lg shadow-md">
-                  <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gray-200 overflow-hidden mr-6">
-                    <img src="/placeholder.svg" alt="Community Engagement Director" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-1">Elena Patel</h3>
-                    <p className="text-blue-600 font-medium mb-3">Director of Community Engagement</p>
-                    <p className="text-gray-600 text-sm">
-                      Elena coordinates our volunteer programs, community partnerships, and advocacy initiatives to build support for our mission.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Board of Directors */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8 text-center">Board of Directors</h2>
-              <p className="text-lg text-gray-600 mb-12 text-center">
-                Our volunteer board of directors brings diverse expertise and a shared commitment to our mission.
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Board of Directors</h2>
+              <p className="text-lg text-gray-600">
+                Our dedicated board members provide governance, strategic guidance, and oversight to ensure P.I.L.L.A.R. fulfills its mission effectively.
               </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">James Wilson</h3>
-                  <p className="text-blue-600 font-medium mb-3">Board Chair | Financial Services Executive</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {[
+                { name: "Eleanor Washington", title: "Board Chair", org: "CEO, Urban Development Partners" },
+                { name: "David Hernandez", title: "Vice Chair", org: "Professor of Social Policy, State University" },
+                { name: "Sarah Kim", title: "Treasurer", org: "Principal, Kim Financial Advisors" },
+                { name: "Marcus Johnson", title: "Secretary", org: "Attorney, Johnson & Associates" },
+                { name: "Priya Patel", title: "Board Member", org: "Director of Community Relations, City Hospital" },
+                { name: "Thomas Reynolds", title: "Board Member", org: "Former Housing Commissioner" }
+              ].map((member, index) => (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-bold mb-1">{member.name}</h3>
+                  <p className="text-blue-600 font-medium mb-2">{member.title}</p>
+                  <p className="text-gray-600 text-sm">{member.org}</p>
                 </div>
-                
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">Maria Gonzalez</h3>
-                  <p className="text-blue-600 font-medium mb-3">Vice Chair | Community Advocate</p>
-                </div>
-                
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">Thomas Lee</h3>
-                  <p className="text-blue-600 font-medium mb-3">Treasurer | Real Estate Developer</p>
-                </div>
-                
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">Sophia Washington</h3>
-                  <p className="text-blue-600 font-medium mb-3">Secretary | Healthcare Executive</p>
-                </div>
-                
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">Marcus Taylor</h3>
-                  <p className="text-blue-600 font-medium mb-3">Member | Attorney</p>
-                </div>
-                
-                <div className="bg-white p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-bold mb-1">Naomi Clark</h3>
-                  <p className="text-blue-600 font-medium mb-3">Member | Social Work Professor</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Call to Action */}
+        {/* Join Our Team CTA */}
         <section className="py-16 bg-blue-600 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">Join Our Team</h2>
             <p className="text-xl max-w-2xl mx-auto mb-8">
-              Interested in making a difference in the lives of those experiencing homelessness? Explore career opportunities with P.I.L.L.A.R.
+              Interested in making a difference? P.I.L.L.A.R. is always looking for passionate individuals to join our mission.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/careers">
-                <Button className="bg-white text-blue-600 hover:bg-gray-100">
-                  View Career Opportunities
-                </Button>
-              </Link>
-              <Link to="/volunteer">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
-                  Volunteer Opportunities
-                </Button>
-              </Link>
-            </div>
+            <Link to="/careers" className="inline-flex items-center bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-full font-medium transition-colors">
+              View Current Openings
+            </Link>
           </div>
         </section>
       </main>
