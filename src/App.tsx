@@ -41,6 +41,7 @@ const FinancialLiteracy = lazy(() => import("./pages/FinancialLiteracy"));
 const CommunityEvents = lazy(() => import("./pages/CommunityEvents"));
 const CorporatePartnerships = lazy(() => import("./pages/CorporatePartnerships"));
 const CommunityResources = lazy(() => import("./pages/CommunityResources"));
+const DonorAdvisedFunds = lazy(() => import("./pages/DonorAdvisedFunds"));
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
             <Route path="/community-events" element={<CommunityEvents />} />
             <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
             <Route path="/community-resources" element={<CommunityResources />} />
+            <Route path="/donor-advised-funds" element={<DonorAdvisedFunds />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

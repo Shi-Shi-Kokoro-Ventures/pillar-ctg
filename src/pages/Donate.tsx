@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -340,9 +341,9 @@ const Donate = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  onClick={() => handleInfoRequest("donor-advised funds")}
+                  asChild
                 >
-                  Get Details
+                  <Link to="/donor-advised-funds">Get Details</Link>
                 </Button>
               </div>
             </div>
