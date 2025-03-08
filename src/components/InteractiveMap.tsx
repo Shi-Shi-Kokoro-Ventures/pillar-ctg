@@ -106,12 +106,16 @@ interface InteractiveMapProps {
   initialLat?: number;
   initialLng?: number;
   initialZoom?: number;
+  fullScreen?: boolean;
+  onViewFullMap?: () => void;
 }
 
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   initialLat = 38.9072,
   initialLng = -77.0369,
-  initialZoom = 12
+  initialZoom = 12,
+  fullScreen = false,
+  onViewFullMap
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<Map | null>(null);
@@ -192,8 +196,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       if (popupRef.current) {
         popupOverlayRef.current = new Overlay({
           element: popupRef.current,
-          autoPan: true,
-          // Remove autoPanAnimation as it's not a valid option in OpenLayers
+          autoPan: true
         });
       }
       
@@ -228,7 +231,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         const style = new Style({
           image: new Icon({
             img: createMarkerIcon(location.category),
-            // Replace imgSize with scale to control the icon size
             scale: 1
           })
         });
@@ -247,7 +249,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           
           if (popupOverlayRef.current) {
             const geometry = feature.getGeometry();
-            // Fix the type checking for getCoordinates method
             if (geometry && geometry instanceof Point) {
               const coordinate = geometry.getCoordinates();
               popupOverlayRef.current.setPosition(coordinate);
@@ -310,7 +311,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         feature.setStyle(new Style({
           image: new Icon({
             img: createMarkerIcon(properties.category),
-            // Replace imgSize with scale to control the icon size
             scale: 1
           })
         }));
@@ -426,7 +426,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       {/* Map container */}
       <div className="relative">
-        <div ref={mapRef} className="w-full h-96 rounded-lg overflow-hidden bg-gray-100">
+        <div 
+          ref={mapRef} 
+          className={`w-full ${fullScreen ? 'h-[600px]' : 'h-96'} rounded-lg overflow-hidden bg-gray-100`}
+        >
           {!mapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center p-6">
@@ -438,7 +441,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
         
         {/* Hidden popup element for OpenLayers overlay */}
-        <div ref={popupRef} className="hidden"></div>
+        <div 
+          ref={popupRef} 
+          className="hidden"
+        ></div>
         
         {/* Resource information card */}
         {selectedResource && (
@@ -492,6 +498,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           </div>
         )}
       </div>
+      
+      {/* Show View Full Map button only when not in full screen mode */}
+      {!fullScreen && onViewFullMap && (
+        <div className="mt-4 text-center">
+          <Button onClick={onViewFullMap}>
+            View Full Map
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

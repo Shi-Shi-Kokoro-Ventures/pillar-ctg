@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,41 @@ import { AlertTriangle, Phone, MapPin, Clock, ExternalLink } from "lucide-react"
 import InteractiveMap from "@/components/InteractiveMap";
 
 const Emergency = () => {
+  const [isFullMapVisible, setIsFullMapVisible] = useState(false);
+  
+  // Toggle full map view
+  const handleViewFullMap = () => {
+    setIsFullMapVisible(true);
+  };
+  
+  // Return to normal view
+  const handleCloseFullMap = () => {
+    setIsFullMapVisible(false);
+  };
+  
+  // If full map is visible, show only that
+  if (isFullMapVisible) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow pt-16">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Emergency Resources Map</h2>
+              <Button variant="outline" onClick={handleCloseFullMap}>
+                Back to Emergency Page
+              </Button>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <InteractiveMap fullScreen={true} />
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -115,12 +150,11 @@ const Emergency = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Find Help Near You</h2>
             
             <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-              <InteractiveMap />
+              <InteractiveMap onViewFullMap={handleViewFullMap} />
               <p className="text-gray-600 mt-6 mb-6">
                 Use our interactive map to find emergency housing resources in your area, 
                 including shelters, food banks, healthcare facilities, and other support services.
               </p>
-              <Button className="w-full md:w-auto">View Full Map</Button>
             </div>
           </div>
         </section>
