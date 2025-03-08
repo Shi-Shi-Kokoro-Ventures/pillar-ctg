@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -18,7 +19,7 @@ const Emergency = () => {
     setIsFullMapVisible(false);
   };
   
-  // Re-render map on layout change
+  // Re-render map on layout change and force a resize
   useEffect(() => {
     // Give the layout time to adjust before forcing a resize event
     const timer = setTimeout(() => {
@@ -27,6 +28,18 @@ const Emergency = () => {
     
     return () => clearTimeout(timer);
   }, [isFullMapVisible]);
+
+  // Force a resize event when the component mounts
+  useEffect(() => {
+    // Dispatch resize events with increasing delays to ensure map loads
+    const timers = [
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 100),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 500),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 1000),
+    ];
+    
+    return () => timers.forEach(timer => clearTimeout(timer));
+  }, []);
   
   // If full map is visible, show only that
   if (isFullMapVisible) {

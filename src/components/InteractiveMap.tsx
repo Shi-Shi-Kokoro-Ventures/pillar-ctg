@@ -126,6 +126,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
   const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -179,12 +180,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Initialize map
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current) {
+      console.error('Map container ref is not available');
+      return;
+    }
     
     setIsLoading(true);
+    setError(null);
     
     try {
-      console.log('Initializing OpenLayers map...');
+      console.log('Initializing OpenLayers map...', mapRef.current.clientWidth, mapRef.current.clientHeight);
+      
+      // Clear any existing map instance
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setTarget(undefined);
+        mapInstanceRef.current = null;
+      }
       
       // Create vector source and layer for markers
       const vectorSource = new VectorSource();
@@ -221,12 +232,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         map.addOverlay(popupOverlayRef.current);
       }
       
-      // Add markers
+      // Add markers with proper properties
       resourceLocations.forEach(location => {
         const feature = new Feature({
-          geometry: new Point(fromLonLat([location.lng, location.lat])),
-          properties: location
+          geometry: new Point(fromLonLat([location.lng, location.lat]))
         });
+        
+        // Set properties as a separate attribute to avoid TypeScript errors
+        feature.set('properties', location);
         
         const style = new Style({
           image: new Icon({
@@ -249,8 +262,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           
           if (popupOverlayRef.current) {
             const geometry = feature.getGeometry();
-            if (geometry && geometry instanceof Point) {
-              const coordinates = geometry.getCoordinates();
+            if (geometry && geometry.getType() === 'Point') {
+              const coordinates = (geometry as Point).getCoordinates();
               popupOverlayRef.current.setPosition(coordinates);
             }
           }
@@ -266,10 +279,16 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       // Store map instance
       mapInstanceRef.current = map;
       
-      console.log('OpenLayers map initialized successfully');
-      map.updateSize(); // Force map to update its size
-      setMapLoaded(true);
-      setIsLoading(false);
+      // Make sure map renders properly
+      map.updateSize();
+      
+      // Add a delay before setting loaded state to ensure rendering completes
+      setTimeout(() => {
+        console.log('OpenLayers map initialized successfully');
+        map.updateSize(); // Force map to update its size once more
+        setMapLoaded(true);
+        setIsLoading(false);
+      }, 500);
       
       // Filter markers by category if needed
       if (selectedCategory) {
@@ -278,12 +297,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       // Clean up
       return () => {
-        if (map) {
-          map.setTarget(undefined);
+        console.log('Cleaning up map');
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.setTarget(undefined);
+          mapInstanceRef.current = null;
         }
       };
     } catch (error) {
       console.error('Error initializing OpenLayers map:', error);
+      setError(`Map initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsLoading(false);
     }
   }, [initialLat, initialLng, initialZoom]);
@@ -291,12 +313,41 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Force map to update its size when container dimensions change
   useEffect(() => {
     if (mapInstanceRef.current && mapLoaded) {
-      setTimeout(() => {
-        mapInstanceRef.current?.updateSize();
-        console.log('Map size updated');
-      }, 100);
+      const updateMapSize = () => {
+        if (mapInstanceRef.current) {
+          console.log('Updating map size');
+          mapInstanceRef.current.updateSize();
+        }
+      };
+      
+      // Update immediately and after a short delay
+      updateMapSize();
+      
+      const timer1 = setTimeout(updateMapSize, 100);
+      const timer2 = setTimeout(updateMapSize, 500);
+      
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
     }
   }, [mapLoaded, fullScreen]);
+
+  // Listen for window resize events
+  useEffect(() => {
+    const handleResize = () => {
+      if (mapInstanceRef.current) {
+        console.log('Window resized, updating map size');
+        mapInstanceRef.current.updateSize();
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Filter features by category
   const filterByCategory = (category: string | null) => {
@@ -373,6 +424,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   }, [selectedCategory, mapLoaded]);
 
+  // Show error state if map failed to load
+  if (error) {
+    return (
+      <div className="w-full p-6 bg-red-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
+        <div className="text-center">
+          <div className="bg-red-100 p-3 rounded-full mx-auto mb-4">
+            <AlertTriangle className="h-8 w-8 text-red-500" />
+          </div>
+          <p className="text-red-600 font-medium mb-2">Failed to load map</p>
+          <p className="text-sm text-red-500 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Reload Page</Button>
+        </div>
+      </div>
+    );
+  }
+
   // Loading state
   if (isLoading) {
     return (
@@ -441,23 +508,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       <div className="relative">
         <div 
           ref={mapRef} 
-          className={`w-full rounded-lg overflow-hidden bg-gray-100`}
+          className="w-full rounded-lg overflow-hidden bg-gray-100"
           style={{ height: fullScreen ? '600px' : '400px' }}
         >
-          {!mapLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center p-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                <p className="text-gray-500">Loading map...</p>
-              </div>
-            </div>
-          )}
+          {/* This is an empty container where OpenLayers will render the map */}
         </div>
         
         {/* Hidden popup element for OpenLayers overlay */}
         <div 
           ref={popupRef} 
-          className="hidden"
+          className="absolute"
+          style={{ display: 'none' }}
         ></div>
         
         {/* Resource information card */}
