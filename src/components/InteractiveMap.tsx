@@ -1,11 +1,18 @@
+
 import React, { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { MapPin, Home, Phone, HeartPulse, Utensils } from "lucide-react";
+import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
+import { Icon, Style } from 'ol/style';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import Overlay from 'ol/Overlay';
+import 'ol/ol.css';
+import { Home, Phone, HeartPulse, Utensils, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import LoadingSpinner from "./LoadingSpinner";
 
 // Types for resource locations
 interface ResourceLocation {
@@ -106,15 +113,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   initialLng = -77.0369,
   initialZoom = 12
 }) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<Map | null>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const popupOverlayRef = useRef<Overlay | null>(null);
   const [selectedResource, setSelectedResource] = useState<ResourceLocation | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const markerRefs = useRef<{ [key: number]: mapboxgl.Marker }>({});
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
-  const [mapError, setMapError] = useState<string | null>(null);
   const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
-  const [isLoadingToken, setIsLoadingToken] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -148,254 +155,217 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Fetch Mapbox token from Supabase Edge Function
-  useEffect(() => {
-    const fetchMapboxToken = async () => {
-      try {
-        console.log("Fetching Mapbox token...");
-        setIsLoadingToken(true);
-        
-        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-        
-        if (error) {
-          console.error('Error fetching Mapbox token:', error);
-          setMapError('Could not load the map. Please try again later.');
-          setIsLoadingToken(false);
-          toast.error('Error loading map: Could not retrieve map token');
-          return;
-        }
-        
-        console.log("Token response:", data ? "Token received" : "No token data");
-        
-        if (!data?.token) {
-          setMapError('Mapbox token not found');
-          setIsLoadingToken(false);
-          toast.error('Error loading map: Token not available');
-          return;
-        }
-
-        // Initialize map with token
-        console.log("Initializing map...");
-        initializeMap(data.token);
-        setIsLoadingToken(false);
-      } catch (error) {
-        console.error('Error in fetchMapboxToken:', error);
-        setMapError('An unexpected error occurred while loading the map');
-        setIsLoadingToken(false);
-        toast.error('Error loading map: Unexpected error');
-      }
-    };
-
-    fetchMapboxToken();
-  }, [initialLat, initialLng, initialZoom]);
-
-  // Initialize map with the token
-  const initializeMap = (token: string) => {
-    if (!mapContainer.current) {
-      console.error("Map container not available");
-      return;
+  // Create a canvas icon for a marker
+  const createMarkerIcon = (category: string): HTMLCanvasElement => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 24;
+    canvas.height = 24;
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.beginPath();
+      context.arc(12, 12, 10, 0, 2 * Math.PI);
+      context.fillStyle = getMarkerColor(category);
+      context.fill();
+      context.strokeStyle = 'white';
+      context.lineWidth = 2;
+      context.stroke();
     }
+    return canvas;
+  };
+
+  // Initialize map
+  useEffect(() => {
+    if (!mapRef.current) return;
+    
+    setIsLoading(true);
     
     try {
-      console.log("Setting Mapbox token...");
+      console.log('Initializing OpenLayers map...');
       
-      // Initialize Mapbox
-      mapboxgl.accessToken = token;
-      
-      console.log("Creating map instance...");
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v12",
-        center: [initialLng, initialLat],
-        zoom: initialZoom
+      // Create vector source and layer for markers
+      const vectorSource = new VectorSource();
+      const vectorLayer = new VectorLayer({
+        source: vectorSource
       });
-
-      console.log("Adding map controls...");
-      // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
       
-      // Add geolocate control
-      map.current.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
-        })
-      );
-
-      // Add markers when map loads
-      map.current.on("load", () => {
-        console.log("Map loaded, setting mapLoaded state");
-        setMapLoaded(true);
-        addMarkers();
-      });
-
-      // Handle errors
-      map.current.on("error", (e) => {
-        console.error("Mapbox error:", e);
-        setMapError('An error occurred with the map');
-        toast.error('Map error: Please refresh the page');
-      });
-
-      // Cleanup function
-      return () => {
-        if (map.current) {
-          console.log("Removing map");
-          map.current.remove();
-        }
-      };
-    } catch (error) {
-      console.error("Error initializing map:", error);
-      setMapError('Could not initialize the map: ' + (error instanceof Error ? error.message : String(error)));
-      toast.error('Error initializing map');
-    }
-  };
-
-  // Add markers for all resource locations
-  const addMarkers = () => {
-    if (!map.current) return;
-
-    // Clear existing markers
-    Object.values(markerRefs.current).forEach(marker => {
-      marker.remove();
-    });
-    markerRefs.current = {};
-
-    resourceLocations.forEach((location) => {
-      // Create HTML element for marker
-      const el = document.createElement("div");
-      el.className = "marker";
-      el.style.backgroundColor = getMarkerColor(location.category);
-      el.style.width = "24px";
-      el.style.height = "24px";
-      el.style.borderRadius = "50%";
-      el.style.display = "flex";
-      el.style.justifyContent = "center";
-      el.style.alignItems = "center";
-      el.style.cursor = "pointer";
-      el.style.boxShadow = "0 2px 4px rgba(0,0,0,0.3)";
-      
-      // Create and add marker
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([location.lng, location.lat])
-        .addTo(map.current);
-      
-      // Store marker reference
-      markerRefs.current[location.id] = marker;
-      
-      // Set initial visibility based on selected category
-      if (selectedCategory && location.category !== selectedCategory) {
-        el.style.display = "none";
+      // Create popup overlay
+      if (popupRef.current) {
+        popupOverlayRef.current = new Overlay({
+          element: popupRef.current,
+          autoPan: true,
+          autoPanAnimation: {
+            duration: 250
+          }
+        });
       }
       
-      // Add click event
-      el.addEventListener("click", () => {
-        setSelectedResource(location);
-        map.current?.flyTo({
-          center: [location.lng, location.lat],
-          zoom: 15
-        });
+      // Create map
+      const map = new Map({
+        target: mapRef.current,
+        layers: [
+          new TileLayer({
+            source: new OSM()
+          }),
+          vectorLayer
+        ],
+        view: new View({
+          center: fromLonLat([initialLng, initialLat]),
+          zoom: initialZoom
+        }),
+        controls: []
       });
-    });
-  };
+      
+      // Add popup overlay to map
+      if (popupOverlayRef.current) {
+        map.addOverlay(popupOverlayRef.current);
+      }
+      
+      // Add markers
+      resourceLocations.forEach(location => {
+        const feature = new Feature({
+          geometry: new Point(fromLonLat([location.lng, location.lat])),
+          properties: { ...location }
+        });
+        
+        const style = new Style({
+          image: new Icon({
+            img: createMarkerIcon(location.category),
+            imgSize: [24, 24]
+          })
+        });
+        
+        feature.setStyle(style);
+        vectorSource.addFeature(feature);
+      });
+      
+      // Add click interaction
+      map.on('click', (event) => {
+        const feature = map.forEachFeatureAtPixel(event.pixel, feature => feature);
+        
+        if (feature) {
+          const properties = feature.get('properties') as ResourceLocation;
+          setSelectedResource(properties);
+          
+          if (popupOverlayRef.current) {
+            const coordinate = feature.getGeometry()?.getCoordinates();
+            if (coordinate) {
+              popupOverlayRef.current.setPosition(coordinate);
+            }
+          }
+        } else {
+          setSelectedResource(null);
+          
+          if (popupOverlayRef.current) {
+            popupOverlayRef.current.setPosition(undefined);
+          }
+        }
+      });
+      
+      // Store map instance
+      mapInstanceRef.current = map;
+      
+      console.log('OpenLayers map initialized successfully');
+      setMapLoaded(true);
+      setIsLoading(false);
+      
+      // Filter markers by category if needed
+      if (selectedCategory) {
+        filterByCategory(selectedCategory);
+      }
+      
+      // Clean up
+      return () => {
+        map.dispose();
+      };
+    } catch (error) {
+      console.error('Error initializing OpenLayers map:', error);
+      setIsLoading(false);
+    }
+  }, [initialLat, initialLng, initialZoom]);
 
-  // Filter markers by category and fit the map to show them
+  // Filter features by category
   const filterByCategory = (category: string | null) => {
     setSelectedCategory(category);
     
     let filtered: ResourceLocation[] = [];
     
-    resourceLocations.forEach(location => {
-      const marker = markerRefs.current[location.id];
-      if (!marker) return;
+    if (!mapInstanceRef.current) return;
+    
+    const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
+      layer => layer instanceof VectorLayer
+    ) as VectorLayer<VectorSource>;
+    
+    if (!vectorLayer) return;
+    
+    const source = vectorLayer.getSource();
+    if (!source) return;
+    
+    const features = source.getFeatures();
+    
+    features.forEach(feature => {
+      const properties = feature.get('properties') as ResourceLocation;
       
-      if (!category || location.category === category) {
-        marker.getElement().style.display = "flex";
-        filtered.push(location);
+      if (!category || properties.category === category) {
+        feature.setStyle(new Style({
+          image: new Icon({
+            img: createMarkerIcon(properties.category),
+            imgSize: [24, 24]
+          })
+        }));
+        filtered.push(properties);
       } else {
-        marker.getElement().style.display = "none";
+        feature.setStyle(new Style({})); // Hide feature
       }
     });
     
     setVisibleResources(filtered);
     
-    // If we have filtered locations, fit map to show them all
-    if (filtered.length > 0 && map.current) {
-      // Create bounds object
-      const bounds = new mapboxgl.LngLatBounds();
-      
-      // Extend bounds to include all filtered locations
-      filtered.forEach(location => {
-        bounds.extend([location.lng, location.lat]);
+    // Fit map to visible features
+    if (filtered.length > 0 && mapInstanceRef.current) {
+      const visibleFeatures = features.filter(feature => {
+        const properties = feature.get('properties') as ResourceLocation;
+        return !category || properties.category === category;
       });
       
-      // Fit map to these bounds with some padding
-      map.current.fitBounds(bounds, {
-        padding: 50,
-        maxZoom: 14
-      });
+      if (visibleFeatures.length > 0) {
+        const extent = visibleFeatures.reduce((ext, feature) => {
+          const geometry = feature.getGeometry();
+          if (geometry) {
+            return ext ? [
+              Math.min(ext[0], geometry.getExtent()[0]),
+              Math.min(ext[1], geometry.getExtent()[1]),
+              Math.max(ext[2], geometry.getExtent()[2]),
+              Math.max(ext[3], geometry.getExtent()[3])
+            ] : geometry.getExtent();
+          }
+          return ext;
+        }, undefined as number[] | undefined);
+        
+        if (extent) {
+          mapInstanceRef.current.getView().fit(extent, {
+            padding: [50, 50, 50, 50],
+            maxZoom: 14
+          });
+        }
+      }
     }
   };
 
-  // Effect to update markers when selected category changes
+  // Update filtering when category changes
   useEffect(() => {
-    if (mapLoaded && map.current) {
+    if (mapLoaded && mapInstanceRef.current) {
       filterByCategory(selectedCategory);
     }
   }, [selectedCategory, mapLoaded]);
 
-  // Show loading state with more details
-  if (isLoadingToken) {
+  // Loading state
+  if (isLoading) {
     return (
       <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-600 mb-2">Loading map resources...</p>
-          <p className="text-sm text-gray-500">Retrieving map information</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show more detailed error message if there's a problem
-  if (mapError) {
-    return (
-      <div className="w-full p-6 bg-red-50 rounded-lg border border-red-200">
-        <h3 className="text-xl font-medium mb-4 text-red-700">Map Error</h3>
-        <p className="mb-4 text-red-600">{mapError}</p>
-        <div className="flex space-x-4">
-          <Button 
-            variant="outline" 
-            onClick={() => window.location.reload()}
-          >
-            Refresh Page
-          </Button>
-          <Button
-            variant="default"
-            onClick={() => {
-              setMapError(null);
-              setIsLoadingToken(true);
-              const fetchMapboxToken = async () => {
-                try {
-                  const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-                  
-                  if (error || !data?.token) {
-                    throw new Error(error?.message || 'Token not available');
-                  }
-                  
-                  initializeMap(data.token);
-                  setIsLoadingToken(false);
-                } catch (error) {
-                  setMapError('Failed to retry: ' + (error instanceof Error ? error.message : String(error)));
-                  setIsLoadingToken(false);
-                }
-              };
-              fetchMapboxToken();
-            }}
-          >
-            Try Again
-          </Button>
+          <p className="text-sm text-gray-500">Initializing map</p>
         </div>
       </div>
     );
@@ -454,15 +424,19 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       {/* Map container */}
       <div className="relative">
-        <div ref={mapContainer} className="w-full h-96 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-          {!mapLoaded && !mapError && (
-            <div className="text-center p-6">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-500">Loading map...</p>
-              <p className="text-sm text-gray-400 mt-2">This may take a moment</p>
+        <div ref={mapRef} className="w-full h-96 rounded-lg overflow-hidden bg-gray-100">
+          {!mapLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center p-6">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <p className="text-gray-500">Loading map...</p>
+              </div>
             </div>
           )}
         </div>
+        
+        {/* Hidden popup element for OpenLayers overlay */}
+        <div ref={popupRef} className="hidden"></div>
         
         {/* Resource information card */}
         {selectedResource && (
