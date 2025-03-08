@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -647,5 +648,140 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           style={{ 
             height: fullScreen ? '600px' : '400px',
             border: '1px solid #ddd'
+          }}
+        ></div>
+        
+        {/* Resource popup overlay */}
+        <div 
+          ref={popupRef} 
+          className="absolute bg-white rounded-lg shadow-lg p-4 transform -translate-x-1/2 z-50"
+          style={{ 
+            maxWidth: '250px',
+            bottom: '12px',
+            pointerEvents: 'auto',
+            display: selectedResource ? 'block' : 'none'
+          }}
+        >
+          {selectedResource && (
+            <>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 rounded-full" style={{ backgroundColor: getMarkerColor(selectedResource.category) }}>
+                  {getCategoryIcon(selectedResource.category)}
+                </div>
+                <h3 className="font-bold text-sm">{selectedResource.name}</h3>
+              </div>
+              <p className="text-xs text-gray-600 mb-2">{selectedResource.address}</p>
+              <div className="flex items-center gap-1 text-xs text-blue-600 mb-3">
+                <Phone className="h-3 w-3" />
+                <span>{selectedResource.phone}</span>
+              </div>
+              <Button size="sm" className="w-full">Get Directions</Button>
+            </>
+          )}
+        </div>
+        
+        {/* Fullscreen button */}
+        {!fullScreen && onViewFullMap && (
+          <div className="absolute bottom-3 right-3">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              className="shadow-md bg-white/90 hover:bg-white text-gray-800"
+              onClick={onViewFullMap}
+            >
+              View Full Map
+            </Button>
+          </div>
+        )}
+      </div>
+      
+      {/* Legend (only for full screen mode) */}
+      {fullScreen && (
+        <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-100">
+          <h3 className="font-bold mb-2">Map Legend</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { category: "shelter", label: "Shelters" },
+              { category: "healthcare", label: "Healthcare" },
+              { category: "food", label: "Food Resources" },
+              { category: "crisis", label: "Crisis Centers" }
+            ].map((item) => (
+              <div key={item.category} className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: getMarkerColor(item.category) }}></div>
+                <span className="text-sm">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* List of visible resources (for full screen mode) */}
+      {fullScreen && (
+        <div className="mt-4">
+          <h3 className="font-bold mb-3">
+            {selectedCategory 
+              ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Resources (${visibleResources.length})` 
+              : `All Resources (${visibleResources.length})`
+            }
+          </h3>
+          <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+            {visibleResources.map((resource) => (
+              <div 
+                key={resource.id} 
+                className="p-3 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md cursor-pointer transition-shadow"
+                onClick={() => {
+                  setSelectedResource(resource);
+                  // Find the feature for this resource and center the map on it
+                  if (mapInstanceRef.current) {
+                    const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
+                      layer => layer instanceof VectorLayer
+                    ) as VectorLayer<VectorSource> | undefined;
+                    
+                    if (vectorLayer && vectorLayer.getSource()) {
+                      const features = vectorLayer.getSource()?.getFeatures() || [];
+                      const resourceFeature = features.find(feature => {
+                        const properties = feature.get('properties') as ResourceLocation;
+                        return properties.id === resource.id;
+                      });
+                      
+                      if (resourceFeature) {
+                        const geometry = resourceFeature.getGeometry();
+                        if (geometry && geometry.getType() === 'Point') {
+                          const coordinates = (geometry as Point).getCoordinates();
+                          mapInstanceRef.current.getView().animate({
+                            center: coordinates,
+                            zoom: 15,
+                            duration: 500
+                          });
+                          if (popupOverlayRef.current) {
+                            popupOverlayRef.current.setPosition(coordinates);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-full mt-1" style={{ backgroundColor: getMarkerColor(resource.category) }}>
+                    {getCategoryIcon(resource.category)}
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900">{resource.name}</h4>
+                    <p className="text-sm text-gray-600">{resource.address}</p>
+                    <div className="flex items-center gap-1 text-sm text-blue-600 mt-1">
+                      <Phone className="h-3.5 w-3.5" />
+                      <span>{resource.phone}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
-
+export default InteractiveMap;
