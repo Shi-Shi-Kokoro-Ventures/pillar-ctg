@@ -90,8 +90,8 @@ const Footer = () => {
                 <MapPin className="h-5 w-5 mr-3 text-redcross shrink-0" />
                 <span className="text-gray-400">
                   P.I.L.L.A.R. Initiative Headquarters<br />
-                  431 Main Street<br />
-                  Portland, OR 97205
+                  1201 Orange St #600<br />
+                  Wilmington, DE 19801
                 </span>
               </li>
               <li className="flex items-center">
