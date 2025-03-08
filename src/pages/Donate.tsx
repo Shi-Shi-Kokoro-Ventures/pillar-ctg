@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -131,13 +132,27 @@ const Donate = () => {
       <Navbar />
       
       <main className="flex-grow">
-        <section className="bg-gray-50 py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Make a Difference Today</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
-              Your donation directly supports our mission to provide stable housing and support services
-              to individuals and families experiencing homelessness.
-            </p>
+        <section className="bg-gray-50 py-12 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <div className="w-full md:w-1/2 order-2 md:order-1">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">Make a Difference Today</h1>
+                <p className="text-xl text-gray-600 mb-8">
+                  Your donation directly supports our mission to provide stable housing and support services
+                  to individuals and families experiencing homelessness.
+                </p>
+              </div>
+              
+              <div className="w-full md:w-1/2 order-1 md:order-2">
+                <div className="relative rounded-lg overflow-hidden shadow-xl">
+                  <img 
+                    src="/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png" 
+                    alt="Donation center with food and supplies" 
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -286,32 +301,18 @@ const Donate = () => {
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Your Donation's Impact</h2>
             
-            <div className="flex flex-col md:flex-row items-center gap-12 mb-12">
-              <div className="w-full md:w-1/2">
-                <div className="relative rounded-lg overflow-hidden shadow-xl">
-                  <img 
-                    src="/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png" 
-                    alt="Donation center with food and supplies" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="text-redcross text-5xl font-bold mb-2">$50</div>
+                <p className="text-gray-700">Provides emergency housing assistance for one night</p>
               </div>
-              
-              <div className="w-full md:w-1/2">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <div className="text-center">
-                    <div className="text-redcross text-5xl font-bold mb-2">$50</div>
-                    <p className="text-gray-700">Provides emergency housing assistance for one night</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-redcross text-5xl font-bold mb-2">$250</div>
-                    <p className="text-gray-700">Supplies a month of financial literacy training for 5 individuals</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-redcross text-5xl font-bold mb-2">$1,000</div>
-                    <p className="text-gray-700">Helps furnish a new affordable housing unit for a family</p>
-                  </div>
-                </div>
+              <div className="text-center">
+                <div className="text-redcross text-5xl font-bold mb-2">$250</div>
+                <p className="text-gray-700">Supplies a month of financial literacy training for 5 individuals</p>
+              </div>
+              <div className="text-center">
+                <div className="text-redcross text-5xl font-bold mb-2">$1,000</div>
+                <p className="text-gray-700">Helps furnish a new affordable housing unit for a family</p>
               </div>
             </div>
           </div>
