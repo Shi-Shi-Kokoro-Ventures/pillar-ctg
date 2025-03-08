@@ -69,7 +69,7 @@ export const Navbar = () => {
       title: "About Us",
       submenu: [
         { name: "Our Mission", link: "/" },
-        { name: "Leadership", link: "/all-news" },
+        { name: "Leadership", link: "/leadership" },
         { name: "Partners", link: "/all-news" },
         { name: "Careers", link: "/volunteer" },
         { name: "Contact Us", link: "/all-ways" }
