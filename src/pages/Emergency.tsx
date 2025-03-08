@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -15,6 +14,7 @@ const Emergency = () => {
     // Force resize events after state change
     setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 1000);
   };
   
   // Return to normal view
@@ -23,16 +23,19 @@ const Emergency = () => {
     // Force resize events after state change
     setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 1000);
   };
   
   // Re-render map on layout change and force a resize
   useEffect(() => {
     // Give the layout time to adjust before forcing a resize event
-    const timer = setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 300);
+    const timers = [
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 300),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 600),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 1000),
+    ];
     
-    return () => clearTimeout(timer);
+    return () => timers.forEach(timer => clearTimeout(timer));
   }, [isFullMapVisible]);
 
   // Force a resize event when the component mounts
@@ -43,6 +46,7 @@ const Emergency = () => {
       setTimeout(() => window.dispatchEvent(new Event('resize')), 500),
       setTimeout(() => window.dispatchEvent(new Event('resize')), 1000),
       setTimeout(() => window.dispatchEvent(new Event('resize')), 2000),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 3000),
     ];
     
     return () => timers.forEach(timer => clearTimeout(timer));

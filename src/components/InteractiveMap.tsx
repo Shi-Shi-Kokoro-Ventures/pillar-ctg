@@ -128,6 +128,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [mapInitAttempts, setMapInitAttempts] = useState<number>(0);
+  const [isContainerReady, setIsContainerReady] = useState<boolean>(false);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -186,14 +187,55 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     return canvas;
   };
 
+  // Check if the map container is ready
+  useEffect(() => {
+    const checkContainer = () => {
+      if (mapRef.current) {
+        console.log('Map container ref is available, dimensions:', 
+          mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
+        
+        if (mapRef.current.offsetWidth > 0 && mapRef.current.offsetHeight > 0) {
+          setIsContainerReady(true);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Check immediately
+    if (checkContainer()) return;
+    
+    // If not ready, set up an observer to detect when the container is ready
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+          console.log('Container now has dimensions:', 
+            entry.contentRect.width, 'x', entry.contentRect.height);
+          setIsContainerReady(true);
+          observer.disconnect();
+        }
+      }
+    });
+    
+    if (mapRef.current) {
+      observer.observe(mapRef.current);
+    }
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Function to initialize the map
   const initializeMap = () => {
-    if (!mapRef.current) {
-      console.error('Map container ref is not available');
+    console.log('Initializing map, container ready:', isContainerReady);
+    
+    if (!mapRef.current || !isContainerReady) {
+      console.error('Map container ref is not available or not sized');
       
       // If we've tried too many times, show an error
       if (mapInitAttempts > 5) {
-        setError('Unable to initialize map: container not available');
+        setError('Unable to initialize map: container not available or not sized');
         setIsLoading(false);
       } else {
         // Try again in a moment
@@ -207,6 +249,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     try {
       console.log('Initializing OpenLayers map...');
+      console.log('Container dimensions:', mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
       setIsLoading(true);
       setError(null);
 
@@ -321,9 +364,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Initialize map on component mount
+  // Initialize map when container is ready
   useEffect(() => {
-    initializeMap();
+    if (isContainerReady) {
+      console.log('Container is ready, initializing map');
+      initializeMap();
+    }
     
     // Cleanup on unmount
     return () => {
@@ -332,7 +378,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         mapInstanceRef.current = null;
       }
     };
-  }, [initialLat, initialLng, initialZoom]);
+  }, [isContainerReady, initialLat, initialLng, initialZoom]);
 
   // Force map to update its size when container dimensions change
   useEffect(() => {
@@ -466,7 +512,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           <Button onClick={() => {
             setMapInitAttempts(0);
             setError(null);
-            initializeMap();
+            setIsContainerReady(false);
+            setTimeout(() => {
+              if (mapRef.current && mapRef.current.offsetWidth > 0 && mapRef.current.offsetHeight > 0) {
+                setIsContainerReady(true);
+              }
+            }, 500);
           }}>
             Retry
           </Button>
@@ -593,78 +644,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <div 
           ref={mapRef} 
           className="w-full rounded-lg overflow-hidden bg-gray-100 shadow-inner"
-          style={{ height: fullScreen ? '600px' : '400px' }}
-        ></div>
-        
-        {/* Popup element for OpenLayers overlay - no longer has display:none */}
-        <div 
-          ref={popupRef} 
-          className="absolute bg-transparent pointer-events-none"
-        ></div>
-        
-        {/* Resource information card */}
-        {selectedResource && (
-          <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-xs bg-white p-4 rounded-lg shadow-lg">
-            <button 
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={() => setSelectedResource(null)}
-            >
-              &times;
-            </button>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 rounded-full" style={{backgroundColor: getMarkerColor(selectedResource.category)}}>
-                {getCategoryIcon(selectedResource.category)}
-              </div>
-              <h3 className="text-lg font-bold">{selectedResource.name}</h3>
-            </div>
-            <div className="space-y-2 mt-4">
-              <p className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 shrink-0 mt-1" />
-                <span>{selectedResource.address}</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0" />
-                <a href={`tel:${selectedResource.phone}`} className="text-blue-600 hover:underline">
-                  {selectedResource.phone}
-                </a>
-              </p>
-            </div>
-            <div className="mt-4">
-              <Button variant="default" size="sm" className="w-full">
-                Get Directions
-              </Button>
-            </div>
-          </div>
-        )}
-        
-        {/* No resources message */}
-        {mapLoaded && selectedCategory && visibleResources.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-            <div className="text-center p-6">
-              <p className="text-gray-700 font-medium">No {selectedCategory} resources found in this area.</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => filterByCategory(null)}
-                className="mt-4"
-              >
-                Show All Resources
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Show View Full Map button only when not in full screen mode */}
-      {!fullScreen && onViewFullMap && (
-        <div className="mt-4 text-center">
-          <Button onClick={onViewFullMap}>
-            View Full Map
-          </Button>
-        </div>
-      )}
-    </div>
-  );
-};
+          style={{ 
+            height: fullScreen ? '600px' : '400px',
+            border: '1px solid #ddd'
 
-export default InteractiveMap;
+
