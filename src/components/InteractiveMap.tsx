@@ -193,9 +193,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         popupOverlayRef.current = new Overlay({
           element: popupRef.current,
           autoPan: true,
-          autoPanAnimation: {
-            duration: 250
-          }
+          // Remove autoPanAnimation as it's not a valid option in OpenLayers
         });
       }
       
@@ -230,7 +228,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         const style = new Style({
           image: new Icon({
             img: createMarkerIcon(location.category),
-            imgSize: [24, 24]
+            // Replace imgSize with scale to control the icon size
+            scale: 1
           })
         });
         
@@ -247,8 +246,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           setSelectedResource(properties);
           
           if (popupOverlayRef.current) {
-            const coordinate = feature.getGeometry()?.getCoordinates();
-            if (coordinate) {
+            const geometry = feature.getGeometry();
+            // Fix the type checking for getCoordinates method
+            if (geometry && geometry instanceof Point) {
+              const coordinate = geometry.getCoordinates();
               popupOverlayRef.current.setPosition(coordinate);
             }
           }
@@ -309,7 +310,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         feature.setStyle(new Style({
           image: new Icon({
             img: createMarkerIcon(properties.category),
-            imgSize: [24, 24]
+            // Replace imgSize with scale to control the icon size
+            scale: 1
           })
         }));
         filtered.push(properties);
