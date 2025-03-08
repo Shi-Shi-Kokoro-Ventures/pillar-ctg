@@ -13,11 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    // Get the Mapbox token from Supabase secrets
-    const mapboxToken = Deno.env.get('MAPBOX_KEY');
+    // Get the Mapbox public token from Supabase secrets
+    const mapboxToken = Deno.env.get('MAPBOX_PUB_KEY');
 
     if (!mapboxToken) {
-      throw new Error('MAPBOX_KEY not found in environment');
+      throw new Error('MAPBOX_PUB_KEY not found in environment');
     }
 
     return new Response(
