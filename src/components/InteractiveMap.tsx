@@ -1,9 +1,10 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin, Home, Phone, HeartPulse, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 // Types for resource locations
 interface ResourceLocation {
@@ -109,10 +110,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [selectedResource, setSelectedResource] = useState<ResourceLocation | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const markerRefs = useRef<{ [key: number]: mapboxgl.Marker }>({});
-  const [mapToken, setMapToken] = useState<string>("");
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
-  const [tokenError, setTokenError] = useState<boolean>(false);
+  const [mapError, setMapError] = useState<string | null>(null);
   const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
+  const [isLoadingToken, setIsLoadingToken] = useState<boolean>(true);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -146,13 +147,49 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Initialize map when token is available
+  // Fetch Mapbox token from Supabase Edge Function
   useEffect(() => {
-    if (!mapContainer.current || !mapToken) return;
+    const fetchMapboxToken = async () => {
+      try {
+        setIsLoadingToken(true);
+        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        
+        if (error) {
+          console.error('Error fetching Mapbox token:', error);
+          setMapError('Could not load the map. Please try again later.');
+          setIsLoadingToken(false);
+          toast.error('Error loading map: Could not retrieve map token');
+          return;
+        }
+        
+        if (!data?.token) {
+          setMapError('Mapbox token not found');
+          setIsLoadingToken(false);
+          toast.error('Error loading map: Token not available');
+          return;
+        }
+
+        // Initialize map with token
+        initializeMap(data.token);
+        setIsLoadingToken(false);
+      } catch (error) {
+        console.error('Error in fetchMapboxToken:', error);
+        setMapError('An unexpected error occurred while loading the map');
+        setIsLoadingToken(false);
+        toast.error('Error loading map: Unexpected error');
+      }
+    };
+
+    fetchMapboxToken();
+  }, [initialLat, initialLng, initialZoom]);
+
+  // Initialize map with the token
+  const initializeMap = (token: string) => {
+    if (!mapContainer.current) return;
     
     try {
       // Initialize Mapbox
-      mapboxgl.accessToken = mapToken;
+      mapboxgl.accessToken = token;
       
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -183,7 +220,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       // Handle errors
       map.current.on("error", (e) => {
         console.error("Mapbox error:", e);
-        setTokenError(true);
+        setMapError('An error occurred with the map');
+        toast.error('Map error: Please refresh the page');
       });
 
       // Cleanup function
@@ -192,9 +230,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       };
     } catch (error) {
       console.error("Error initializing map:", error);
-      setTokenError(true);
+      setMapError('Could not initialize the map');
+      toast.error('Error initializing map');
     }
-  }, [initialLat, initialLng, initialZoom, mapToken]);
+  };
 
   // Add markers for all resource locations
   const addMarkers = () => {
@@ -289,47 +328,29 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   }, [selectedCategory, mapLoaded]);
 
-  // Handle token input
-  const handleTokenInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMapToken(e.target.value);
-    setTokenError(false);
-  };
-
-  // Show token input if not provided
-  if (!mapToken) {
+  // Show loading state
+  if (isLoadingToken) {
     return (
-      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner">
-        <h3 className="text-xl font-medium mb-4">Interactive Resource Map</h3>
-        <p className="mb-4 text-gray-600">Please enter your Mapbox access token to load the interactive map:</p>
-        <div className="space-y-4">
-          <input 
-            type="text" 
-            placeholder="Enter Mapbox token..." 
-            className="w-full px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={handleTokenInput}
-          />
-          <p className="text-sm text-gray-500">
-            You can obtain a Mapbox token by signing up at <a href="https://www.mapbox.com/" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">mapbox.com</a>
-          </p>
+      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading map resources...</p>
         </div>
       </div>
     );
   }
 
-  // Show error message if token is invalid
-  if (tokenError) {
+  // Show error message if there's a problem
+  if (mapError) {
     return (
       <div className="w-full p-6 bg-red-50 rounded-lg border border-red-200">
         <h3 className="text-xl font-medium mb-4 text-red-700">Map Error</h3>
-        <p className="mb-4 text-red-600">There was an error loading the map. Please check your Mapbox token and try again.</p>
+        <p className="mb-4 text-red-600">{mapError}</p>
         <Button 
           variant="outline" 
-          onClick={() => {
-            setMapToken("");
-            setTokenError(false);
-          }}
+          onClick={() => window.location.reload()}
         >
-          Try Again
+          Refresh Page
         </Button>
       </div>
     );
