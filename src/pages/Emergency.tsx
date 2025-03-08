@@ -12,11 +12,17 @@ const Emergency = () => {
   // Toggle full map view
   const handleViewFullMap = () => {
     setIsFullMapVisible(true);
+    // Force resize events after state change
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
   };
   
   // Return to normal view
   const handleCloseFullMap = () => {
     setIsFullMapVisible(false);
+    // Force resize events after state change
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
   };
   
   // Re-render map on layout change and force a resize
@@ -36,6 +42,7 @@ const Emergency = () => {
       setTimeout(() => window.dispatchEvent(new Event('resize')), 100),
       setTimeout(() => window.dispatchEvent(new Event('resize')), 500),
       setTimeout(() => window.dispatchEvent(new Event('resize')), 1000),
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 2000),
     ];
     
     return () => timers.forEach(timer => clearTimeout(timer));

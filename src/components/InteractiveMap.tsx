@@ -13,6 +13,7 @@ import Overlay from 'ol/Overlay';
 import 'ol/ol.css';
 import { Home, Phone, HeartPulse, Utensils, MapPin, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 // Types for resource locations
 interface ResourceLocation {
@@ -25,7 +26,7 @@ interface ResourceLocation {
   lng: number;
 }
 
-// Sample data for demonstration purposes - expanded with more locations per category
+// Sample data for demonstration purposes
 const resourceLocations: ResourceLocation[] = [
   {
     id: 1,
@@ -127,6 +128,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [mapInitAttempts, setMapInitAttempts] = useState<number>(0);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -163,54 +165,65 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Create a canvas icon for a marker
   const createMarkerIcon = (category: string): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
-    canvas.width = 24;
-    canvas.height = 24;
+    canvas.width = 32; // Increased size for better visibility
+    canvas.height = 32;
     const context = canvas.getContext('2d');
     if (context) {
+      // Draw a circle with border
       context.beginPath();
-      context.arc(12, 12, 10, 0, 2 * Math.PI);
+      context.arc(16, 16, 12, 0, 2 * Math.PI);
       context.fillStyle = getMarkerColor(category);
       context.fill();
       context.strokeStyle = 'white';
-      context.lineWidth = 2;
+      context.lineWidth = 3;
       context.stroke();
+      
+      // Add an inner dot for better visibility
+      context.beginPath();
+      context.arc(16, 16, 4, 0, 2 * Math.PI);
+      context.fillStyle = 'white';
+      context.fill();
     }
     return canvas;
   };
 
-  // Initialize map
-  useEffect(() => {
+  // Function to initialize the map
+  const initializeMap = () => {
     if (!mapRef.current) {
       console.error('Map container ref is not available');
+      
+      // If we've tried too many times, show an error
+      if (mapInitAttempts > 5) {
+        setError('Unable to initialize map: container not available');
+        setIsLoading(false);
+      } else {
+        // Try again in a moment
+        setTimeout(() => {
+          setMapInitAttempts(prev => prev + 1);
+          initializeMap();
+        }, 500);
+      }
       return;
     }
-    
-    setIsLoading(true);
-    setError(null);
-    
+
     try {
-      console.log('Initializing OpenLayers map...', mapRef.current.clientWidth, mapRef.current.clientHeight);
-      
+      console.log('Initializing OpenLayers map...');
+      setIsLoading(true);
+      setError(null);
+
       // Clear any existing map instance
       if (mapInstanceRef.current) {
         mapInstanceRef.current.setTarget(undefined);
         mapInstanceRef.current = null;
       }
-      
+
       // Create vector source and layer for markers
       const vectorSource = new VectorSource();
       const vectorLayer = new VectorLayer({
-        source: vectorSource
+        source: vectorSource,
+        zIndex: 10 // Ensure markers appear above the base map
       });
-      
-      // Create popup overlay
-      if (popupRef.current) {
-        popupOverlayRef.current = new Overlay({
-          element: popupRef.current,
-          autoPan: true
-        });
-      }
-      
+
       // Create map
       const map = new Map({
         target: mapRef.current,
@@ -226,36 +239,41 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         }),
         controls: []
       });
-      
-      // Add popup overlay to map
-      if (popupOverlayRef.current) {
+
+      // Create popup overlay
+      if (popupRef.current) {
+        popupOverlayRef.current = new Overlay({
+          element: popupRef.current,
+          autoPan: true,
+          positioning: 'bottom-center',
+          offset: [0, -15]
+        });
         map.addOverlay(popupOverlayRef.current);
       }
-      
-      // Add markers with proper properties
+
+      // Add markers for each location
       resourceLocations.forEach(location => {
         const feature = new Feature({
-          geometry: new Point(fromLonLat([location.lng, location.lat]))
+          geometry: new Point(fromLonLat([location.lng, location.lat])),
+          properties: location // Store location data directly
         });
-        
-        // Set properties as a separate attribute to avoid TypeScript errors
-        feature.set('properties', location);
-        
+
         const style = new Style({
           image: new Icon({
             img: createMarkerIcon(location.category),
+            imgSize: [32, 32],
             scale: 1
           })
         });
-        
+
         feature.setStyle(style);
         vectorSource.addFeature(feature);
       });
-      
+
       // Add click interaction
       map.on('click', (event) => {
         const feature = map.forEachFeatureAtPixel(event.pixel, feature => feature);
-        
+
         if (feature) {
           const properties = feature.get('properties') as ResourceLocation;
           setSelectedResource(properties);
@@ -275,39 +293,45 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           }
         }
       });
-      
+
       // Store map instance
       mapInstanceRef.current = map;
-      
-      // Make sure map renders properly
+
+      // Force map size update
       map.updateSize();
-      
-      // Add a delay before setting loaded state to ensure rendering completes
+
+      // Set timeout to ensure map is fully rendered
       setTimeout(() => {
-        console.log('OpenLayers map initialized successfully');
-        map.updateSize(); // Force map to update its size once more
-        setMapLoaded(true);
-        setIsLoading(false);
-      }, 500);
-      
-      // Filter markers by category if needed
-      if (selectedCategory) {
-        filterByCategory(selectedCategory);
-      }
-      
-      // Clean up
-      return () => {
-        console.log('Cleaning up map');
         if (mapInstanceRef.current) {
-          mapInstanceRef.current.setTarget(undefined);
-          mapInstanceRef.current = null;
+          mapInstanceRef.current.updateSize();
+          setMapLoaded(true);
+          setIsLoading(false);
+          
+          // Filter markers by category if needed
+          if (selectedCategory) {
+            filterByCategory(selectedCategory);
+          }
         }
-      };
+      }, 500);
+
     } catch (error) {
       console.error('Error initializing OpenLayers map:', error);
       setError(`Map initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsLoading(false);
     }
+  };
+
+  // Initialize map on component mount
+  useEffect(() => {
+    initializeMap();
+    
+    // Cleanup on unmount
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setTarget(undefined);
+        mapInstanceRef.current = null;
+      }
+    };
   }, [initialLat, initialLng, initialZoom]);
 
   // Force map to update its size when container dimensions change
@@ -325,10 +349,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       const timer1 = setTimeout(updateMapSize, 100);
       const timer2 = setTimeout(updateMapSize, 500);
+      const timer3 = setTimeout(updateMapSize, 1000);
       
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
+        clearTimeout(timer3);
       };
     }
   }, [mapLoaded, fullScreen]);
@@ -359,7 +385,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     
     const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
       layer => layer instanceof VectorLayer
-    ) as VectorLayer<VectorSource>;
+    ) as VectorLayer<VectorSource> | undefined;
     
     if (!vectorLayer) return;
     
@@ -375,18 +401,20 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         feature.setStyle(new Style({
           image: new Icon({
             img: createMarkerIcon(properties.category),
+            imgSize: [32, 32],
             scale: 1
           })
         }));
         filtered.push(properties);
       } else {
-        feature.setStyle(new Style({})); // Hide feature
+        // Hide feature by setting empty style
+        feature.setStyle(new Style({}));
       }
     });
     
     setVisibleResources(filtered);
     
-    // Fit map to visible features
+    // Fit map to visible features if there are any
     if (filtered.length > 0 && mapInstanceRef.current) {
       const visibleFeatures = features.filter(feature => {
         const properties = feature.get('properties') as ResourceLocation;
@@ -434,7 +462,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           </div>
           <p className="text-red-600 font-medium mb-2">Failed to load map</p>
           <p className="text-sm text-red-500 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Reload Page</Button>
+          <Button onClick={() => {
+            setMapInitAttempts(0);
+            setError(null);
+            initializeMap();
+          }}>
+            Retry
+          </Button>
         </div>
       </div>
     );
@@ -457,68 +491,114 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     <div className="w-full">
       {/* Category filters */}
       <div className="mb-4 flex flex-wrap gap-2">
-        <Button 
-          variant={selectedCategory === null ? "default" : "outline"}
-          size="sm"
-          onClick={() => filterByCategory(null)}
-          className="flex items-center gap-2"
-        >
-          <MapPin className="h-4 w-4" />
-          All Resources ({resourceLocations.length})
-        </Button>
-        <Button 
-          variant={selectedCategory === "shelter" ? "default" : "outline"}
-          size="sm"
-          onClick={() => filterByCategory("shelter")}
-          className="flex items-center gap-2"
-        >
-          <Home className="h-4 w-4" />
-          Shelters ({resourceLocations.filter(r => r.category === "shelter").length})
-        </Button>
-        <Button 
-          variant={selectedCategory === "healthcare" ? "default" : "outline"}
-          size="sm"
-          onClick={() => filterByCategory("healthcare")}
-          className="flex items-center gap-2"
-        >
-          <HeartPulse className="h-4 w-4" />
-          Healthcare ({resourceLocations.filter(r => r.category === "healthcare").length})
-        </Button>
-        <Button 
-          variant={selectedCategory === "food" ? "default" : "outline"}
-          size="sm" 
-          onClick={() => filterByCategory("food")}
-          className="flex items-center gap-2"
-        >
-          <Utensils className="h-4 w-4" />
-          Food ({resourceLocations.filter(r => r.category === "food").length})
-        </Button>
-        <Button 
-          variant={selectedCategory === "crisis" ? "default" : "outline"}
-          size="sm"
-          onClick={() => filterByCategory("crisis")}
-          className="flex items-center gap-2"
-        >
-          <Phone className="h-4 w-4" />
-          Crisis Centers ({resourceLocations.filter(r => r.category === "crisis").length})
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant={selectedCategory === null ? "default" : "outline"}
+                size="sm"
+                onClick={() => filterByCategory(null)}
+                className="flex items-center gap-2"
+              >
+                <MapPin className="h-4 w-4" />
+                All Resources ({resourceLocations.length})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Show all resource types
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant={selectedCategory === "shelter" ? "default" : "outline"}
+                size="sm"
+                onClick={() => filterByCategory("shelter")}
+                className="flex items-center gap-2"
+              >
+                <Home className="h-4 w-4" />
+                Shelters ({resourceLocations.filter(r => r.category === "shelter").length})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Emergency and transitional shelters
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant={selectedCategory === "healthcare" ? "default" : "outline"}
+                size="sm"
+                onClick={() => filterByCategory("healthcare")}
+                className="flex items-center gap-2"
+              >
+                <HeartPulse className="h-4 w-4" />
+                Healthcare ({resourceLocations.filter(r => r.category === "healthcare").length})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Medical and mental health services
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant={selectedCategory === "food" ? "default" : "outline"}
+                size="sm" 
+                onClick={() => filterByCategory("food")}
+                className="flex items-center gap-2"
+              >
+                <Utensils className="h-4 w-4" />
+                Food ({resourceLocations.filter(r => r.category === "food").length})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Food pantries and meal programs
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant={selectedCategory === "crisis" ? "default" : "outline"}
+                size="sm"
+                onClick={() => filterByCategory("crisis")}
+                className="flex items-center gap-2"
+              >
+                <Phone className="h-4 w-4" />
+                Crisis Centers ({resourceLocations.filter(r => r.category === "crisis").length})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Emergency support and crisis intervention
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
       {/* Map container */}
       <div className="relative">
         <div 
           ref={mapRef} 
-          className="w-full rounded-lg overflow-hidden bg-gray-100"
+          className="w-full rounded-lg overflow-hidden bg-gray-100 shadow-inner"
           style={{ height: fullScreen ? '600px' : '400px' }}
-        >
-          {/* This is an empty container where OpenLayers will render the map */}
-        </div>
+        ></div>
         
-        {/* Hidden popup element for OpenLayers overlay */}
+        {/* Popup element for OpenLayers overlay - no longer has display:none */}
         <div 
           ref={popupRef} 
-          className="absolute"
-          style={{ display: 'none' }}
+          className="absolute bg-transparent pointer-events-none"
         ></div>
         
         {/* Resource information card */}
