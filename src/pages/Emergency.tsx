@@ -11,7 +11,7 @@ const Emergency = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-grow">
+      <main className="flex-grow pt-16">
         {/* Emergency Alert Banner */}
         <div className="bg-red-600 text-white py-4">
           <div className="container mx-auto px-4 flex items-center justify-center">
@@ -29,13 +29,13 @@ const Emergency = () => {
                 If you or someone you know is experiencing a housing emergency or homelessness, 
                 the P.I.L.L.A.R. Initiative can help connect you with immediate resources and support.
               </p>
-              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-redcross mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 mb-8">
                 <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-redcross mr-3 shrink-0 mt-1" />
+                  <Phone className="h-6 w-6 text-blue-500 mr-3 shrink-0 mt-1" />
                   <div>
                     <h2 className="text-2xl font-bold mb-2">24/7 Housing Crisis Hotline</h2>
                     <p className="text-gray-600 mb-4">Our trained staff is available around the clock to provide assistance and information.</p>
-                    <a href="tel:1-800-PILLAR" className="text-2xl font-bold text-redcross hover:underline">1-800-PILLAR (745-5273)</a>
+                    <a href="tel:1-800-PILLAR" className="text-2xl font-bold text-blue-500 hover:underline">1-800-PILLAR (745-5273)</a>
                   </div>
                 </div>
               </div>
@@ -57,15 +57,15 @@ const Emergency = () => {
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Clock className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <Clock className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Available 24/7</span>
                   </li>
                   <li className="flex items-start">
-                    <MapPin className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <MapPin className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Multiple locations throughout the city</span>
                   </li>
                 </ul>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Find Shelter</Button>
+                <Button className="w-full">Find Shelter</Button>
               </div>
               
               {/* Service 2 */}
@@ -76,15 +76,15 @@ const Emergency = () => {
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Clock className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <Clock className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Rapid response within 48 hours</span>
                   </li>
                   <li className="flex items-start">
-                    <MapPin className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <MapPin className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Services available in all counties</span>
                   </li>
                 </ul>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Apply for Assistance</Button>
+                <Button className="w-full">Apply for Assistance</Button>
               </div>
               
               {/* Service 3 */}
@@ -95,15 +95,15 @@ const Emergency = () => {
                 </p>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Clock className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <Clock className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Available 24/7</span>
                   </li>
                   <li className="flex items-start">
-                    <MapPin className="h-5 w-5 text-redcross mr-2 shrink-0 mt-0.5" />
+                    <MapPin className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
                     <span>Phone and in-person support</span>
                   </li>
                 </ul>
-                <Button className="w-full bg-redcross hover:bg-redcross/90">Get Support</Button>
+                <Button className="w-full">Get Support</Button>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ const Emergency = () => {
                 Use our interactive map to find emergency housing resources in your area, 
                 including shelters, food banks, healthcare facilities, and other support services.
               </p>
-              <Button className="w-full md:w-auto bg-redcross hover:bg-redcross/90">View Full Map</Button>
+              <Button className="w-full md:w-auto">View Full Map</Button>
             </div>
           </div>
         </section>
@@ -162,12 +162,12 @@ const Emergency = () => {
                   <p className="text-gray-600 mb-4">{resource.description}</p>
                   <div className="space-y-2">
                     <div className="flex items-center">
-                      <Phone className="h-4 w-4 text-redcross mr-2" />
+                      <Phone className="h-4 w-4 text-blue-500 mr-2" />
                       <span>{resource.phone}</span>
                     </div>
                     <div className="flex items-center">
-                      <ExternalLink className="h-4 w-4 text-redcross mr-2" />
-                      <a href={`https://${resource.website}`} className="text-redcross hover:underline" target="_blank" rel="noreferrer">
+                      <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                      <a href={`https://${resource.website}`} className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
                         {resource.website}
                       </a>
                     </div>
@@ -179,7 +179,7 @@ const Emergency = () => {
         </section>
         
         {/* Emergency Preparation */}
-        <section className="py-16 bg-redcross/10">
+        <section className="py-16 bg-blue-50">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">Know Before You Need Help</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
@@ -187,7 +187,7 @@ const Emergency = () => {
               and keep important resources handy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-redcross hover:bg-redcross/90">
+              <Button>
                 Download Emergency Guide
               </Button>
               <Button variant="outline">

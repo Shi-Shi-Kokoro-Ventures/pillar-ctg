@@ -5,9 +5,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin, Home, Phone, HeartPulse, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// This would normally be stored in an environment variable
-const MAPBOX_TOKEN = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
-
 // Types for resource locations
 interface ResourceLocation {
   id: number;
@@ -76,6 +73,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [selectedResource, setSelectedResource] = useState<ResourceLocation | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const markerRefs = useRef<{ [key: number]: mapboxgl.Marker }>({});
+  const [mapToken, setMapToken] = useState<string>("");
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false);
+  const [tokenError, setTokenError] = useState<boolean>(false);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -109,43 +109,55 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Initialize map on component mount
+  // Initialize map when token is available
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !mapToken) return;
     
-    // Initialize Mapbox
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [initialLng, initialLat],
-      zoom: initialZoom
-    });
+    try {
+      // Initialize Mapbox
+      mapboxgl.accessToken = mapToken;
+      
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/streets-v12",
+        center: [initialLng, initialLat],
+        zoom: initialZoom
+      });
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
-    
-    // Add geolocate control
-    map.current.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true
-      })
-    );
+      // Add navigation controls
+      map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+      
+      // Add geolocate control
+      map.current.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      );
 
-    // Add markers when map loads
-    map.current.on("load", () => {
-      addMarkers();
-    });
+      // Add markers when map loads
+      map.current.on("load", () => {
+        setMapLoaded(true);
+        addMarkers();
+      });
 
-    // Cleanup function
-    return () => {
-      map.current?.remove();
-    };
-  }, [initialLat, initialLng, initialZoom]);
+      // Handle errors
+      map.current.on("error", (e) => {
+        console.error("Mapbox error:", e);
+        setTokenError(true);
+      });
+
+      // Cleanup function
+      return () => {
+        map.current?.remove();
+      };
+    } catch (error) {
+      console.error("Error initializing map:", error);
+      setTokenError(true);
+    }
+  }, [initialLat, initialLng, initialZoom, mapToken]);
 
   // Add markers for all resource locations
   const addMarkers = () => {
@@ -200,6 +212,52 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     });
   };
 
+  // Handle token input
+  const handleTokenInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMapToken(e.target.value);
+    setTokenError(false);
+  };
+
+  // Show token input if not provided
+  if (!mapToken) {
+    return (
+      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner">
+        <h3 className="text-xl font-medium mb-4">Interactive Resource Map</h3>
+        <p className="mb-4 text-gray-600">Please enter your Mapbox access token to load the interactive map:</p>
+        <div className="space-y-4">
+          <input 
+            type="text" 
+            placeholder="Enter Mapbox token..." 
+            className="w-full px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={handleTokenInput}
+          />
+          <p className="text-sm text-gray-500">
+            You can obtain a Mapbox token by signing up at <a href="https://www.mapbox.com/" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">mapbox.com</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if token is invalid
+  if (tokenError) {
+    return (
+      <div className="w-full p-6 bg-red-50 rounded-lg border border-red-200">
+        <h3 className="text-xl font-medium mb-4 text-red-700">Map Error</h3>
+        <p className="mb-4 text-red-600">There was an error loading the map. Please check your Mapbox token and try again.</p>
+        <Button 
+          variant="outline" 
+          onClick={() => {
+            setMapToken("");
+            setTokenError(false);
+          }}
+        >
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       {/* Category filters */}
@@ -253,7 +311,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       {/* Map container */}
       <div className="relative">
-        <div ref={mapContainer} className="w-full h-96 rounded-lg overflow-hidden" />
+        <div ref={mapContainer} className="w-full h-96 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+          {!mapLoaded && (
+            <div className="text-center p-6">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-500">Loading map...</p>
+            </div>
+          )}
+        </div>
         
         {/* Resource information card */}
         {selectedResource && (
