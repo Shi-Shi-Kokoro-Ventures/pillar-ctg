@@ -50,7 +50,7 @@ const Statistics = React.memo(() => {
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Our Impact</h2>
+          <h2 className="text-3xl font-bold mb-4">Our Goal</h2>
           <p className="text-lg text-gray-600">
             Every day, the P.I.L.L.A.R. Initiative works to provide stable housing and support services to those in need, building foundations for lasting independence.
           </p>
