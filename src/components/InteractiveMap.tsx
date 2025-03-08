@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -258,10 +257,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           properties: location // Store location data directly
         });
 
+        const markerCanvas = createMarkerIcon(location.category);
+        
         const style = new Style({
           image: new Icon({
-            img: createMarkerIcon(location.category),
-            imgSize: [32, 32],
+            img: markerCanvas,
             scale: 1
           })
         });
@@ -398,10 +398,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       const properties = feature.get('properties') as ResourceLocation;
       
       if (!category || properties.category === category) {
+        const markerCanvas = createMarkerIcon(properties.category);
+        
         feature.setStyle(new Style({
           image: new Icon({
-            img: createMarkerIcon(properties.category),
-            imgSize: [32, 32],
+            img: markerCanvas,
             scale: 1
           })
         }));
