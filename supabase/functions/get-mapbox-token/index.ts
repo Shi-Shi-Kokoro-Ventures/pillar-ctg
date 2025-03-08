@@ -20,6 +20,9 @@ serve(async (req) => {
       throw new Error('MAPBOX_PUB_KEY not found in environment');
     }
 
+    // Log the token for debugging (will be truncated in logs)
+    console.log(`Retrieved Mapbox token (first few chars): ${mapboxToken.substring(0, 5)}...`);
+
     return new Response(
       JSON.stringify({
         token: mapboxToken,

@@ -5,6 +5,7 @@ import { MapPin, Home, Phone, HeartPulse, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import LoadingSpinner from "./LoadingSpinner";
 
 // Types for resource locations
 interface ResourceLocation {
@@ -151,7 +152,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     const fetchMapboxToken = async () => {
       try {
+        console.log("Fetching Mapbox token...");
         setIsLoadingToken(true);
+        
         const { data, error } = await supabase.functions.invoke('get-mapbox-token');
         
         if (error) {
@@ -162,6 +165,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           return;
         }
         
+        console.log("Token response:", data ? "Token received" : "No token data");
+        
         if (!data?.token) {
           setMapError('Mapbox token not found');
           setIsLoadingToken(false);
@@ -170,6 +175,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         }
 
         // Initialize map with token
+        console.log("Initializing map...");
         initializeMap(data.token);
         setIsLoadingToken(false);
       } catch (error) {
@@ -185,12 +191,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Initialize map with the token
   const initializeMap = (token: string) => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current) {
+      console.error("Map container not available");
+      return;
+    }
     
     try {
+      console.log("Setting Mapbox token...");
+      
       // Initialize Mapbox
       mapboxgl.accessToken = token;
       
+      console.log("Creating map instance...");
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/streets-v12",
@@ -198,6 +210,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         zoom: initialZoom
       });
 
+      console.log("Adding map controls...");
       // Add navigation controls
       map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
       
@@ -213,6 +226,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       // Add markers when map loads
       map.current.on("load", () => {
+        console.log("Map loaded, setting mapLoaded state");
         setMapLoaded(true);
         addMarkers();
       });
@@ -226,11 +240,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       // Cleanup function
       return () => {
-        map.current?.remove();
+        if (map.current) {
+          console.log("Removing map");
+          map.current.remove();
+        }
       };
     } catch (error) {
       console.error("Error initializing map:", error);
-      setMapError('Could not initialize the map');
+      setMapError('Could not initialize the map: ' + (error instanceof Error ? error.message : String(error)));
       toast.error('Error initializing map');
     }
   };
@@ -328,30 +345,58 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   }, [selectedCategory, mapLoaded]);
 
-  // Show loading state
+  // Show loading state with more details
   if (isLoadingToken) {
     return (
-      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex items-center justify-center">
+      <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading map resources...</p>
+          <p className="text-gray-600 mb-2">Loading map resources...</p>
+          <p className="text-sm text-gray-500">Retrieving map information</p>
         </div>
       </div>
     );
   }
 
-  // Show error message if there's a problem
+  // Show more detailed error message if there's a problem
   if (mapError) {
     return (
       <div className="w-full p-6 bg-red-50 rounded-lg border border-red-200">
         <h3 className="text-xl font-medium mb-4 text-red-700">Map Error</h3>
         <p className="mb-4 text-red-600">{mapError}</p>
-        <Button 
-          variant="outline" 
-          onClick={() => window.location.reload()}
-        >
-          Refresh Page
-        </Button>
+        <div className="flex space-x-4">
+          <Button 
+            variant="outline" 
+            onClick={() => window.location.reload()}
+          >
+            Refresh Page
+          </Button>
+          <Button
+            variant="default"
+            onClick={() => {
+              setMapError(null);
+              setIsLoadingToken(true);
+              const fetchMapboxToken = async () => {
+                try {
+                  const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+                  
+                  if (error || !data?.token) {
+                    throw new Error(error?.message || 'Token not available');
+                  }
+                  
+                  initializeMap(data.token);
+                  setIsLoadingToken(false);
+                } catch (error) {
+                  setMapError('Failed to retry: ' + (error instanceof Error ? error.message : String(error)));
+                  setIsLoadingToken(false);
+                }
+              };
+              fetchMapboxToken();
+            }}
+          >
+            Try Again
+          </Button>
+        </div>
       </div>
     );
   }
@@ -410,10 +455,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       {/* Map container */}
       <div className="relative">
         <div ref={mapContainer} className="w-full h-96 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-          {!mapLoaded && (
+          {!mapLoaded && !mapError && (
             <div className="text-center p-6">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
               <p className="text-gray-500">Loading map...</p>
+              <p className="text-sm text-gray-400 mt-2">This may take a moment</p>
             </div>
           )}
         </div>
