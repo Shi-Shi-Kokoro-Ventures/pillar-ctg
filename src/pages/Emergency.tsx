@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Phone, MapPin, Clock, ExternalLink } from "lucide-react";
+import InteractiveMap from "@/components/InteractiveMap";
 
 const Emergency = () => {
   return (
@@ -114,13 +115,8 @@ const Emergency = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Find Help Near You</h2>
             
             <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-              <div className="aspect-video bg-gray-200 rounded mb-6 relative">
-                {/* This would be replaced with an actual map component in a real application */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-gray-600">Interactive Resource Map</p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
+              <InteractiveMap />
+              <p className="text-gray-600 mt-6 mb-6">
                 Use our interactive map to find emergency housing resources in your area, 
                 including shelters, food banks, healthcare facilities, and other support services.
               </p>
