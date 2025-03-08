@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -132,26 +131,22 @@ const Donate = () => {
       <Navbar />
       
       <main className="flex-grow">
-        <section className="bg-gray-50 py-12 md:py-20">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-              <div className="w-full md:w-1/2 order-2 md:order-1">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">Make a Difference Today</h1>
-                <p className="text-xl text-gray-600 mb-8">
-                  Your donation directly supports our mission to provide stable housing and support services
-                  to individuals and families experiencing homelessness.
-                </p>
-              </div>
-              
-              <div className="w-full md:w-1/2 order-1 md:order-2">
-                <div className="relative rounded-lg overflow-hidden shadow-xl">
-                  <img 
-                    src="/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png" 
-                    alt="Donation center with food and supplies" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </div>
+        <section 
+          className="py-20 md:py-32 bg-cover bg-center relative"
+          style={{ 
+            backgroundImage: `url('/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-2xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white text-shadow">Make a Difference Today</h1>
+              <p className="text-xl text-white mb-8">
+                Your donation directly supports our mission to provide stable housing and support services
+                to individuals and families experiencing homelessness.
+              </p>
             </div>
           </div>
         </section>
