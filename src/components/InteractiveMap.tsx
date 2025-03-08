@@ -11,7 +11,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Overlay from 'ol/Overlay';
 import 'ol/ol.css';
-import { Home, Phone, HeartPulse, Utensils, MapPin } from "lucide-react";
+import { Home, Phone, HeartPulse, Utensils, MapPin, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Types for resource locations
