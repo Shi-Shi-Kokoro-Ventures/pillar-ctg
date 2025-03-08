@@ -16,7 +16,7 @@ interface ResourceLocation {
   lng: number;
 }
 
-// Sample data for demonstration purposes
+// Sample data for demonstration purposes - expanded with more locations per category
 const resourceLocations: ResourceLocation[] = [
   {
     id: 1,
@@ -53,6 +53,42 @@ const resourceLocations: ResourceLocation[] = [
     phone: "(555) 456-7890",
     lat: 38.9112,
     lng: -77.0300
+  },
+  {
+    id: 5,
+    name: "North Side Shelter",
+    category: "shelter",
+    address: "555 North Ave, Anytown, USA",
+    phone: "(555) 567-8901",
+    lat: 38.9200,
+    lng: -77.0350
+  },
+  {
+    id: 6,
+    name: "Family Health Center",
+    category: "healthcare",
+    address: "777 Medical Dr, Anytown, USA",
+    phone: "(555) 678-9012",
+    lat: 38.9050,
+    lng: -77.0450
+  },
+  {
+    id: 7,
+    name: "Community Food Bank",
+    category: "food",
+    address: "888 Hunger St, Anytown, USA",
+    phone: "(555) 789-0123",
+    lat: 38.9100,
+    lng: -77.0250
+  },
+  {
+    id: 8,
+    name: "Mental Health Crisis Line",
+    category: "crisis",
+    address: "999 Support Lane, Anytown, USA",
+    phone: "(555) 890-1234",
+    lat: 38.9150,
+    lng: -77.0420
   }
 ];
 
@@ -76,6 +112,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [mapToken, setMapToken] = useState<string>("");
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
   const [tokenError, setTokenError] = useState<boolean>(false);
+  const [visibleResources, setVisibleResources] = useState<ResourceLocation[]>(resourceLocations);
 
   // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
@@ -163,6 +200,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const addMarkers = () => {
     if (!map.current) return;
 
+    // Clear existing markers
+    Object.values(markerRefs.current).forEach(marker => {
+      marker.remove();
+    });
+    markerRefs.current = {};
+
     resourceLocations.forEach((location) => {
       // Create HTML element for marker
       const el = document.createElement("div");
@@ -185,6 +228,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       // Store marker reference
       markerRefs.current[location.id] = marker;
       
+      // Set initial visibility based on selected category
+      if (selectedCategory && location.category !== selectedCategory) {
+        el.style.display = "none";
+      }
+      
       // Add click event
       el.addEventListener("click", () => {
         setSelectedResource(location);
@@ -196,9 +244,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     });
   };
 
-  // Filter markers by category
+  // Filter markers by category and fit the map to show them
   const filterByCategory = (category: string | null) => {
     setSelectedCategory(category);
+    
+    let filtered: ResourceLocation[] = [];
     
     resourceLocations.forEach(location => {
       const marker = markerRefs.current[location.id];
@@ -206,11 +256,38 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       
       if (!category || location.category === category) {
         marker.getElement().style.display = "flex";
+        filtered.push(location);
       } else {
         marker.getElement().style.display = "none";
       }
     });
+    
+    setVisibleResources(filtered);
+    
+    // If we have filtered locations, fit map to show them all
+    if (filtered.length > 0 && map.current) {
+      // Create bounds object
+      const bounds = new mapboxgl.LngLatBounds();
+      
+      // Extend bounds to include all filtered locations
+      filtered.forEach(location => {
+        bounds.extend([location.lng, location.lat]);
+      });
+      
+      // Fit map to these bounds with some padding
+      map.current.fitBounds(bounds, {
+        padding: 50,
+        maxZoom: 14
+      });
+    }
   };
+
+  // Effect to update markers when selected category changes
+  useEffect(() => {
+    if (mapLoaded && map.current) {
+      filterByCategory(selectedCategory);
+    }
+  }, [selectedCategory, mapLoaded]);
 
   // Handle token input
   const handleTokenInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +346,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           className="flex items-center gap-2"
         >
           <MapPin className="h-4 w-4" />
-          All Resources
+          All Resources ({resourceLocations.length})
         </Button>
         <Button 
           variant={selectedCategory === "shelter" ? "default" : "outline"}
@@ -278,7 +355,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           className="flex items-center gap-2"
         >
           <Home className="h-4 w-4" />
-          Shelters
+          Shelters ({resourceLocations.filter(r => r.category === "shelter").length})
         </Button>
         <Button 
           variant={selectedCategory === "healthcare" ? "default" : "outline"}
@@ -287,7 +364,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           className="flex items-center gap-2"
         >
           <HeartPulse className="h-4 w-4" />
-          Healthcare
+          Healthcare ({resourceLocations.filter(r => r.category === "healthcare").length})
         </Button>
         <Button 
           variant={selectedCategory === "food" ? "default" : "outline"}
@@ -296,7 +373,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           className="flex items-center gap-2"
         >
           <Utensils className="h-4 w-4" />
-          Food
+          Food ({resourceLocations.filter(r => r.category === "food").length})
         </Button>
         <Button 
           variant={selectedCategory === "crisis" ? "default" : "outline"}
@@ -305,7 +382,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           className="flex items-center gap-2"
         >
           <Phone className="h-4 w-4" />
-          Crisis Centers
+          Crisis Centers ({resourceLocations.filter(r => r.category === "crisis").length})
         </Button>
       </div>
       
@@ -350,6 +427,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             <div className="mt-4">
               <Button variant="default" size="sm" className="w-full">
                 Get Directions
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {/* No resources message */}
+        {mapLoaded && selectedCategory && visibleResources.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+            <div className="text-center p-6">
+              <p className="text-gray-700 font-medium">No {selectedCategory} resources found in this area.</p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => filterByCategory(null)}
+                className="mt-4"
+              >
+                Show All Resources
               </Button>
             </div>
           </div>
