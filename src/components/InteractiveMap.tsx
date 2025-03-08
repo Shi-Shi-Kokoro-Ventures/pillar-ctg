@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -15,7 +14,6 @@ import { Home, Phone, HeartPulse, Utensils, MapPin, AlertTriangle } from "lucide
 import { Button } from "@/components/ui/button";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-// Types for resource locations
 interface ResourceLocation {
   id: number;
   name: string;
@@ -26,7 +24,6 @@ interface ResourceLocation {
   lng: number;
 }
 
-// Sample data for demonstration purposes
 const resourceLocations: ResourceLocation[] = [
   {
     id: 1,
@@ -102,7 +99,6 @@ const resourceLocations: ResourceLocation[] = [
   }
 ];
 
-// Map component configuration
 interface InteractiveMapProps {
   initialLat?: number;
   initialLng?: number;
@@ -118,6 +114,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   fullScreen = false,
   onViewFullMap
 }) => {
+  console.log("Rendering InteractiveMap component");
+  
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<Map | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -130,8 +128,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [mapInitAttempts, setMapInitAttempts] = useState<number>(0);
   const [isContainerReady, setIsContainerReady] = useState<boolean>(false);
+  const containerCheckInterval = useRef<number | null>(null);
 
-  // Function to get marker color based on category
   const getMarkerColor = (category: string): string => {
     switch (category) {
       case "shelter":
@@ -147,7 +145,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Function to get icon based on category
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "shelter":
@@ -163,7 +160,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Create a canvas icon for a marker
   const createMarkerIcon = (category: string): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
     canvas.width = 32; // Increased size for better visibility
@@ -188,14 +184,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     return canvas;
   };
 
-  // Check if the map container is ready
   useEffect(() => {
+    console.log("Checking if container is ready");
+    
     const checkContainer = () => {
       if (mapRef.current) {
-        console.log('Map container ref is available, dimensions:', 
-          mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
+        const width = mapRef.current.offsetWidth;
+        const height = mapRef.current.offsetHeight;
         
-        if (mapRef.current.offsetWidth > 0 && mapRef.current.offsetHeight > 0) {
+        console.log('Map container dimensions:', width, 'x', height);
+        
+        if (width > 0 && height > 0) {
+          console.log('Container is sized and ready');
           setIsContainerReady(true);
           return true;
         }
@@ -204,16 +204,36 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     };
 
     // Check immediately
-    if (checkContainer()) return;
+    if (checkContainer()) {
+      if (containerCheckInterval.current) {
+        clearInterval(containerCheckInterval.current);
+        containerCheckInterval.current = null;
+      }
+      return;
+    }
     
-    // If not ready, set up an observer to detect when the container is ready
+    // Set up an interval to periodically check the container
+    containerCheckInterval.current = window.setInterval(() => {
+      if (checkContainer()) {
+        if (containerCheckInterval.current) {
+          clearInterval(containerCheckInterval.current);
+          containerCheckInterval.current = null;
+        }
+      }
+    }, 250);
+    
+    // Also set up a resize observer to detect changes
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
           console.log('Container now has dimensions:', 
             entry.contentRect.width, 'x', entry.contentRect.height);
           setIsContainerReady(true);
-          observer.disconnect();
+          
+          if (containerCheckInterval.current) {
+            clearInterval(containerCheckInterval.current);
+            containerCheckInterval.current = null;
+          }
         }
       }
     });
@@ -223,11 +243,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
     
     return () => {
+      if (containerCheckInterval.current) {
+        clearInterval(containerCheckInterval.current);
+        containerCheckInterval.current = null;
+      }
       observer.disconnect();
     };
   }, []);
 
-  // Function to initialize the map
   const initializeMap = () => {
     console.log('Initializing map, container ready:', isContainerReady);
     
@@ -355,6 +378,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           if (selectedCategory) {
             filterByCategory(selectedCategory);
           }
+          
+          console.log('Map initialization complete and successful');
         }
       }, 500);
 
@@ -365,7 +390,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   };
 
-  // Initialize map when container is ready
   useEffect(() => {
     if (isContainerReady) {
       console.log('Container is ready, initializing map');
@@ -381,126 +405,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     };
   }, [isContainerReady, initialLat, initialLng, initialZoom]);
 
-  // Force map to update its size when container dimensions change
-  useEffect(() => {
-    if (mapInstanceRef.current && mapLoaded) {
-      const updateMapSize = () => {
-        if (mapInstanceRef.current) {
-          console.log('Updating map size');
-          mapInstanceRef.current.updateSize();
-        }
-      };
-      
-      // Update immediately and after a short delay
-      updateMapSize();
-      
-      const timer1 = setTimeout(updateMapSize, 100);
-      const timer2 = setTimeout(updateMapSize, 500);
-      const timer3 = setTimeout(updateMapSize, 1000);
-      
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-        clearTimeout(timer3);
-      };
-    }
-  }, [mapLoaded, fullScreen]);
-
-  // Listen for window resize events
-  useEffect(() => {
-    const handleResize = () => {
-      if (mapInstanceRef.current) {
-        console.log('Window resized, updating map size');
-        mapInstanceRef.current.updateSize();
-      }
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Filter features by category
-  const filterByCategory = (category: string | null) => {
-    setSelectedCategory(category);
-    
-    let filtered: ResourceLocation[] = [];
-    
-    if (!mapInstanceRef.current) return;
-    
-    const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
-      layer => layer instanceof VectorLayer
-    ) as VectorLayer<VectorSource> | undefined;
-    
-    if (!vectorLayer) return;
-    
-    const source = vectorLayer.getSource();
-    if (!source) return;
-    
-    const features = source.getFeatures();
-    
-    features.forEach(feature => {
-      const properties = feature.get('properties') as ResourceLocation;
-      
-      if (!category || properties.category === category) {
-        const markerCanvas = createMarkerIcon(properties.category);
-        
-        feature.setStyle(new Style({
-          image: new Icon({
-            img: markerCanvas,
-            scale: 1
-          })
-        }));
-        filtered.push(properties);
-      } else {
-        // Hide feature by setting empty style
-        feature.setStyle(new Style({}));
-      }
-    });
-    
-    setVisibleResources(filtered);
-    
-    // Fit map to visible features if there are any
-    if (filtered.length > 0 && mapInstanceRef.current) {
-      const visibleFeatures = features.filter(feature => {
-        const properties = feature.get('properties') as ResourceLocation;
-        return !category || properties.category === category;
-      });
-      
-      if (visibleFeatures.length > 0) {
-        const extent = visibleFeatures.reduce((ext, feature) => {
-          const geometry = feature.getGeometry();
-          if (geometry) {
-            return ext ? [
-              Math.min(ext[0], geometry.getExtent()[0]),
-              Math.min(ext[1], geometry.getExtent()[1]),
-              Math.max(ext[2], geometry.getExtent()[2]),
-              Math.max(ext[3], geometry.getExtent()[3])
-            ] : geometry.getExtent();
-          }
-          return ext;
-        }, undefined as number[] | undefined);
-        
-        if (extent) {
-          mapInstanceRef.current.getView().fit(extent, {
-            padding: [50, 50, 50, 50],
-            maxZoom: 14
-          });
-        }
-      }
-    }
-  };
-
-  // Update filtering when category changes
   useEffect(() => {
     if (mapLoaded && mapInstanceRef.current) {
       filterByCategory(selectedCategory);
     }
   }, [selectedCategory, mapLoaded]);
 
-  // Show error state if map failed to load
   if (error) {
     return (
       <div className="w-full p-6 bg-red-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
@@ -527,7 +437,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="w-full p-6 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center justify-center" style={{ height: fullScreen ? '600px' : '400px' }}>
@@ -542,7 +451,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   return (
     <div className="w-full">
-      {/* Category filters */}
       <div className="mb-4 flex flex-wrap gap-2">
         <TooltipProvider>
           <Tooltip>
@@ -640,7 +548,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </TooltipProvider>
       </div>
       
-      {/* Map container */}
       <div className="relative">
         <div 
           ref={mapRef} 
@@ -651,7 +558,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           }}
         ></div>
         
-        {/* Resource popup overlay */}
         <div 
           ref={popupRef} 
           className="absolute bg-white rounded-lg shadow-lg p-4 transform -translate-x-1/2 z-50"
@@ -680,7 +586,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           )}
         </div>
         
-        {/* Fullscreen button */}
         {!fullScreen && onViewFullMap && (
           <div className="absolute bottom-3 right-3">
             <Button 
@@ -695,7 +600,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
       </div>
       
-      {/* Legend (only for full screen mode) */}
       {fullScreen && (
         <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-100">
           <h3 className="font-bold mb-2">Map Legend</h3>
@@ -715,7 +619,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
       
-      {/* List of visible resources (for full screen mode) */}
       {fullScreen && (
         <div className="mt-4">
           <h3 className="font-bold mb-3">
@@ -731,7 +634,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 className="p-3 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md cursor-pointer transition-shadow"
                 onClick={() => {
                   setSelectedResource(resource);
-                  // Find the feature for this resource and center the map on it
                   if (mapInstanceRef.current) {
                     const vectorLayer = mapInstanceRef.current.getLayers().getArray().find(
                       layer => layer instanceof VectorLayer
