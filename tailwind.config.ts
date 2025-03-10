@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -27,7 +26,7 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				redcross: {
 					DEFAULT: '#1EAEDB',
-					dark: '#0D8CBF',
+					dark: '#0D6E97',
 					light: '#33C3F0'
 				},
 				primary: {

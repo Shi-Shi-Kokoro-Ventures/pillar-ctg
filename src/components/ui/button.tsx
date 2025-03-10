@@ -19,6 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:ring-2 focus:ring-secondary focus:ring-offset-2",
         ghost: "hover:bg-accent hover:text-accent-foreground focus:bg-accent/80 focus:text-accent-foreground focus:ring-1 focus:ring-accent",
         link: "text-redcross underline-offset-4 hover:underline focus:text-redcross/80 focus:underline",
+        whiteButton: "bg-white text-redcross-dark hover:bg-gray-100 font-semibold focus:ring-2 focus:ring-redcross focus:ring-offset-2",
       },
       size: {
         default: "h-10 px-4 py-2",
