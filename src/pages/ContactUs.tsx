@@ -50,9 +50,9 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold mb-1">Email</h3>
-                        <p className="text-gray-600 mb-1">General Inquiries: info@pillar.org</p>
-                        <p className="text-gray-600">Housing Assistance: housing@pillar.org</p>
-                        <p className="text-gray-600">Volunteer Opportunities: volunteer@pillar.org</p>
+                        <p className="text-gray-600 mb-1">General Inquiries: info@pillarinitiativectg.org</p>
+                        <p className="text-gray-600">Housing Assistance: housing@pillarinitiativectg.org</p>
+                        <p className="text-gray-600">Volunteer Opportunities: volunteer@pillarinitiativectg.org</p>
                       </div>
                     </div>
                     

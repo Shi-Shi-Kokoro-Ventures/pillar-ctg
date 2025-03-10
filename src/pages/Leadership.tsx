@@ -15,7 +15,7 @@ const Leadership = () => {
       socialLinks: {
         linkedin: "#",
         twitter: "#",
-        email: "maya@pillar.org"
+        email: "maya@pillarinitiativectg.org"
       }
     },
     {
@@ -25,7 +25,7 @@ const Leadership = () => {
       image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
       socialLinks: {
         linkedin: "#",
-        email: "james@pillar.org"
+        email: "james@pillarinitiativectg.org"
       }
     },
     {
@@ -36,7 +36,7 @@ const Leadership = () => {
       socialLinks: {
         linkedin: "#",
         twitter: "#",
-        email: "sophia@pillar.org"
+        email: "sophia@pillarinitiativectg.org"
       }
     },
     {
@@ -46,7 +46,7 @@ const Leadership = () => {
       image: "/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png",
       socialLinks: {
         linkedin: "#",
-        email: "michael@pillar.org"
+        email: "michael@pillarinitiativectg.org"
       }
     },
     {
@@ -57,7 +57,7 @@ const Leadership = () => {
       socialLinks: {
         linkedin: "#",
         twitter: "#",
-        email: "aisha@pillar.org"
+        email: "aisha@pillarinitiativectg.org"
       }
     },
     {
@@ -68,7 +68,7 @@ const Leadership = () => {
       socialLinks: {
         linkedin: "#",
         facebook: "#",
-        email: "robert@pillar.org"
+        email: "robert@pillarinitiativectg.org"
       }
     }
   ];
