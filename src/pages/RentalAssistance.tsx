@@ -25,7 +25,7 @@ const RentalAssistance = () => {
                 Emergency and long-term rental assistance to help individuals and families maintain stable housing.
               </p>
               <Link to="/apply-for-assistance">
-                <Button className="shadow-lg hover:shadow-xl bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full">
+                <Button className="shadow-lg hover:shadow-xl text-white px-6 py-3 rounded-full">
                   Apply for Assistance
                 </Button>
               </Link>
@@ -44,10 +44,10 @@ const RentalAssistance = () => {
               </p>
               
               <div className="space-y-8 mt-12">
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-redcross">
                   <div className="flex items-start">
-                    <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                      <DollarSign className="h-6 w-6 text-purple-600" />
+                    <div className="bg-redcross/10 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                      <DollarSign className="h-6 w-6 text-redcross" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold mb-2">Emergency Rental Assistance</h3>
@@ -59,10 +59,10 @@ const RentalAssistance = () => {
                   </div>
                 </div>
                 
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-600">
+                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-redcross">
                   <div className="flex items-start">
-                    <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                      <DollarSign className="h-6 w-6 text-purple-600" />
+                    <div className="bg-redcross/10 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                      <DollarSign className="h-6 w-6 text-redcross" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold mb-2">Ongoing Rental Subsidies</h3>
@@ -74,10 +74,10 @@ const RentalAssistance = () => {
                   </div>
                 </div>
                 
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-700">
+                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-redcross">
                   <div className="flex items-start">
-                    <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                      <DollarSign className="h-6 w-6 text-purple-600" />
+                    <div className="bg-redcross/10 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                      <DollarSign className="h-6 w-6 text-redcross" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold mb-2">Security Deposit Assistance</h3>
@@ -94,7 +94,7 @@ const RentalAssistance = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="py-16 bg-purple-600 text-white">
+        <section className="py-16 bg-redcross text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">Need Help With Rent?</h2>
             <p className="text-xl max-w-2xl mx-auto mb-8">
@@ -103,12 +103,12 @@ const RentalAssistance = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/apply-for-assistance">
-                <Button className="bg-white text-purple-600 hover:bg-gray-100 border-2 border-white shadow-lg">
+                <Button className="bg-white text-redcross hover:bg-gray-100 border-2 border-white shadow-lg">
                   Apply for Assistance
                 </Button>
               </Link>
               <Link to="/contact-us">
-                <Button variant="outline" className="border-2 border-white text-white hover:bg-purple-700 focus:bg-white focus:text-purple-700 focus:ring-2 focus:ring-white shadow-lg">
+                <Button variant="outline" className="border-2 border-white text-white hover:bg-redcross-dark focus:bg-white focus:text-redcross focus:ring-2 focus:ring-white shadow-lg">
                   Schedule a Consultation
                 </Button>
               </Link>
