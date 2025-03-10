@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+<lov-code>
+import React, { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckSquare, HelpCircle, Calendar, Info, Upload, Shield, AlertTriangle } from "lucide-react";
+import { FileText, CheckSquare, HelpCircle, Calendar, Info, Upload, Shield, AlertTriangle, Pen, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Form,
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   // Personal Information
@@ -75,7 +77,11 @@ const formSchema = z.object({
   housingDoc: z.instanceof(FileList).optional().refine(files => !files || files.length > 0, "Housing document is required"),
   additionalDocs: z.instanceof(FileList).optional(),
   
-  // Certification - Changed from literal(true) to boolean() to fix type errors
+  // Signature Section
+  signature: z.string().min(2, "Your signature is required"),
+  signatureDate: z.string().min(1, "Signature date is required"),
+  
+  // Certification
   certifyTrue: z.boolean().refine(val => val === true, {
     message: "You must certify that information is true",
   }),
@@ -106,6 +112,12 @@ const AssistanceApplication = () => {
     income: null,
     housing: null,
     additional: null
+  });
+  
+  const signatureRef = useRef<HTMLTextAreaElement>(null);
+  const [currentDateTime, setCurrentDateTime] = useState<string>(() => {
+    const now = new Date();
+    return now.toLocaleString();
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -139,6 +151,8 @@ const AssistanceApplication = () => {
       race: "",
       veteran: "",
       disability: "",
+      signature: "",
+      signatureDate: new Date().toISOString().split('T')[0],
       certifyTrue: false,
       consentToShare: false,
       dataPrivacyConsent: false,
@@ -202,6 +216,16 @@ const AssistanceApplication = () => {
       return `${digitsOnly.slice(0, 3)}-${digitsOnly.slice(3, 5)}-${digitsOnly.slice(5, 9)}`;
     }
   };
+  
+  // Update current date and time every minute
+  React.useEffect(() => {
+    const timerId = setInterval(() => {
+      const now = new Date();
+      setCurrentDateTime(now.toLocaleString());
+    }, 60000);
+    
+    return () => clearInterval(timerId);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -885,351 +909,3 @@ const AssistanceApplication = () => {
                                       });
                                     }}
                                     className="flex-1"
-                                    {...rest}
-                                  />
-                                </div>
-                                {renderFileNames(value as unknown as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Front of driver's license, state ID, or passport
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="identificationBackDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Government ID - Back <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        identificationBack: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                    {...rest}
-                                  />
-                                </div>
-                                {renderFileNames(value as unknown as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Back of driver's license, state ID, or second passport page
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="proofOfIncomeDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Proof of Income <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        income: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                    {...rest}
-                                  />
-                                </div>
-                                {renderFileNames(value as unknown as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Pay stubs, tax returns, benefit statements, etc.
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="housingDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Housing Document <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        housing: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                    {...rest}
-                                  />
-                                </div>
-                                {renderFileNames(value as unknown as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Lease agreement, mortgage statement, eviction notice, etc.
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="additionalDocs"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Additional Documents (Optional)
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    multiple
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        additional: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                    {...rest}
-                                  />
-                                </div>
-                                {renderFileNames(value as unknown as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Utility bills, medical expenses, other relevant documentation
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Legal Disclaimers */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <Shield className="mr-2 h-5 w-5" />
-                      Legal Notices
-                    </h2>
-                    <div className="bg-gray-50 p-4 rounded border mb-4 text-sm">
-                      <p className="mb-4"><strong>Privacy Act Statement:</strong> The information collected on this form is protected under the Privacy Act of 1974. The P.I.L.L.A.R. Initiative is authorized to collect this information pursuant to the Housing and Community Development Act of 1987, as amended. The information provided herein will be used exclusively to determine eligibility for housing assistance and will be maintained in strict accordance with all applicable federal and state privacy laws.</p>
-                      
-                      <p className="mb-4"><strong>Equal Opportunity Statement:</strong> The P.I.L.L.A.R. Initiative is committed to ensuring equal access to housing and related services. In compliance with federal, state, and local anti-discrimination laws, we do not discriminate on the basis of race, color, religion, sex, national origin, ancestry, age, disability, familial status, or any other characteristic protected by law. All qualified applicants are welcome to apply for housing assistance without fear of discrimination or retaliation.</p>
-                      
-                      <p><strong>Background Check Notice:</strong> As a condition of the housing assistance application process, the P.I.L.L.A.R. Initiative will conduct comprehensive background checks on all applicants. These checks may include, but are not limited to, the review of criminal history, credit records, eviction history, and the verification of the information provided in this application. Applicants should be aware that the results of these background checks will be used to assess eligibility for housing assistance and that any inaccuracies or intentional misrepresentations may result in disqualification from the program.</p>
-                    </div>
-                  </div>
-
-                  {/* Certification and Consent */}
-                  <div>
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <CheckSquare className="mr-2 h-5 w-5" />
-                      Certification and Consent
-                    </h2>
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="certifyTrue"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 mt-0.5 accent-blue-600"
-                                checked={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                I certify that all information provided in this application is true and complete to the best of my knowledge. <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I understand that providing false information may result in denial of assistance, termination of benefits, and possible legal action including prosecution for fraud.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="consentToShare"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 mt-0.5 accent-blue-600"
-                                checked={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                I consent to the collection and sharing of my information with relevant agencies for the purpose of providing assistance and reporting to government funders. <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                This information will be used to determine eligibility and may be shared with HUD and other government agencies as required by funding guidelines.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="dataPrivacyConsent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 mt-0.5 accent-blue-600"
-                                checked={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                I consent to the P.I.L.L.A.R. Initiative's Data Privacy Policy and authorize the secure storage of my personal information. <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I understand my information will be stored on secure servers and accessed only by authorized personnel on a need-to-know basis.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="backgroundCheckConsent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 mt-0.5 accent-blue-600"
-                                checked={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                I authorize the P.I.L.L.A.R. Initiative to conduct a background check, which may include criminal history, credit check, and verification of all information provided. <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I understand that this information will be used to determine eligibility for housing assistance and will be kept confidential.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="fraudWarningAcknowledge"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border-2 border-red-200 bg-red-50 p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 mt-0.5 accent-red-600"
-                                checked={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel className="font-bold text-red-600">
-                                FRAUD WARNING: I acknowledge that submission of false information is a federal crime under 18 U.S.C. § 1001 and may result in fines up to $250,000 and/or imprisonment of up to 5 years. <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription className="text-red-600">
-                                By checking this box, I affirm that I understand the severity of providing false information on this application and that all information I have provided is true and accurate.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <div className="pt-6">
-                    <Button 
-                      type="submit" 
-                      className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
-                    >
-                      Submit Application
-                    </Button>
-                    <p className="text-sm text-gray-500 mt-4">
-                      After submission, your application will be reviewed within 3-5 business days. One of our housing specialists will contact you at the phone number or email provided to discuss next steps.
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      If you have questions or need assistance completing this form, please call our Housing Assistance Hotline at (555) 123-4567, Monday through Friday, 9:00 AM to 5:00 PM.
-                    </p>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          </div>
-        </section>
-
-        {/* Legal Footer Banner */}
-        <section className="bg-gray-800 text-white py-6">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-sm">
-              The P.I.L.L.A.R. Initiative is an equal opportunity provider and employer. We do not discriminate based on race, color, national origin, religion, sex, gender identity, sexual orientation, disability, age, marital status, family/parental status, income derived from a public assistance program, or political beliefs.
-            </p>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default AssistanceApplication;
