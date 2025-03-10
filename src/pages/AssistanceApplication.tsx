@@ -216,7 +216,7 @@ const AssistanceApplication = () => {
               {/* Organization Logo */}
               <div className="flex justify-center mb-6">
                 <img 
-                  src="/lovable-uploads/0683dfe9-d692-4760-9453-647c50707306.png" 
+                  src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" 
                   alt="P.I.L.L.A.R. Initiative Logo" 
                   className="h-20 md:h-24"
                 />
