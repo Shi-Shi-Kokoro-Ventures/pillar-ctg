@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -1054,11 +1053,11 @@ const AssistanceApplication = () => {
                       Legal Notices
                     </h2>
                     <div className="bg-gray-50 p-4 rounded border mb-4 text-sm">
-                      <p className="mb-2"><strong>Privacy Act Statement:</strong> The information collected on this form is protected under the Privacy Act of 1974. The P.I.L.L.A.R. Initiative is authorized to collect this information under the Housing and Community Development Act of 1987, as amended. The information will be used to determine eligibility for housing assistance.</p>
+                      <p className="mb-4"><strong>Privacy Act Statement:</strong> The information collected on this form is protected under the Privacy Act of 1974. The P.I.L.L.A.R. Initiative is authorized to collect this information pursuant to the Housing and Community Development Act of 1987, as amended. The information provided herein will be used exclusively to determine eligibility for housing assistance and will be maintained in strict accordance with all applicable federal and state privacy laws.</p>
                       
-                      <p className="mb-2"><strong>Equal Opportunity Statement:</strong> The P.I.L.L.A.R. Initiative does not discriminate on the basis of race, color, religion, sex, national origin, ancestry, age, disability, familial status, or any other protected characteristic.</p>
+                      <p className="mb-4"><strong>Equal Opportunity Statement:</strong> The P.I.L.L.A.R. Initiative is committed to ensuring equal access to housing and related services. In compliance with federal, state, and local anti-discrimination laws, we do not discriminate on the basis of race, color, religion, sex, national origin, ancestry, age, disability, familial status, or any other characteristic protected by law. All qualified applicants are welcome to apply for housing assistance without fear of discrimination or retaliation.</p>
                       
-                      <p><strong>Background Check Notice:</strong> The P.I.L.L.A.R. Initiative conducts background checks on all applicants for housing assistance. This may include criminal history, credit check, eviction history, and verification of information provided on this application.</p>
+                      <p><strong>Background Check Notice:</strong> As a condition of the housing assistance application process, the P.I.L.L.A.R. Initiative will conduct comprehensive background checks on all applicants. These checks may include, but are not limited to, the review of criminal history, credit records, eviction history, and the verification of the information provided in this application. Applicants should be aware that the results of these background checks will be used to assess eligibility for housing assistance and that any inaccuracies or intentional misrepresentations may result in disqualification from the program.</p>
                     </div>
                   </div>
 
