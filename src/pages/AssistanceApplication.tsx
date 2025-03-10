@@ -1,4 +1,4 @@
-<lov-code>
+
 import React, { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -261,11 +261,38 @@ const AssistanceApplication = () => {
         {/* Legal Information Banner */}
         <section className="bg-blue-700 text-white py-4">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto flex items-center justify-center">
-              <Shield className="h-6 w-6 mr-3 flex-shrink-0" />
-              <p className="text-sm md:text-base font-medium">
-                Your information is protected under federal and state privacy laws. Application information is used solely for determining eligibility for housing assistance.
-              </p>
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold mb-1">Privacy Act Statement</h3>
+                    <p className="text-sm">
+                      The information collected on this form is protected under the Privacy Act of 1974. The P.I.L.L.A.R. Initiative is authorized to collect this information pursuant to the Housing and Community Development Act of 1987, as amended. The information provided herein will be used exclusively to determine eligibility for housing assistance and will be maintained in strict accordance with all applicable federal and state privacy laws.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold mb-1">Equal Opportunity Statement</h3>
+                    <p className="text-sm">
+                      The P.I.L.L.A.R. Initiative is committed to ensuring equal access to housing and related services. In compliance with federal, state, and local anti-discrimination laws, we do not discriminate on the basis of race, color, religion, sex, national origin, ancestry, age, disability, familial status, or any other characteristic protected by law. All qualified applicants are welcome to apply for housing assistance without fear of discrimination or retaliation.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold mb-1">Background Check Notice</h3>
+                    <p className="text-sm">
+                      As a condition of the housing assistance application process, the P.I.L.L.A.R. Initiative will conduct comprehensive background checks on all applicants. These checks may include, but are not limited to, the review of criminal history, credit records, eviction history, and the verification of the information provided in this application. Applicants should be aware that the results of these background checks will be used to assess eligibility for housing assistance and that any inaccuracies or intentional misrepresentations may result in disqualification from the program.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -909,3 +936,364 @@ const AssistanceApplication = () => {
                                       });
                                     }}
                                     className="flex-1"
+                                  />
+                                </div>
+                                {renderFileNames(value as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="identificationBackDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Government ID - Back <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        identificationBack: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                  />
+                                </div>
+                                {renderFileNames(value as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="proofOfIncomeDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Proof of Income <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        income: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                  />
+                                </div>
+                                {renderFileNames(value as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Pay stubs, tax returns, or benefit statements from the last 60 days
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="housingDoc"
+                        render={({ field: { onChange, value, ...rest } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Housing Document <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        housing: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                  />
+                                </div>
+                                {renderFileNames(value as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Lease agreement, rent receipts, eviction notice, or utility bills
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="additionalDocs"
+                        render={({ field: { onChange, value, ...rest } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Additional Documents (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    multiple
+                                    onChange={(e) => {
+                                      onChange(e.target.files);
+                                      setUploadedFiles({
+                                        ...uploadedFiles,
+                                        additional: e.target.files ? Array.from(e.target.files) : null
+                                      });
+                                    }}
+                                    className="flex-1"
+                                  />
+                                </div>
+                                {renderFileNames(value as FileList)}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Signature Section */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Pen className="mr-2 h-5 w-5" />
+                      Electronic Signature
+                    </h2>
+                    <div className="bg-gray-50 p-4 rounded mb-6">
+                      <div className="flex items-center mb-2">
+                        <Clock className="h-5 w-5 text-gray-500 mr-2" />
+                        <span className="text-sm text-gray-500">Current date and time: {currentDateTime}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        By typing your full name below, you are signing this application electronically. 
+                        You agree that your electronic signature is the legal equivalent of your manual signature.
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="signature"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Full Name Signature <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Type your full legal name" 
+                                className="min-h-[60px]" 
+                                ref={signatureRef}
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="signatureDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Date <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Certification and Agreements */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <CheckSquare className="mr-2 h-5 w-5" />
+                      Certification and Agreements
+                    </h2>
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="certifyTrue"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                Certification of Truth <span className="text-red-500">*</span>
+                              </FormLabel>
+                              <FormDescription>
+                                I certify that all information provided in this application is true, correct, and complete to the best of my knowledge.
+                              </FormDescription>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="consentToShare"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                Consent to Share Information <span className="text-red-500">*</span>
+                              </FormLabel>
+                              <FormDescription>
+                                I authorize P.I.L.L.A.R. Initiative to share my information with partner agencies for the purpose of providing housing assistance.
+                              </FormDescription>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="dataPrivacyConsent"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                Data Privacy Policy Consent <span className="text-red-500">*</span>
+                              </FormLabel>
+                              <FormDescription>
+                                I acknowledge that I have read and understand the P.I.L.L.A.R. Initiative's Data Privacy Policy.
+                              </FormDescription>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="backgroundCheckConsent"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                Background Check Consent <span className="text-red-500">*</span>
+                              </FormLabel>
+                              <FormDescription>
+                                I consent to a background check as part of the housing assistance application process.
+                              </FormDescription>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="fraudWarningAcknowledge"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-yellow-50">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4 mt-1"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                Fraud Warning Acknowledgment <span className="text-red-500">*</span>
+                              </FormLabel>
+                              <FormDescription>
+                                I acknowledge that providing false, incomplete, or misleading information on this application is a federal offense and may result in denial of assistance and possible legal prosecution.
+                              </FormDescription>
+                              <FormMessage />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-center pt-6">
+                    <Button type="submit" size="lg" className="w-full md:w-auto">
+                      Submit Application
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default AssistanceApplication;
