@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Home, CheckCircle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const AffordableHousing = () => {
   return (
@@ -20,9 +21,11 @@ const AffordableHousing = () => {
                 Access quality, affordable housing options that provide stability 
                 and security for individuals and families on limited incomes.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
-                Check Eligibility
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
+                  Check Eligibility
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -81,12 +84,16 @@ const AffordableHousing = () => {
               quality housing they can afford. Contact us today to learn more about eligibility and availability.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100">
-                Apply Now
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-blue-700">
-                Contact a Housing Specialist
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-white text-blue-600 hover:bg-gray-100">
+                  Apply Now
+                </Button>
+              </Link>
+              <Link to="/contact-us">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                  Contact a Housing Specialist
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

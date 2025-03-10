@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Home, Users, Calendar, ArrowRight, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Housing = () => {
   return (
@@ -20,9 +21,11 @@ const Housing = () => {
                 Building bridges from homelessness to permanent housing through supportive, 
                 temporary housing solutions that restore dignity and independence.
               </p>
-              <Button className="bg-redcross hover:bg-redcross/90 text-white px-6 py-3 rounded-full">
-                Apply for Housing
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-redcross hover:bg-redcross/90 text-white px-6 py-3 rounded-full">
+                  Apply for Housing
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -123,9 +126,11 @@ const Housing = () => {
                         <li>• Commitment to program goals</li>
                       </ul>
                     </div>
-                    <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
-                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Link to="/apply-for-assistance">
+                      <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
+                        Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -165,12 +170,16 @@ const Housing = () => {
               Contact us today to learn more about eligibility and availability.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100">
-                Apply for Housing
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-blue-700">
-                Contact a Housing Specialist
-              </Button>
+              <Link to="/apply-for-assistance">
+                <Button className="bg-white text-blue-600 hover:bg-gray-100">
+                  Apply for Housing
+                </Button>
+              </Link>
+              <Link to="/contact-us">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                  Contact a Housing Specialist
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
