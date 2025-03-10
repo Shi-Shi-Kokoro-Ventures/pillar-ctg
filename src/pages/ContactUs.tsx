@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -375,7 +376,7 @@ const ContactUs = () => {
               </div>
               <div>
                 <Link to="/housing-crisis-hotline">
-                  <Button className="bg-white text-redcross hover:bg-gray-100">
+                  <Button size="lg" className="bg-white text-redcross hover:bg-gray-100 shadow-lg border-2 border-white hover:scale-105 transition-all duration-300 font-semibold px-8 py-6">
                     Learn More About Our Crisis Services
                   </Button>
                 </Link>
@@ -391,4 +392,3 @@ const ContactUs = () => {
 };
 
 export default ContactUs;
-
