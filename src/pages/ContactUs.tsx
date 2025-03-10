@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -45,7 +44,6 @@ const ContactUs = () => {
 
   const onSubmit = (data: FormValues) => {
     console.log("Form data:", data);
-    // Here you would typically send the data to your backend
     setIsSubmitted(true);
     setTimeout(() => {
       setIsSubmitted(false);
@@ -78,7 +76,7 @@ const ContactUs = () => {
                   className="border-redcross text-redcross hover:bg-redcross/10"
                   onClick={() => document.getElementById('our-locations')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  Find Our Locations
+                  Find Our Location
                 </Button>
               </div>
             </div>
@@ -301,11 +299,17 @@ const ContactUs = () => {
           </div>
         </section>
 
-        {/* Map Section */}
+        {/* Map Section - Updated to focus on Main Office Only */}
         <section id="our-locations" className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Our Locations</h2>
+              <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Our Location</h2>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                <p className="text-gray-700 text-lg mb-6">
+                  P.I.L.L.A.R. Initiative operates from our main office in Wilmington, DE. Our regional directors coordinate resources and services across different locations to help communities throughout the area.
+                </p>
+              </div>
               
               <div className="bg-white p-4 rounded-lg shadow-md overflow-hidden">
                 <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
@@ -323,24 +327,36 @@ const ContactUs = () => {
                 </div>
               </div>
               
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <LocationCard 
-                  title="Main Office"
-                  address={["1201 Orange St #600", "Wilmington, DE 19801"]}
-                  phone="(555) 123-4567"
-                />
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+                  <h3 className="font-bold text-lg mb-3 text-gray-800">Main Office</h3>
+                  <p className="text-gray-600 text-sm mb-1">1201 Orange St #600</p>
+                  <p className="text-gray-600 text-sm mb-1">Wilmington, DE 19801</p>
+                  <p className="text-gray-600 text-sm mt-2">
+                    <a href="tel:(555)123-4567" className="text-redcross hover:underline flex items-center mt-2">
+                      <Phone className="h-4 w-4 mr-1" />
+                      (555) 123-4567
+                    </a>
+                  </p>
+                  <a 
+                    href="https://maps.google.com/?q=1201+Orange+St+600+Wilmington+DE+19801"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-redcross hover:underline text-sm flex items-center mt-3"
+                  >
+                    <MapPin className="h-4 w-4 mr-1" />
+                    Get Directions
+                  </a>
+                </div>
                 
-                <LocationCard 
-                  title="Family Resource Center"
-                  address={["456 Support Street", "Anytown, ST 12345"]}
-                  phone="(555) 987-6543"
-                />
-                
-                <LocationCard 
-                  title="Housing Assistance Office"
-                  address={["789 Housing Boulevard", "Anytown, ST 12345"]}
-                  phone="(555) 456-7890"
-                />
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+                  <h3 className="font-bold text-lg mb-3 text-gray-800">Regional Services</h3>
+                  <p className="text-gray-600 mb-3">
+                    Our regional directors coordinate services in various communities. Contact our main office to connect with the regional director in your area.
+                  </p>
+                  <p className="text-gray-600 text-sm mb-1">Housing Assistance: <a href="tel:1-800-555-HOME" className="text-redcross hover:underline">1-800-555-HOME (4663)</a></p>
+                  <p className="text-gray-600 text-sm mb-1">Email: <a href="mailto:regional@pillarinitiativectg.org" className="text-redcross hover:underline">regional@pillarinitiativectg.org</a></p>
+                </div>
               </div>
             </div>
           </div>
@@ -374,31 +390,5 @@ const ContactUs = () => {
   );
 };
 
-// Helper component for location cards
-const LocationCard = ({ title, address, phone }) => (
-  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
-    <h3 className="font-bold text-lg mb-3 text-gray-800">{title}</h3>
-    {address.map((line, i) => (
-      <p key={i} className="text-gray-600 text-sm mb-1">{line}</p>
-    ))}
-    {phone && (
-      <p className="text-gray-600 text-sm mt-2">
-        <a href={`tel:${phone}`} className="text-redcross hover:underline flex items-center mt-2">
-          <Phone className="h-4 w-4 mr-1" />
-          {phone}
-        </a>
-      </p>
-    )}
-    <a 
-      href={`https://maps.google.com/?q=${address.join(' ')}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-redcross hover:underline text-sm flex items-center mt-3"
-    >
-      <MapPin className="h-4 w-4 mr-1" />
-      Get Directions
-    </a>
-  </div>
-);
-
 export default ContactUs;
+
