@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -68,11 +67,11 @@ export const Navbar = () => {
     {
       title: "About Us",
       submenu: [
-        { name: "Our Mission", link: "/" },
+        { name: "Our Mission", link: "/our-mission" },
         { name: "Leadership", link: "/leadership" },
-        { name: "Partners", link: "/all-news" },
-        { name: "Careers", link: "/volunteer" },
-        { name: "Contact Us", link: "/all-ways" }
+        { name: "Partners", link: "/partners" },
+        { name: "Careers", link: "/careers" },
+        { name: "Contact Us", link: "/contact-us" }
       ]
     }
   ];
