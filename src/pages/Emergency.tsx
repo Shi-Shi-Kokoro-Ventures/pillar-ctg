@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Phone, MapPin, Clock, ExternalLink } from "lucide-react";
+import { AlertTriangle, Phone, MapPin, Clock, ExternalLink, Home, FileText, LifeBuoy } from "lucide-react";
 import InteractiveMap from "@/components/InteractiveMap";
 
 const Emergency = () => {
@@ -133,7 +135,11 @@ const Emergency = () => {
                     <span>Multiple locations throughout the city</span>
                   </li>
                 </ul>
-                <Button className="w-full">Find Shelter</Button>
+                <Link to="/housing">
+                  <Button className="w-full">
+                    <Home className="mr-2" /> Find Shelter
+                  </Button>
+                </Link>
               </div>
               
               {/* Service 2 */}
@@ -152,7 +158,11 @@ const Emergency = () => {
                     <span>Services available in all counties</span>
                   </li>
                 </ul>
-                <Button className="w-full">Apply for Assistance</Button>
+                <Link to="/apply-for-assistance">
+                  <Button className="w-full">
+                    <FileText className="mr-2" /> Apply for Assistance
+                  </Button>
+                </Link>
               </div>
               
               {/* Service 3 */}
@@ -171,7 +181,11 @@ const Emergency = () => {
                     <span>Phone and in-person support</span>
                   </li>
                 </ul>
-                <Button className="w-full">Get Support</Button>
+                <Link to="/housing-crisis-hotline">
+                  <Button className="w-full">
+                    <LifeBuoy className="mr-2" /> Get Support
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
