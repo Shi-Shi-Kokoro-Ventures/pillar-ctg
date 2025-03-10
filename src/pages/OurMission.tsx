@@ -13,7 +13,7 @@ const OurMission = () => {
       
       <main className="flex-grow pt-20">
         {/* Hero Section */}
-        <section className="bg-blue-50 py-16 md:py-24">
+        <section className="bg-purple-50 py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Mission</h1>
@@ -21,7 +21,7 @@ const OurMission = () => {
                 P.I.L.L.A.R is dedicated to ending homelessness and building stable communities by providing housing, support services, and advocacy for vulnerable populations.
               </p>
               <Link to="/donate">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
+                <Button className="shadow-lg hover:shadow-xl">
                   Support Our Mission
                 </Button>
               </Link>
@@ -36,7 +36,7 @@ const OurMission = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
                   <div className="flex items-center mb-6">
-                    <Heart className="h-8 w-8 text-blue-600 mr-3" />
+                    <Heart className="h-8 w-8 text-purple-600 mr-3" />
                     <h2 className="text-3xl font-bold">Our Mission</h2>
                   </div>
                   <p className="text-lg text-gray-600 mb-6">
@@ -49,7 +49,7 @@ const OurMission = () => {
                 
                 <div>
                   <div className="flex items-center mb-6">
-                    <Target className="h-8 w-8 text-blue-600 mr-3" />
+                    <Target className="h-8 w-8 text-purple-600 mr-3" />
                     <h2 className="text-3xl font-bold">Our Vision</h2>
                   </div>
                   <p className="text-lg text-gray-600 mb-6">
@@ -69,7 +69,7 @@ const OurMission = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
-                <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <Users className="h-12 w-12 text-purple-600 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold">Our Core Values</h2>
               </div>
               
@@ -128,17 +128,17 @@ const OurMission = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div>
-                  <div className="text-4xl font-bold text-blue-600 mb-2">1,250+</div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">1,250+</div>
                   <p className="text-xl text-gray-700">Individuals housed annually</p>
                 </div>
                 
                 <div>
-                  <div className="text-4xl font-bold text-blue-600 mb-2">85%</div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">85%</div>
                   <p className="text-xl text-gray-700">Remain stably housed after 1 year</p>
                 </div>
                 
                 <div>
-                  <div className="text-4xl font-bold text-blue-600 mb-2">3,000+</div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">3,000+</div>
                   <p className="text-xl text-gray-700">Received support services</p>
                 </div>
               </div>
@@ -147,7 +147,7 @@ const OurMission = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="py-16 bg-blue-600 text-white">
+        <section className="py-16 bg-purple-600 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">Join Our Mission</h2>
             <p className="text-xl max-w-2xl mx-auto mb-8">
@@ -155,22 +155,22 @@ const OurMission = () => {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/donate">
-                <Button className="bg-white text-blue-600 hover:bg-gray-100 focus:bg-blue-50 focus:ring-2 focus:ring-white focus:text-blue-700">
+                <Button className="bg-white text-purple-600 hover:bg-gray-100 border-2 border-white shadow-lg">
                   Donate
                 </Button>
               </Link>
               <Link to="/volunteer">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
+                <Button variant="outline" className="border-2 border-white text-white hover:bg-purple-700 focus:bg-white focus:text-purple-700 focus:ring-2 focus:ring-white shadow-lg">
                   Volunteer
                 </Button>
               </Link>
               <Link to="/advocate">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
+                <Button variant="outline" className="border-2 border-white text-white hover:bg-purple-700 focus:bg-white focus:text-purple-700 focus:ring-2 focus:ring-white shadow-lg">
                   Advocate
                 </Button>
               </Link>
               <Link to="/corporate-partnerships">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
+                <Button variant="outline" className="border-2 border-white text-white hover:bg-purple-700 focus:bg-white focus:text-purple-700 focus:ring-2 focus:ring-white shadow-lg">
                   Partner With Us
                 </Button>
               </Link>
