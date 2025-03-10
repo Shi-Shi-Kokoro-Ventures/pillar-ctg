@@ -1,3 +1,4 @@
+
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -154,22 +155,22 @@ const OurMission = () => {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/donate">
-                <Button className="bg-white text-blue-600 hover:bg-gray-100">
+                <Button className="bg-white text-blue-600 hover:bg-gray-100 focus:bg-blue-50 focus:ring-2 focus:ring-white focus:text-blue-700">
                   Donate
                 </Button>
               </Link>
               <Link to="/volunteer">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
                   Volunteer
                 </Button>
               </Link>
               <Link to="/advocate">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
                   Advocate
                 </Button>
               </Link>
               <Link to="/corporate-partnerships">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
+                <Button variant="outline" className="border-white text-white hover:bg-blue-700 focus:bg-white focus:text-blue-700 focus:ring-2 focus:ring-white">
                   Partner With Us
                 </Button>
               </Link>
