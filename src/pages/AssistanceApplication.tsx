@@ -241,7 +241,7 @@ const AssistanceApplication = () => {
                 <img 
                   src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" 
                   alt="P.I.L.L.A.R. Initiative Logo" 
-                  className="h-32 md:h-40" // Increased height from h-20 md:h-24 to h-32 md:h-40
+                  className="h-32 md:h-40" 
                 />
               </div>
               
