@@ -9,6 +9,7 @@ import { toast } from "sonner";
 const FindLocalOffice = () => {
   const [searchResults, setSearchResults] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [showFullMap, setShowFullMap] = useState(false);
 
   const handleSearch = async (zipCode: string) => {
     // Set loading state
@@ -86,7 +87,22 @@ const FindLocalOffice = () => {
           <div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">View on Map</h2>
             <div className="h-[500px] rounded-lg overflow-hidden border border-gray-200">
-              <InteractiveMap />
+              {showFullMap ? (
+                <InteractiveMap 
+                  initialLat={38.9072} 
+                  initialLng={-77.0369} 
+                  initialZoom={12} 
+                  fullScreen={true} 
+                />
+              ) : (
+                <InteractiveMap 
+                  initialLat={38.9072} 
+                  initialLng={-77.0369} 
+                  initialZoom={12} 
+                  fullScreen={false} 
+                  onViewFullMap={() => setShowFullMap(true)} 
+                />
+              )}
             </div>
           </div>
         </div>
