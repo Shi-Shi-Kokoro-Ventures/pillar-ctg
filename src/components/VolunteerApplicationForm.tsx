@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useRef } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar, Clock, Heart, AlertCircle, User, MapPin, Phone, Mail, Briefcase } from "lucide-react";
+import { Calendar, Clock, Heart, AlertCircle, User, MapPin, Phone, Mail, Briefcase, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { generatePDF } from "react-to-pdf";
 
 const formSchema = z.object({
   // Personal Information
@@ -74,6 +74,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
   onOpenChange 
 }) => {
   const { toast } = useToast();
+  const pdfRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -105,14 +106,39 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
     },
   });
 
+  const formatDataForPDF = (data: FormValues) => {
+    const availabilityStr = data.availability.join(", ");
+    
+    return {
+      ...data,
+      availability: availabilityStr,
+    };
+  };
+
   const onSubmit = (data: FormValues) => {
     console.log("Form submitted:", data);
-    // Here you would send the form data to your backend
+    
+    const formattedData = formatDataForPDF(data);
     
     toast({
       title: "Application Submitted!",
       description: "Thank you for your interest in volunteering. We'll contact you soon.",
       duration: 5000,
+    });
+    
+    generatePDF(pdfRef, {
+      filename: `volunteer_application_${data.name.replace(/\s+/g, '_')}.pdf`,
+      page: { 
+        margin: 20,
+        format: 'letter',
+        orientation: 'portrait'
+      }
+    }).then(() => {
+      toast({
+        title: "PDF Downloaded",
+        description: "Your application has been downloaded as a PDF.",
+        duration: 3000,
+      });
     });
     
     form.reset();
@@ -139,6 +165,133 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
           </DialogDescription>
           <Separator className="my-2" />
         </DialogHeader>
+        
+        <div className="hidden">
+          <div ref={pdfRef} className="p-8 bg-white">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" 
+                alt="P.I.L.L.A.R. Initiative Logo" 
+                className="h-24 object-contain"
+              />
+            </div>
+            <h1 className="text-2xl font-bold text-center mb-6">Volunteer Application</h1>
+            
+            {form.getValues() && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Personal Information</h2>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <p className="font-medium">Name:</p>
+                      <p>{form.getValues("name")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Date of Birth:</p>
+                      <p>{form.getValues("dateOfBirth")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Email:</p>
+                      <p>{form.getValues("email")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Phone:</p>
+                      <p>{form.getValues("phone")}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="font-medium">Address:</p>
+                      <p>{`${form.getValues("address")}, ${form.getValues("city")}, ${form.getValues("state")} ${form.getValues("zipCode")}`}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Emergency Contact</h2>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <p className="font-medium">Name:</p>
+                      <p>{form.getValues("emergencyContactName")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Phone:</p>
+                      <p>{form.getValues("emergencyContactPhone")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Relationship:</p>
+                      <p>{form.getValues("emergencyContactRelationship")}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Volunteer Preferences</h2>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <p className="font-medium">Opportunity:</p>
+                      <p>{form.getValues("opportunity")}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Start Date:</p>
+                      <p>{form.getValues("startDate")}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="font-medium">Availability:</p>
+                      <p>{form.getValues("availability")?.join(", ")}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Skills & Experience</h2>
+                  <div className="mt-2">
+                    <p className="font-medium">Relevant Experience:</p>
+                    <p>{form.getValues("experience")}</p>
+                    <p className="font-medium mt-2">Special Skills:</p>
+                    <p>{form.getValues("skills")}</p>
+                    <p className="font-medium mt-2">Languages:</p>
+                    <p>{form.getValues("languages")}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Background Information</h2>
+                  <div className="mt-2">
+                    <p className="font-medium">Criminal Record:</p>
+                    <p>{form.getValues("hasCriminalRecord") ? "Yes" : "No"}</p>
+                    {form.getValues("hasCriminalRecord") && (
+                      <>
+                        <p className="font-medium mt-2">Details:</p>
+                        <p>{form.getValues("criminalRecordDetails")}</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Additional Information</h2>
+                  <div className="mt-2">
+                    <p className="font-medium">Why do you want to volunteer:</p>
+                    <p>{form.getValues("message")}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-semibold border-b pb-2">Agreements</h2>
+                  <ul className="list-disc pl-5 mt-2">
+                    <li>Background Check Authorization: {form.getValues("agreeToBackgroundCheck") ? "Agreed" : "Not Agreed"}</li>
+                    <li>Code of Conduct Agreement: {form.getValues("agreeToCodeOfConduct") ? "Agreed" : "Not Agreed"}</li>
+                    <li>Liability Release: {form.getValues("agreeToRelease") ? "Agreed" : "Not Agreed"}</li>
+                    <li>Terms and Conditions: {form.getValues("agreeToTerms") ? "Agreed" : "Not Agreed"}</li>
+                  </ul>
+                </div>
+                
+                <div className="mt-8 border-t pt-4">
+                  <p className="text-sm">Application submitted on: {new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-4">
@@ -668,9 +821,36 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
               <p className="mt-1">Information collected is protected under our Privacy Policy and will only be used for volunteer coordination and legally required record-keeping.</p>
             </div>
             
-            <DialogFooter>
+            <DialogFooter className="flex flex-col sm:flex-row gap-2">
               <Button type="submit" className="w-full bg-redcross hover:bg-redcross/90">
                 Submit Application
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  if (form.formState.isValid) {
+                    generatePDF(pdfRef, {
+                      filename: `volunteer_application_preview.pdf`,
+                      page: { 
+                        margin: 20,
+                        format: 'letter',
+                        orientation: 'portrait'
+                      }
+                    });
+                  } else {
+                    toast({
+                      title: "Form Incomplete",
+                      description: "Please complete all required fields to download the form.",
+                      variant: "destructive",
+                      duration: 3000,
+                    });
+                    form.trigger();
+                  }
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" /> Download as PDF
               </Button>
             </DialogFooter>
           </form>
