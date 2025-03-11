@@ -8,6 +8,8 @@ import MissionStatement from "@/components/MissionStatement";
 import WaysToHelp from "@/components/WaysToHelp";
 import NewsUpdates from "@/components/NewsUpdates";
 import Footer from "@/components/Footer";
+import ParticlesBackground from "@/components/ParticlesBackground";
+import FeaturedPrograms from "@/components/FeaturedPrograms";
 
 const Index = () => {
   // Add smooth scrolling effect
@@ -39,15 +41,21 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
+      {/* Particle background for futuristic effect */}
+      <ParticlesBackground />
+      
       <Navbar />
       
       <main>
         {/* Hero Section */}
         <Hero />
         
-        {/* Statistics Section */}
+        {/* Statistics Section with animated counting */}
         <Statistics />
+        
+        {/* Featured Programs Section */}
+        <FeaturedPrograms />
         
         {/* Mission Statement */}
         <MissionStatement />
@@ -93,7 +101,7 @@ const BackToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed right-6 bottom-6 p-3 rounded-full bg-redcross text-white shadow-lg transition-all duration-300 transform hover:scale-110 z-50 ${
+      className={`fixed right-6 bottom-6 p-4 rounded-full bg-gradient-to-r from-redcross to-redcross-light text-white shadow-lg transition-all duration-300 transform hover:scale-110 z-50 ${
         showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
       }`}
       aria-label="Back to top"

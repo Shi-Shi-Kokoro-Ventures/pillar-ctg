@@ -6,6 +6,7 @@
 /* General styles */
 body {
   @apply font-sans antialiased bg-gray-50 text-gray-900;
+  overflow-x: hidden;
 }
 
 /* Typography */
@@ -125,7 +126,49 @@ select {
   top: 0;
 }
 
-/* New animation styles for futuristic design */
+/* Futuristic styling additions */
+.text-shadow {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+}
+
+.neo-glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/30 shadow-xl;
+}
+
+.futuristic-border {
+  @apply relative overflow-hidden;
+}
+
+.futuristic-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(30, 174, 219, 0.5), transparent);
+}
+
+.futuristic-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(30, 174, 219, 0.5), transparent);
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-redcross-dark to-redcross;
+}
+
+/* Animation styles for futuristic design */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -148,6 +191,24 @@ select {
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(30, 174, 219, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(30, 174, 219, 0.6);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
 }
@@ -156,12 +217,52 @@ select {
   animation: slide-in 0.5s ease-out forwards;
 }
 
-/* Glassmorphism effects */
-.glass-card {
-  @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+.animate-float {
+  animation: float 5s ease-in-out infinite;
 }
 
-/* Gradient text */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-redcross-dark to-redcross;
+.hover-glow:hover {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Mesh gradient background */
+.mesh-gradient-bg {
+  background-color: #f5f7fa;
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(30, 174, 219, 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(13, 110, 151, 0.07) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(51, 195, 240, 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(30, 174, 219, 0.05) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(51, 195, 240, 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(13, 110, 151, 0.05) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, rgba(51, 195, 240, 0.07) 0px, transparent 50%);
+}
+
+/* Shimmering effect for buttons and cards */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: rotate(30deg) translate(1%, 1%);
+  }
 }
