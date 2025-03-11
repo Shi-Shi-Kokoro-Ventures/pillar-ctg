@@ -51,6 +51,8 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const DonorRights = lazy(() => import("./pages/DonorRights"));
 const Accessibility = lazy(() => import("./pages/Accessibility"));
+// Integration Pages
+const N8nIntegration = lazy(() => import("./pages/N8nIntegration"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -124,13 +126,15 @@ const App = () => (
             <Route path="/donor-advised-funds" element={<DonorAdvisedFunds />} />
             <Route path="/find-local-office" element={<FindLocalOffice />} />
             <Route path="/accessibility" element={<Accessibility />} />
-            {/* Legal Pages */}
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              {/* Integration Pages */}
+              <Route path="/n8n-integration" element={<N8nIntegration />} />
+              {/* Legal Pages */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/donor-rights" element={<DonorRights />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="/coming-soon" element={<ComingSoon />} />
-            <Route path="*" element={<NotFound />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="/coming-soon" element={<ComingSoon />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
         </Suspense>
