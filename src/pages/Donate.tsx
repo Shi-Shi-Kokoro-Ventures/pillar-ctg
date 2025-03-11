@@ -209,6 +209,7 @@ const Donate = () => {
       <Navbar />
       
       <main className="flex-grow">
+        
         <section 
           className="py-20 md:py-32 bg-cover bg-center relative"
           style={{ 

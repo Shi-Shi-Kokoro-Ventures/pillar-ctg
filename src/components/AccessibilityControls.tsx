@@ -184,14 +184,23 @@ const AccessibilityControls = () => {
   };
 
   // Update body data attribute when accessibility visibility changes
+  // This is crucial for controlling focus styles across all pages
   useEffect(() => {
+    // Set the data attribute that controls focus styles
     document.body.setAttribute('data-accessibility-enabled', isVisible.toString());
+    
+    // Make sure we also apply the correct class for focus outlines
+    if (!isVisible) {
+      document.documentElement.classList.add('no-focus-outline');
+    } else if (focusVisible) {
+      document.documentElement.classList.remove('no-focus-outline');
+    }
     
     // Remove attribute when component unmounts
     return () => {
       document.body.removeAttribute('data-accessibility-enabled');
     };
-  }, [isVisible]);
+  }, [isVisible, focusVisible]);
 
   // Don't render the floating button anymore as it's now in the navbar
   if (!isVisible) {

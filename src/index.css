@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -66,15 +67,22 @@ select {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-/* Focus outline control - Only apply when accessibility is enabled */
+/* Focus outline control - Global rules */
 :focus {
-  outline: none;
+  outline: none !important;
 }
 
 :focus-visible {
-  outline: none;
+  outline: none !important;
 }
 
+/* Only show focus outlines when accessibility is enabled */
+body[data-accessibility-enabled="true"] :focus-visible {
+  outline: 3px solid #007bff !important;
+  outline-offset: 2px !important;
+}
+
+/* Explicit class for no focus outlines */
 .no-focus-outline :focus {
   outline: none !important;
   box-shadow: none !important;
@@ -150,17 +158,6 @@ select {
 /* Large cursor styles - Only apply when enabled */
 .large-cursor * {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M1 1l7 14h1l4-6 3 3V1z"/></svg>') 0 0, auto !important;
-}
-
-/* Focus styles - Only apply when focus outlines are enabled */
-:focus:not(.no-focus-outline *) {
-  outline: none;
-}
-
-body:not([data-accessibility-enabled="true"]) :focus {
-  outline: none !important;
-  box-shadow: none !important;
-  border-color: inherit !important;
 }
 
 /* Accessibility controls styling */
