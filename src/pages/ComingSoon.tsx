@@ -21,6 +21,10 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   const handleSearch = (zipCode: string) => {
     console.log("Searching for resources in zip code:", zipCode);
     // When the feature is built, this will be replaced with actual functionality
@@ -34,11 +38,11 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
           {/* Top Section with Button */}
           <div className="mb-8 text-left">
             <Button
-              onClick={() => navigate(-1)}
+              onClick={handleGoBack}
               variant="outline"
-              className="gap-2 hover-scale button-hover"
+              className="rounded-md hover:bg-blue-50 transition-all duration-300 button-hover-glow"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Go Back
             </Button>
           </div>
