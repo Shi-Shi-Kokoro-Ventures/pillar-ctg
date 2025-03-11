@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -184,12 +183,12 @@ export const Navbar = () => {
               )}
             </div>
 
-            <Link
-              to="/donate"
+            <Button
+              asChild
               className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-md px-4 py-2 shadow-sm hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-md button-hover"
             >
-              Donate Now
-            </Link>
+              <Link to="/donate">Donate Now</Link>
+            </Button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
