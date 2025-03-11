@@ -1,4 +1,3 @@
-
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -212,11 +211,6 @@ const Housing = () => {
               <Link to="/housing-waitlist">
                 <Button className="bg-white text-blue-700 hover:bg-gray-100 shadow-lg px-8 py-3 text-lg">
                   Apply for Housing
-                </Button>
-              </Link>
-              <Link to="/contact-us">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700/50 px-8 py-3 text-lg">
-                  Contact a Housing Specialist
                 </Button>
               </Link>
             </div>
