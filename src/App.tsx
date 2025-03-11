@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { Helmet } from "react-helmet";
 
 // Eagerly load the Index page for better initial load experience
 import Index from "./pages/Index";
@@ -51,10 +52,33 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const DonorRights = lazy(() => import("./pages/DonorRights"));
 const Accessibility = lazy(() => import("./pages/Accessibility"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Add security-enhancing query options
+      refetchOnWindowFocus: true,
+      staleTime: 300000, // 5 minutes
+      retry: 1,
+    },
+    mutations: {
+      // Add security-enhancing mutation options
+      retry: 0,
+    }
+  }
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <Helmet>
+      {/* Global security headers */}
+      <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+      <meta httpEquiv="X-Frame-Options" content="SAMEORIGIN" />
+      <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+      <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+      <meta httpEquiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+      <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://qbzuocsgfkugpsahesay.supabase.co;" />
+    </Helmet>
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
