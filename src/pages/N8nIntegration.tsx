@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, FileCode, PencilRuler, Database } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -98,6 +98,7 @@ const N8nIntegration = () => {
                   <li>Trigger notifications when new resources are available</li>
                   <li>Create tasks in project management tools</li>
                   <li>Send SMS alerts for emergency situations</li>
+                  <li><span className="font-medium">Update website content remotely</span></li>
                 </ul>
                 <div className="flex justify-center mt-6">
                   <Button asChild className="bg-blue-600 hover:bg-blue-700">
@@ -116,9 +117,10 @@ const N8nIntegration = () => {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="test">
-                  <TabsList className="grid w-full grid-cols-2">
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="test">Test Webhook</TabsTrigger>
                     <TabsTrigger value="docs">Documentation</TabsTrigger>
+                    <TabsTrigger value="content">Content Updates</TabsTrigger>
                   </TabsList>
                   <TabsContent value="test" className="space-y-4 pt-4">
                     <form onSubmit={handleTriggerN8n} className="space-y-4">
@@ -213,7 +215,104 @@ const N8nIntegration = () => {
                         </div>
                         <p className="text-xs text-gray-500 flex items-center gap-1">
                           <AlertCircle className="h-3 w-3" />
-                          For production, implement proper authentication for this webhook
+                          For production, use the webhook secret token to authenticate requests
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="content" className="space-y-4 pt-4">
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-lg">Updating Website Content via n8n</h3>
+                      
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-700">
+                          You can use n8n to remotely update content on the PILLAR Initiative website. This allows 
+                          administrators to modify website content without coding or direct database access.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                        <div className="flex items-start gap-2">
+                          <PencilRuler className="h-5 w-5 text-blue-500 mt-1 shrink-0" />
+                          <div>
+                            <h4 className="font-medium">How It Works</h4>
+                            <p className="text-sm text-gray-700">
+                              The n8n-webhook endpoint accepts PUT requests with specific content update payloads. 
+                              Each request must include an <code className="text-xs bg-gray-100 px-1">x-webhook-token</code> header 
+                              for authentication and an <code className="text-xs bg-gray-100 px-1">action</code> field set to 
+                              "update_content" in the request body.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                     
+                      <div className="space-y-3">
+                        <h4 className="font-medium flex items-center">
+                          <Database className="h-4 w-4 mr-2" />
+                          Example: Update News Content
+                        </h4>
+                        <div className="bg-gray-100 p-3 rounded-md">
+                          <code className="text-xs font-mono">
+                            // HTTP Request<br/>
+                            PUT https://qbzuocsgfkugpsahesay.supabase.co/functions/v1/n8n-webhook<br/>
+                            Headers: {'{'}<br/>
+                            &nbsp;&nbsp;"Content-Type": "application/json",<br/>
+                            &nbsp;&nbsp;"x-webhook-token": "pillar-n8n-webhook-secret"<br/>
+                            {'}'}<br/><br/>
+                            // Request Body<br/>
+                            {'{'}<br/>
+                            &nbsp;&nbsp;"action": "update_content",<br/>
+                            &nbsp;&nbsp;"contentType": "news",<br/>
+                            &nbsp;&nbsp;"data": {'{'}<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"title": "New Housing Initiative Announced",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"excerpt": "PILLAR Initiative launches new housing program",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"content": "Full article text goes here...",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"image": "https://example.com/image.jpg"<br/>
+                            &nbsp;&nbsp;{'}'}<br/>
+                            {'}'}
+                          </code>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Supported Content Types</h4>
+                        <ul className="space-y-3">
+                          <li className="bg-white p-3 rounded-md border border-gray-200 flex items-start gap-2">
+                            <FileCode className="h-5 w-5 text-redcross mt-1 shrink-0" />
+                            <div>
+                              <span className="font-medium">news</span>
+                              <p className="text-sm text-gray-600">Update or create news articles</p>
+                            </div>
+                          </li>
+                          <li className="bg-white p-3 rounded-md border border-gray-200 flex items-start gap-2">
+                            <FileCode className="h-5 w-5 text-redcross mt-1 shrink-0" />
+                            <div>
+                              <span className="font-medium">programs</span>
+                              <p className="text-sm text-gray-600">Modify program information</p>
+                            </div>
+                          </li>
+                          <li className="bg-white p-3 rounded-md border border-gray-200 flex items-start gap-2">
+                            <FileCode className="h-5 w-5 text-redcross mt-1 shrink-0" />
+                            <div>
+                              <span className="font-medium">mission</span>
+                              <p className="text-sm text-gray-600">Update mission statement content</p>
+                            </div>
+                          </li>
+                          <li className="bg-white p-3 rounded-md border border-gray-200 flex items-start gap-2">
+                            <FileCode className="h-5 w-5 text-redcross mt-1 shrink-0" />
+                            <div>
+                              <span className="font-medium">statistics</span>
+                              <p className="text-sm text-gray-600">Update site statistics</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <p className="text-sm text-gray-500 flex items-center">
+                          <AlertCircle className="h-4 w-4 mr-2 text-amber-500" />
+                          For security reasons, make sure to keep your webhook secret token secure and only share it with authorized administrators.
                         </p>
                       </div>
                     </div>
@@ -260,9 +359,9 @@ const N8nIntegration = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="font-semibold">Form Processing</h3>
+                  <h3 className="font-semibold">Content Management</h3>
                   <p className="text-sm text-gray-700">
-                    Process form submissions from the website and route data to appropriate systems.
+                    Update website content, news articles, and program information without manual coding.
                   </p>
                 </div>
                 
