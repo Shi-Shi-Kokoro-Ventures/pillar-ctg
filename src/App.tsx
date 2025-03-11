@@ -65,12 +65,12 @@ const N8nIntegration = lazy(() => import("./pages/N8nIntegration"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 
-// Enhanced QueryClient configuration
+// Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 300000, // 5 minutes
-      gcTime: 900000, // 15 minutes (replaces cacheTime)
+      gcTime: 900000, // 15 minutes
       retry: 1,
       refetchOnWindowFocus: true,
     },
@@ -79,18 +79,6 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <Helmet>
-      {/* Enhanced global security headers */}
-      <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-      <meta httpEquiv="X-Frame-Options" content="SAMEORIGIN" />
-      <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-      <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-      <meta httpEquiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), fullscreen=(self)" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-      <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://qbzuocsgfkugpsahesay.supabase.co; form-action 'self'; base-uri 'self'; frame-ancestors 'self'" />
-      <meta httpEquiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
-      <meta httpEquiv="Cache-Control" content="no-store, max-age=0" />
-    </Helmet>
     <TooltipProvider>
       <Sonner />
       <a href="#main-content" className="skip-to-content">Skip to content</a>
@@ -98,6 +86,18 @@ const App = () => (
       <BrowserRouter>
         <Suspense fallback={<LoadingSpinner />}>
           <main id="main-content" tabIndex={-1}>
+            <Helmet>
+              {/* Enhanced global security headers */}
+              <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+              <meta httpEquiv="X-Frame-Options" content="SAMEORIGIN" />
+              <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+              <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+              <meta httpEquiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), fullscreen=(self)" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+              <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://qbzuocsgfkugpsahesay.supabase.co; form-action 'self'; base-uri 'self'; frame-ancestors 'self'" />
+              <meta httpEquiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
+              <meta httpEquiv="Cache-Control" content="no-store, max-age=0" />
+            </Helmet>
             <Routes>
               <Route path="/" element={<Index />} />
               
