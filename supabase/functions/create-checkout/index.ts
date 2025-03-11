@@ -18,17 +18,16 @@ serve(async (req) => {
 
   try {
     // Get environment variables
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')?.trim() // Trim any whitespace
+    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) {
       throw new Error('Missing Stripe API key')
     }
 
     console.log('Initializing Stripe with key length:', stripeKey.length)
 
-    // Initialize Stripe
+    // Initialize Stripe with default options
     const stripe = new Stripe(stripeKey, {
-      apiVersion: '2023-10-16', // Using latest API version
-      httpClient: Stripe.createFetchHttpClient(), // Explicitly use fetch client
+      apiVersion: '2023-10-16',
     })
 
     // Parse request body
