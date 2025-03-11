@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ const Donate = () => {
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const loadingTimerRef = useRef<number | null>(null);
 
   const handleOneTimeSelection = (amount: string) => {
     setSelectedOneTimeAmount(amount);
@@ -36,16 +36,38 @@ const Donate = () => {
     }
   };
 
+  // Clear any loading timers when component unmounts
+  useEffect(() => {
+    return () => {
+      if (loadingTimerRef.current) {
+        window.clearTimeout(loadingTimerRef.current);
+      }
+    };
+  }, []);
+
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
-      setLoading(donationType);
+      // Clear any previous errors
       setError(null);
+      setLoading(donationType);
+      
+      // Set a timeout to clear loading state if it takes too long
+      if (loadingTimerRef.current) {
+        window.clearTimeout(loadingTimerRef.current);
+      }
+      
+      loadingTimerRef.current = window.setTimeout(() => {
+        setLoading(null);
+        setError("Request timed out. Please try again later.");
+        toast.error("Request timed out. The donation process is taking longer than expected.");
+      }, 20000); // 20 second timeout
       
       // Validate amount
       const numericAmount = amount.replace(/^\$/, "").trim();
       if (!numericAmount || numericAmount === "0" || isNaN(Number(numericAmount))) {
-        toast.error("Please enter a valid donation amount");
         setLoading(null);
+        if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
+        toast.error("Please enter a valid donation amount");
         return;
       }
       
@@ -60,8 +82,10 @@ const Donate = () => {
       const successUrl = `${origin}/donate?status=success&type=${donationType}&amount=${encodeURIComponent(processedAmount)}`;
       const cancelUrl = `${origin}/donate?status=canceled`;
       
+      console.log(`Starting ${donationType} donation checkout for ${processedAmount}`);
+      
       // Call the Supabase Edge Function to create Checkout session
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      const { data, error: supabaseError } = await supabase.functions.invoke('create-checkout', {
         body: {
           amount: processedAmount,
           donationType: donationType,
@@ -70,9 +94,15 @@ const Donate = () => {
         },
       });
 
-      if (error) {
-        console.error("Supabase function error:", error);
-        throw new Error(error.message || "Error calling Supabase function");
+      // Clear the timeout as we got a response
+      if (loadingTimerRef.current) {
+        window.clearTimeout(loadingTimerRef.current);
+        loadingTimerRef.current = null;
+      }
+
+      if (supabaseError) {
+        console.error("Supabase function error:", supabaseError);
+        throw new Error(supabaseError.message || "Error calling donation service");
       }
 
       if (!data) {
@@ -82,7 +112,8 @@ const Donate = () => {
       // Handle Stripe error returned in successful response
       if (data.error) {
         console.error("Stripe error:", data.error, data.details);
-        throw new Error(data.error + (data.details?.message ? `: ${data.details.message}` : ""));
+        const errorMsg = data.error + (data.details?.message ? `: ${data.details.message}` : "");
+        throw new Error(errorMsg);
       }
 
       // Redirect to Stripe Checkout
@@ -93,6 +124,12 @@ const Donate = () => {
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
+      // Clear the timeout as we got an error
+      if (loadingTimerRef.current) {
+        window.clearTimeout(loadingTimerRef.current);
+        loadingTimerRef.current = null;
+      }
+      
       console.error("Error creating checkout session:", error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       setError(errorMessage);
@@ -140,6 +177,7 @@ const Donate = () => {
     }
   }, [error]);
 
+  // Rest of the component
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -171,19 +209,27 @@ const Donate = () => {
             
             {/* Error notice if applicable */}
             {error && (
-              <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 font-medium">There was a problem processing donations.</p>
-                <p className="text-sm text-red-500">Technical details: {error}</p>
-                <p className="text-sm mt-2">Please try again later or contact our support team.</p>
+              <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+                <div className="flex items-center mb-2">
+                  <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+                  <p className="font-medium text-red-700">There was a problem processing donations</p>
+                </div>
+                <p className="text-sm text-red-500 mb-1">Technical details: {error}</p>
+                <p className="text-sm text-gray-700">
+                  We're experiencing technical difficulties with our donation processor. 
+                  Please try again later or contact our support team for assistance.
+                </p>
               </div>
             )}
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* One-Time Donation card */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">One-Time Donation</h3>
                 <p className="text-gray-600 mb-6">
                   Make an immediate impact with a one-time contribution to support our housing programs.
                 </p>
+                
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {["$25", "$50", "$100", "$250", "$500", "Other"].map((amount) => (
                     <div key={amount} className="relative">
@@ -216,6 +262,7 @@ const Donate = () => {
                     </div>
                   ))}
                 </div>
+                
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleDonateNow}
@@ -232,11 +279,13 @@ const Donate = () => {
                 </Button>
               </div>
               
+              {/* Monthly Giving card */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">Monthly Giving</h3>
                 <p className="text-gray-600 mb-6">
                   Join our community of monthly donors and provide sustained support for families in need.
                 </p>
+                
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {["$10", "$25", "$50", "$100", "$200", "Other"].map((amount) => (
                     <div key={amount} className="relative">
@@ -269,6 +318,7 @@ const Donate = () => {
                     </div>
                   ))}
                 </div>
+                
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleMonthlyDonation}
@@ -285,11 +335,13 @@ const Donate = () => {
                 </Button>
               </div>
               
+              {/* Corporate Partnerships card */}
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
                 <h3 className="text-2xl font-bold mb-4">Corporate Partnerships</h3>
                 <p className="text-gray-600 mb-6">
                   Partner with P.I.L.L.A.R. to demonstrate your company's commitment to solving homelessness.
                 </p>
+                
                 <ul className="space-y-3 mb-6">
                   {[
                     "Matching gift programs",
@@ -304,6 +356,7 @@ const Donate = () => {
                     </li>
                   ))}
                 </ul>
+                
                 <Button 
                   asChild
                   className="w-full bg-redcross hover:bg-redcross/90"

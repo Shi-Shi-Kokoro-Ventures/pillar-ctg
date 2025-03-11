@@ -20,50 +20,80 @@ serve(async (req) => {
     // Get environment variables
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) {
-      throw new Error('Missing Stripe API key')
+      console.error('Missing Stripe API key')
+      return new Response(
+        JSON.stringify({ 
+          error: 'Server configuration error', 
+          details: { message: 'Missing Stripe API key' } 
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500 
+        }
+      )
     }
     
-    // Log key diagnostics (safely - without revealing the actual key)
-    const keyPrefix = stripeKey.substring(0, 7)
-    const keyLength = stripeKey.length
-    const starredKey = `${keyPrefix}${'*'.repeat(keyLength - 10)}${stripeKey.slice(-3)}`
-    
-    console.log(`Stripe key info - Format: ${starredKey}, Length: ${keyLength}`)
+    // IMPORTANT: Verify key format - must start with sk_test_ or sk_live_
+    if (!stripeKey.startsWith('sk_test_') && !stripeKey.startsWith('sk_live_')) {
+      console.error('Invalid Stripe key format - must start with sk_test_ or sk_live_')
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid API key format', 
+          details: { message: 'API key must start with sk_test_ or sk_live_' } 
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500 
+        }
+      )
+    }
     
     // Initialize Stripe with Deno-compatible fetch client
     console.log('Initializing Stripe client...')
     
+    const stripe = new Stripe(stripeKey, {
+      apiVersion: '2023-10-16',
+      httpClient: Stripe.createFetchHttpClient(),
+    })
+    
+    console.log('Stripe client initialized successfully')
+    
+    // Parse request body
+    const requestData = await req.json()
+    const { amount, donationType, successUrl, cancelUrl } = requestData
+
+    if (!amount || !donationType || !successUrl || !cancelUrl) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required parameters' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400 
+        }
+      )
+    }
+
+    // Clean and validate amount (remove $ sign and convert to cents)
+    const numericAmount = amount.replace(/[^0-9.]/g, '')
+    const amountInCents = Math.round(parseFloat(numericAmount) * 100)
+
+    if (isNaN(amountInCents) || amountInCents <= 0) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid amount' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400 
+        }
+      )
+    }
+
+    // Map frontend donation type to Stripe's expected format
+    const stripeMode = donationType === 'monthly' ? 'subscription' : 'payment'
+    const displayType = donationType === 'monthly' ? 'Monthly' : 'One-Time'
+
+    console.log(`Creating ${donationType} checkout session for amount: $${numericAmount} (${amountInCents} cents), mode: ${stripeMode}`)
+
+    // Create a Stripe Checkout Session
     try {
-      const stripe = new Stripe(stripeKey, {
-        apiVersion: '2023-10-16',
-        httpClient: Stripe.createFetchHttpClient(),
-      })
-      
-      console.log('Stripe client initialized successfully')
-      
-      // Parse request body
-      const requestData = await req.json()
-      const { amount, donationType, successUrl, cancelUrl } = requestData
-
-      if (!amount || !donationType || !successUrl || !cancelUrl) {
-        throw new Error('Missing required parameters')
-      }
-
-      // Clean and validate amount (remove $ sign and convert to cents)
-      const numericAmount = amount.replace(/[^0-9.]/g, '')
-      const amountInCents = Math.round(parseFloat(numericAmount) * 100)
-
-      if (isNaN(amountInCents) || amountInCents <= 0) {
-        throw new Error('Invalid amount')
-      }
-
-      // Map frontend donation type to Stripe's expected format
-      const stripeMode = donationType === 'monthly' ? 'subscription' : 'payment'
-      const displayType = donationType === 'monthly' ? 'Monthly' : 'One-Time'
-
-      console.log(`Creating ${donationType} checkout session for amount: $${numericAmount} (${amountInCents} cents), mode: ${stripeMode}`)
-
-      // Create a Stripe Checkout Session
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [
@@ -91,6 +121,8 @@ serve(async (req) => {
         },
       })
 
+      console.log('Checkout session created successfully:', session.id)
+      
       // Return the session ID and URL to the client
       return new Response(
         JSON.stringify({ 
@@ -106,19 +138,10 @@ serve(async (req) => {
       console.error('Stripe operation error:', stripeError)
       
       // Detailed Stripe error reporting
-      const errorDetails = {
-        message: stripeError.message || 'Unknown Stripe error',
-        type: stripeError.type || 'Unknown',
-        code: stripeError.code || 'none',
-        statusCode: stripeError.statusCode || 'none',
-      }
-      
-      console.error('Stripe error details:', JSON.stringify(errorDetails))
-      
       return new Response(
         JSON.stringify({ 
           error: 'Stripe operation failed', 
-          details: errorDetails 
+          details: stripeError
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -129,19 +152,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('General error creating checkout session:', error)
     
-    // Detailed error reporting for debugging
-    const errorInfo = {
-      message: error.message || 'Unknown error',
-      stack: error.stack ? error.stack.substring(0, 200) + '...' : 'No stack trace',
-      name: error.name || 'GeneralError'
-    }
-    
-    console.error('Error details:', JSON.stringify(errorInfo))
-    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to process donation request',
-        details: errorInfo
+        details: error
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
