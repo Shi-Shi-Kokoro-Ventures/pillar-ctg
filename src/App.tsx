@@ -49,6 +49,7 @@ const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const DonorRights = lazy(() => import("./pages/DonorRights"));
+const Accessibility = lazy(() => import("./pages/Accessibility"));
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
             <Route path="/community-resources" element={<CommunityResources />} />
             <Route path="/donor-advised-funds" element={<DonorAdvisedFunds />} />
             <Route path="/find-local-office" element={<FindLocalOffice />} />
+            <Route path="/accessibility" element={<Accessibility />} />
             {/* Legal Pages */}
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
