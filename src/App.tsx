@@ -44,6 +44,7 @@ const InformationRoutes = {
   Classes: lazy(() => import("./pages/Classes")),
   Emergency: lazy(() => import("./pages/Emergency")),
   TimeBank: lazy(() => import("./pages/TimeBank")),
+  FindLocalOffice: lazy(() => import("./pages/FindLocalOffice")), // Added FindLocalOffice to InformationRoutes
 };
 
 const AboutRoutes = {
