@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -74,64 +73,58 @@ const AccessibilityControls = () => {
     // Save preference
     localStorage.setItem('accessibility_roundedCorners', useRoundedCorners.toString());
   }, [useRoundedCorners]);
-  
-  // Load saved preferences on component mount
+
   useEffect(() => {
-    // Only apply saved settings once component mounts
-    const savedFontSize = localStorage.getItem('accessibility_fontSize');
-    if (savedFontSize) {
-      setFontSize(parseInt(savedFontSize, 10));
-    }
-    
-    const savedHighContrast = localStorage.getItem('accessibility_highContrast');
-    if (savedHighContrast) {
-      setHighContrast(savedHighContrast === 'true');
-    }
-    
-    const savedCursorSize = localStorage.getItem('accessibility_cursorSize') as 'normal' | 'large';
-    if (savedCursorSize) {
-      setCursorSize(savedCursorSize);
-    }
-    
+    // Load visibility preference first
     const savedVisibility = localStorage.getItem('accessibility_visible');
-    if (savedVisibility) {
-      setIsVisible(savedVisibility === 'true');
+    setIsVisible(savedVisibility === 'true');
+
+    // Only apply other settings if accessibility is enabled
+    if (savedVisibility === 'true') {
+      const savedFontSize = localStorage.getItem('accessibility_fontSize');
+      if (savedFontSize) {
+        setFontSize(parseInt(savedFontSize, 10));
+      }
+      
+      const savedHighContrast = localStorage.getItem('accessibility_highContrast');
+      if (savedHighContrast) {
+        setHighContrast(savedHighContrast === 'true');
+      }
+      
+      const savedCursorSize = localStorage.getItem('accessibility_cursorSize') as 'normal' | 'large';
+      if (savedCursorSize) {
+        setCursorSize(savedCursorSize);
+      }
+      
+      const savedFocusVisible = localStorage.getItem('accessibility_focusVisible');
+      if (savedFocusVisible) {
+        setFocusVisible(savedFocusVisible === 'true');
+      }
+      
+      const savedRoundedCorners = localStorage.getItem('accessibility_roundedCorners');
+      if (savedRoundedCorners) {
+        setUseRoundedCorners(savedRoundedCorners === 'true');
+      }
     }
-    
-    const savedFocusVisible = localStorage.getItem('accessibility_focusVisible');
-    if (savedFocusVisible) {
-      setFocusVisible(savedFocusVisible === 'true');
-    }
-    
-    const savedRoundedCorners = localStorage.getItem('accessibility_roundedCorners');
-    if (savedRoundedCorners) {
-      setUseRoundedCorners(savedRoundedCorners === 'true');
-    }
-    
-    // Make sure default styles are applied correctly on initial load
-    if (!savedFocusVisible || savedFocusVisible === 'true') {
-      document.documentElement.classList.remove('no-focus-outline');
-    } else {
-      document.documentElement.classList.add('no-focus-outline');
-    }
-    
-    if (!savedRoundedCorners || savedRoundedCorners === 'true') {
-      document.documentElement.classList.add('use-rounded-corners');
-      document.documentElement.classList.remove('use-square-corners');
-    } else {
-      document.documentElement.classList.remove('use-rounded-corners');
-      document.documentElement.classList.add('use-square-corners');
-    }
-    
-    // Add cleanup function
-    return () => {
-      // Reset document styles when component unmounts
-      document.documentElement.style.fontSize = '';
+
+    // Reset all visual states if accessibility is disabled
+    if (savedVisibility !== 'true') {
       document.documentElement.classList.remove('high-contrast-mode');
       document.documentElement.classList.remove('no-focus-outline');
       document.documentElement.classList.remove('use-rounded-corners');
       document.documentElement.classList.remove('use-square-corners');
       document.body.classList.remove('large-cursor');
+      document.documentElement.style.fontSize = '';
+    }
+    
+    // Cleanup function
+    return () => {
+      document.documentElement.classList.remove('high-contrast-mode');
+      document.documentElement.classList.remove('no-focus-outline');
+      document.documentElement.classList.remove('use-rounded-corners');
+      document.documentElement.classList.remove('use-square-corners');
+      document.body.classList.remove('large-cursor');
+      document.documentElement.style.fontSize = '';
     };
   }, []);
   
@@ -167,24 +160,32 @@ const AccessibilityControls = () => {
     const newVisibility = !isVisible;
     setIsVisible(newVisibility);
     localStorage.setItem('accessibility_visible', newVisibility.toString());
+    
+    // Reset all visual states when turning off accessibility
+    if (!newVisibility) {
+      document.documentElement.classList.remove('high-contrast-mode');
+      document.documentElement.classList.remove('no-focus-outline');
+      document.documentElement.classList.remove('use-rounded-corners');
+      document.documentElement.classList.remove('use-square-corners');
+      document.body.classList.remove('large-cursor');
+      document.documentElement.style.fontSize = '';
+    }
   };
 
   return (
     <div className="fixed right-4 top-4 z-50 flex flex-col items-end" role="region" aria-label="Accessibility controls">
-      {/* Accessibility toggle button - always visible with improved styling */}
       <Button 
         variant="default" 
         size="default" 
         onClick={toggleVisibility}
-        aria-label="Toggle accessibility controls"
-        title="Accessibility Settings"
+        aria-label={isVisible ? "Turn off accessibility features" : "Turn on accessibility features"}
+        title={isVisible ? "Turn off accessibility features" : "Turn on accessibility features"}
         className="shadow-lg flex items-center gap-2 font-medium bg-blue-600 hover:bg-blue-700 text-white"
       >
         <Settings className="h-4 w-4" />
-        <span>Accessibility</span>
+        <span>{isVisible ? "Disable" : "Enable"} Accessibility</span>
       </Button>
       
-      {/* Accessibility controls panel - only visible when toggled on */}
       {isVisible && (
         <div 
           className="accessibility-controls mt-2 flex flex-col gap-2 bg-white p-4 rounded-lg shadow-md border border-gray-200"
