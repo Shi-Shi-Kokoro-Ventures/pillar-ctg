@@ -87,10 +87,7 @@ const Donate = () => {
   };
 
   const handleInfoRequest = (type: string) => {
-    toast({
-      title: "Information Request Received",
-      description: `We'll send you more information about our ${type} shortly.`,
-    });
+    toast.success(`We'll send you more information about our ${type} shortly.`);
     console.log(`${type} information requested`);
   };
 
