@@ -13,6 +13,7 @@ import { Calendar, Clock, Heart, AlertCircle, User, MapPin, Phone, Mail, Briefca
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import generatePDF from "react-to-pdf";
+import html2canvas from "html2canvas";
 
 const formSchema = z.object({
   // Personal Information
@@ -109,19 +110,17 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
   });
 
   const formatDataForPDF = (data: FormValues) => {
-    const availabilityStr = data.availability.join(", ");
-    
     return {
       ...data,
-      availability: availabilityStr,
+      // No need to convert availability to string as we'll keep it as an array
     };
   };
 
-  const sendApplicationToEmail = async (data: FormValues, pdfBlob: Blob) => {
+  const sendApplicationToEmail = async (data: FormValues, pdfFile: Blob | null) => {
     try {
       console.log(`Sending application to ${BUSINESS_EMAIL}`);
       console.log("Application data:", data);
-      console.log("PDF attached:", pdfBlob ? "Yes" : "No");
+      console.log("PDF attached:", pdfFile ? "Yes" : "No");
       
       return true;
     } catch (error) {
@@ -136,17 +135,30 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
     const formattedData = formatDataForPDF(data);
     
     try {
-      const pdfResult = await generatePDF(pdfRef, {
+      // Generate PDF without returnJsPDFDocObject option
+      const pdfResponse = await generatePDF(pdfRef, {
         filename: `volunteer_application_${data.name.replace(/\s+/g, '_')}.pdf`,
         page: { 
           margin: 20,
           format: 'letter',
           orientation: 'portrait'
         },
-        returnJsPDFDocObject: true,
       });
       
-      const pdfBlob = pdfResult.blob;
+      // PDF is now generated, we can store it for email attachment
+      let pdfBlob: Blob | null = null;
+      
+      // Attempt to get the PDF as a blob for email attachment
+      if (pdfRef.current) {
+        try {
+          const canvas = await html2canvas(pdfRef.current);
+          pdfBlob = await new Promise(resolve => {
+            canvas.toBlob(blob => resolve(blob));
+          });
+        } catch (err) {
+          console.error("Error converting PDF to blob:", err);
+        }
+      }
       
       const emailSent = await sendApplicationToEmail(formattedData, pdfBlob);
       
