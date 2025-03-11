@@ -10,63 +10,72 @@ import AccessibilityControls from "./components/AccessibilityControls";
 // Eagerly load the Index page for better initial load experience
 import Index from "./pages/Index";
 
-// Lazy load other pages to improve initial load time
-const Donate = lazy(() => import("./pages/Donate"));
-const Volunteer = lazy(() => import("./pages/Volunteer"));
-const VolunteerApplication = lazy(() => import("./pages/VolunteerApplication"));
-const Emergency = lazy(() => import("./pages/Emergency"));
-const TimeBank = lazy(() => import("./pages/TimeBank"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const DonateGoods = lazy(() => import("./pages/DonateGoods"));
-const Classes = lazy(() => import("./pages/Classes"));
-const Advocate = lazy(() => import("./pages/Advocate"));
-const AllWays = lazy(() => import("./pages/AllWays"));
-const AllNews = lazy(() => import("./pages/AllNews"));
-const Housing = lazy(() => import("./pages/Housing"));
-const HousingWaitlist = lazy(() => import("./pages/HousingWaitlist"));
-const AffordableHousing = lazy(() => import("./pages/AffordableHousing"));
-const RentalAssistance = lazy(() => import("./pages/RentalAssistance"));
-const JobTraining = lazy(() => import("./pages/JobTraining"));
-const MentalHealth = lazy(() => import("./pages/MentalHealth"));
-const CaseManagement = lazy(() => import("./pages/CaseManagement"));
-const FamilySupport = lazy(() => import("./pages/FamilySupport"));
-const HousingVouchers = lazy(() => import("./pages/HousingVouchers"));
-const TenantRights = lazy(() => import("./pages/TenantRights"));
-const HousingCrisisHotline = lazy(() => import("./pages/HousingCrisisHotline"));
-const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
-const OurMission = lazy(() => import("./pages/OurMission"));
-const Leadership = lazy(() => import("./pages/Leadership"));
-const Partners = lazy(() => import("./pages/Partners"));
-const Careers = lazy(() => import("./pages/Careers"));
-const ContactUs = lazy(() => import("./pages/ContactUs"));
-const FinancialLiteracy = lazy(() => import("./pages/FinancialLiteracy"));
-const CommunityEvents = lazy(() => import("./pages/CommunityEvents"));
-const CorporatePartnerships = lazy(() => import("./pages/CorporatePartnerships"));
-const CommunityResources = lazy(() => import("./pages/CommunityResources"));
-const DonorAdvisedFunds = lazy(() => import("./pages/DonorAdvisedFunds"));
-const FindLocalOffice = lazy(() => import("./pages/FindLocalOffice"));
-const ComingSoon = lazy(() => import("./pages/ComingSoon"));
-// Legal Pages
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const TermsOfService = lazy(() => import("./pages/TermsOfService"));
-const DonorRights = lazy(() => import("./pages/DonorRights"));
-const Accessibility = lazy(() => import("./pages/Accessibility"));
+// Group lazy-loaded routes by category for better organization
+const HousingRoutes = {
+  Housing: lazy(() => import("./pages/Housing")),
+  HousingWaitlist: lazy(() => import("./pages/HousingWaitlist")),
+  AffordableHousing: lazy(() => import("./pages/AffordableHousing")),
+  RentalAssistance: lazy(() => import("./pages/RentalAssistance")),
+  HousingVouchers: lazy(() => import("./pages/HousingVouchers")),
+  TenantRights: lazy(() => import("./pages/TenantRights")),
+  HousingCrisisHotline: lazy(() => import("./pages/HousingCrisisHotline")),
+};
+
+const SupportRoutes = {
+  JobTraining: lazy(() => import("./pages/JobTraining")),
+  MentalHealth: lazy(() => import("./pages/MentalHealth")),
+  CaseManagement: lazy(() => import("./pages/CaseManagement")),
+  FamilySupport: lazy(() => import("./pages/FamilySupport")),
+  FinancialLiteracy: lazy(() => import("./pages/FinancialLiteracy")),
+};
+
+const GetInvolvedRoutes = {
+  Donate: lazy(() => import("./pages/Donate")),
+  Volunteer: lazy(() => import("./pages/Volunteer")),
+  VolunteerApplication: lazy(() => import("./pages/VolunteerApplication")),
+  DonateGoods: lazy(() => import("./pages/DonateGoods")),
+  Advocate: lazy(() => import("./pages/Advocate")),
+};
+
+const InformationRoutes = {
+  AllWays: lazy(() => import("./pages/AllWays")),
+  AllNews: lazy(() => import("./pages/AllNews")),
+  Classes: lazy(() => import("./pages/Classes")),
+  Emergency: lazy(() => import("./pages/Emergency")),
+  TimeBank: lazy(() => import("./pages/TimeBank")),
+};
+
+const AboutRoutes = {
+  OurMission: lazy(() => import("./pages/OurMission")),
+  Leadership: lazy(() => import("./pages/Leadership")),
+  Partners: lazy(() => import("./pages/Partners")),
+  Careers: lazy(() => import("./pages/Careers")),
+  ContactUs: lazy(() => import("./pages/ContactUs")),
+};
+
+const LegalRoutes = {
+  PrivacyPolicy: lazy(() => import("./pages/PrivacyPolicy")),
+  TermsOfService: lazy(() => import("./pages/TermsOfService")),
+  DonorRights: lazy(() => import("./pages/DonorRights")),
+  Accessibility: lazy(() => import("./pages/Accessibility")),
+};
+
 // Integration Pages
 const N8nIntegration = lazy(() => import("./pages/N8nIntegration"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 
+// Enhanced QueryClient configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Add security-enhancing query options
-      refetchOnWindowFocus: true,
       staleTime: 300000, // 5 minutes
+      cacheTime: 900000, // 15 minutes
       retry: 1,
+      refetchOnWindowFocus: true,
+      suspense: true,
     },
-    mutations: {
-      // Add security-enhancing mutation options
-      retry: 0,
-    }
-  }
+  },
 });
 
 const App = () => (
@@ -92,48 +101,67 @@ const App = () => (
           <main id="main-content" tabIndex={-1}>
             <Routes>
               <Route path="/" element={<Index />} />
-            <Route path="/donate" element={<Donate />} />
-            <Route path="/volunteer" element={<Volunteer />} />
-            <Route path="/volunteer-application" element={<VolunteerApplication />} />
-            <Route path="/emergency" element={<Emergency />} />
-            <Route path="/time" element={<TimeBank />} />
-            <Route path="/donate-goods" element={<DonateGoods />} />
-            <Route path="/classes" element={<Classes />} />
-            <Route path="/advocate" element={<Advocate />} />
-            <Route path="/all-ways" element={<AllWays />} />
-            <Route path="/all-news" element={<AllNews />} />
-            <Route path="/housing" element={<Housing />} />
-            <Route path="/housing-waitlist" element={<HousingWaitlist />} />
-            <Route path="/affordable-housing" element={<AffordableHousing />} />
-            <Route path="/rental-assistance" element={<RentalAssistance />} />
-            <Route path="/job-training" element={<JobTraining />} />
-            <Route path="/mental-health" element={<MentalHealth />} />
-            <Route path="/case-management" element={<CaseManagement />} />
-            <Route path="/family-support" element={<FamilySupport />} />
-            <Route path="/housing-vouchers" element={<HousingVouchers />} />
-            <Route path="/tenant-rights" element={<TenantRights />} />
-            <Route path="/housing-crisis-hotline" element={<HousingCrisisHotline />} />
-            <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
-            <Route path="/our-mission" element={<OurMission />} />
-            <Route path="/leadership" element={<Leadership />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/financial-literacy" element={<FinancialLiteracy />} />
-            <Route path="/community-events" element={<CommunityEvents />} />
-            <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
-            <Route path="/community-resources" element={<CommunityResources />} />
-            <Route path="/donor-advised-funds" element={<DonorAdvisedFunds />} />
-            <Route path="/find-local-office" element={<FindLocalOffice />} />
-            <Route path="/accessibility" element={<Accessibility />} />
-              {/* Integration Pages */}
+              
+              {/* Housing Routes */}
+              {Object.entries(HousingRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* Support Routes */}
+              {Object.entries(SupportRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* Get Involved Routes */}
+              {Object.entries(GetInvolvedRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* Information Routes */}
+              {Object.entries(InformationRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* About Routes */}
+              {Object.entries(AboutRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* Legal Routes */}
+              {Object.entries(LegalRoutes).map(([key, Component]) => (
+                <Route 
+                  key={key} 
+                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  element={<Component />} 
+                />
+              ))}
+
+              {/* Integration Routes */}
               <Route path="/n8n-integration" element={<N8nIntegration />} />
-              {/* Legal Pages */}
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/donor-rights" element={<DonorRights />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="/coming-soon" element={<ComingSoon />} />
+              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

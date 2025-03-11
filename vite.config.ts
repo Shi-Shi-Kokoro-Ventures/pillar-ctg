@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
@@ -12,8 +11,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -29,6 +27,7 @@ export default defineConfig(({ mode }) => ({
           react: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@/components/ui'],
+          vendor: ['@tanstack/react-query', 'framer-motion', 'recharts'],
         },
       },
     },
@@ -40,5 +39,14 @@ export default defineConfig(({ mode }) => ({
         drop_debugger: mode === 'production',
       },
     },
+    reportCompressedSize: true,
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096,
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  }
 }));

@@ -7,4 +7,17 @@ import { initPerformanceTracking } from './lib/performance'
 // Initialize performance tracking
 initPerformanceTracking();
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Add performance mark for initial load
+performance.mark('app-start');
+
+const root = createRoot(document.getElementById("root")!);
+
+// Use automatic batching for all updates
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// Measure initial render time
+performance.measure('initial-render', 'app-start');
