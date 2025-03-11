@@ -36,13 +36,15 @@ serve(async (req) => {
       throw new Error('Missing required parameters')
     }
 
-    // Validate amount (should be in cents for Stripe)
-    const amountValue = parseInt(amount.replace('$', '')) * 100
-    if (isNaN(amountValue) || amountValue <= 0) {
+    // Clean and validate amount (remove $ sign and convert to cents)
+    const numericAmount = amount.replace(/[^0-9.]/g, '')
+    const amountInCents = Math.round(parseFloat(numericAmount) * 100)
+
+    if (isNaN(amountInCents) || amountInCents <= 0) {
       throw new Error('Invalid amount')
     }
 
-    console.log(`Creating ${donationType} checkout session for amount: ${amount}`)
+    console.log(`Creating ${donationType} checkout session for amount: $${numericAmount} (${amountInCents} cents)`)
 
     // Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -55,7 +57,7 @@ serve(async (req) => {
               name: donationType === 'monthly' ? 'Monthly Donation' : 'One-Time Donation',
               description: `${donationType === 'monthly' ? 'Monthly' : 'One-Time'} donation to P.I.L.L.A.R. Initiative`,
             },
-            unit_amount: amountValue,
+            unit_amount: amountInCents,
             recurring: donationType === 'monthly' ? { interval: 'month' } : undefined,
           },
           quantity: 1,
@@ -64,12 +66,15 @@ serve(async (req) => {
       mode: donationType === 'monthly' ? 'subscription' : 'payment',
       success_url: successUrl,
       cancel_url: cancelUrl,
+      // Add customer email collection
+      billing_address_collection: 'auto',
       metadata: {
         donation_type: donationType,
+        amount: numericAmount
       },
     })
 
-    // Return the session ID to the client
+    // Return the session ID and URL to the client
     return new Response(
       JSON.stringify({ 
         sessionId: session.id,

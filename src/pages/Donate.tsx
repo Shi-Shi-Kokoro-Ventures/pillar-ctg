@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -38,21 +38,26 @@ const Donate = () => {
     try {
       setLoading(donationType);
       
-      if (amount === "$" || amount === "$0" || amount === "") {
+      // Validate amount
+      const numericAmount = amount.replace(/^\$/, "").trim();
+      if (!numericAmount || numericAmount === "0" || isNaN(Number(numericAmount))) {
         toast.error("Please enter a valid donation amount");
         setLoading(null);
         return;
       }
       
+      // Use default amounts if "Other" is selected but no value entered
       let processedAmount = amount;
-      if (processedAmount === "Other") {
+      if (processedAmount === "Other" || processedAmount === "$") {
         processedAmount = donationType === "one-time" ? "$100" : "$25";
       }
       
+      // Create success and cancel URLs
       const origin = window.location.origin;
       const successUrl = `${origin}/donate?status=success&type=${donationType}&amount=${encodeURIComponent(processedAmount)}`;
       const cancelUrl = `${origin}/donate?status=canceled`;
       
+      // Call the Supabase Edge Function to create Checkout session
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           amount: processedAmount,
@@ -66,6 +71,7 @@ const Donate = () => {
         throw new Error(error.message);
       }
 
+      // Redirect to Stripe Checkout
       if (data?.url) {
         window.location.href = data.url;
       } else {
@@ -91,14 +97,18 @@ const Donate = () => {
     console.log(`${type} information requested`);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Handle redirect from Stripe Checkout
     const url = new URL(window.location.href);
     const status = url.searchParams.get("status");
     const type = url.searchParams.get("type");
     const amount = url.searchParams.get("amount");
 
     if (status === "success" && type && amount) {
-      toast.success(`Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`);
+      toast.success(`Thank you! Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`, {
+        duration: 6000,
+      });
+      // Clear URL parameters after processing
       window.history.replaceState({}, document.title, "/donate");
     } else if (status === "canceled") {
       toast.error("Your donation has been canceled. No charges were made.");
