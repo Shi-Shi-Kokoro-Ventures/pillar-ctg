@@ -5,8 +5,20 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Home, Users, Calendar, ArrowRight, CheckCircle, MapPin, BookOpen, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Housing = () => {
+  const { toast } = useToast();
+
+  const handleReadMoreClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Coming Soon",
+      description: "More success stories will be available in the near future. Stay tuned!",
+      duration: 5000,
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -194,7 +206,11 @@ const Housing = () => {
                 </div>
               </div>
               
-              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-2">
+              <Button 
+                variant="outline" 
+                className="border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-2"
+                onClick={handleReadMoreClick}
+              >
                 Read More Success Stories
               </Button>
             </div>
