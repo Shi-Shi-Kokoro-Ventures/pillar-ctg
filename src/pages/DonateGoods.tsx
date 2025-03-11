@@ -140,7 +140,7 @@ const DonateGoods = () => {
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <Phone className="h-5 w-5 text-blue-600 mr-2" />
-                    <a href="tel:1-800-745-5271" className="hover:text-blue-600 transition-colors">1-800-PILLAR</a>
+                    <a href="tel:1-833-585-4273" className="hover:text-blue-600 transition-colors">(833) LVL-HARD</a>
                   </div>
                   <div className="flex items-center">
                     <Mail className="h-5 w-5 text-blue-600 mr-2" />

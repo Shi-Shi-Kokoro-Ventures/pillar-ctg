@@ -75,8 +75,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-3 text-redcross shrink-0" />
-                <a href="tel:1-800-733-2767" className="text-gray-300 hover:text-white transition-colors">
-                  1-800-PILLAR
+                <a href="tel:1-833-585-4273" className="text-gray-300 hover:text-white transition-colors">
+                  (833) LVL-HARD
                 </a>
               </li>
               <li className="flex items-center">
@@ -111,7 +111,7 @@ const Footer = () => {
       <div className="bg-redcross py-3 px-4 text-white">
         <div className="container mx-auto">
           <p className="text-sm font-medium text-center">
-            <strong>Housing Support:</strong> Call <a href="tel:1-800-PILLAR" className="underline hover:no-underline">1-800-PILLAR</a> for immediate housing assistance
+            <strong>Housing Support:</strong> Call <a href="tel:1-833-585-4273" className="underline hover:no-underline">(833) LVL-HARD</a> for immediate housing assistance
           </p>
         </div>
       </div>

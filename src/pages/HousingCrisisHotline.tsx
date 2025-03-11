@@ -21,7 +21,7 @@ const HousingCrisisHotline = () => {
                 Immediate assistance for those facing housing emergencies, eviction, or homelessness
               </p>
               <div className="text-3xl font-bold text-red-600 mb-8">
-                1-800-555-HOME (4663)
+                (833) LVL-HARD (833-585-4273)
               </div>
               <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full">
                 <Phone className="mr-2 h-5 w-5" />
@@ -134,7 +134,7 @@ const HousingCrisisHotline = () => {
               If you're facing eviction, a housing emergency, or homelessness, call our hotline today. Our trained specialists are ready to help.
             </p>
             <div className="text-3xl font-bold mb-8">
-              1-800-555-HOME (4663)
+              (833) LVL-HARD (833-585-4273)
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/emergency">
