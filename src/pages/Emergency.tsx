@@ -212,59 +212,104 @@ const Emergency = () => {
         {/* Community Resources */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Additional Community Resources</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Community Resources By Location</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {[
-                {
-                  title: "County Housing Authority",
-                  description: "Government agency that provides housing assistance programs and subsidies.",
-                  phone: "1(833) LVL-HARD",
-                  phoneDetail: "(1-833-585-4273)",
-                  website: "www.countyhousing.org"
-                },
-                {
-                  title: "Mental Health Crisis Line",
-                  description: "24/7 support for mental health emergencies and referrals to treatment.",
-                  phone: "1(833) LVL-HARD",
-                  phoneDetail: "(1-833-585-4273)",
-                  website: "www.mentalhealthsupport.org"
-                },
-                {
-                  title: "Domestic Violence Shelter",
-                  description: "Emergency shelter and resources for survivors of domestic violence.",
-                  phone: "1(833) LVL-HARD",
-                  phoneDetail: "(1-833-585-4273)",
-                  website: "www.safehousenow.org"
-                },
-                {
-                  title: "Veterans Housing Services",
-                  description: "Housing assistance specifically for veterans and their families.",
-                  phone: "1(833) LVL-HARD",
-                  phoneDetail: "(1-833-585-4273)",
-                  website: "www.veteranshousing.org"
-                }
-              ].map((resource, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-xl font-bold mb-2">{resource.title}</h3>
-                  <p className="text-gray-600 mb-4">{resource.description}</p>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                      <span>
-                        <span className="font-medium">{resource.phone}</span>
-                        <span className="text-gray-500 text-sm ml-1">{resource.phoneDetail}</span>
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
-                      <a href={`https://${resource.website}`} className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
-                        {resource.website}
-                      </a>
-                    </div>
+              {/* Delaware Resources */}
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-3 flex items-center">
+                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
+                  Wilmington, Delaware
+                </h3>
+                <p className="text-gray-600 mb-4">Delaware Housing Assistance Program (DEHAP) provides emergency rental and utility assistance.</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="tel:1-833-585-4273" className="group">
+                      <span className="font-medium">1(833) LVL-HARD</span>
+                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="https://www.delawarehousingassistance.org" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
+                      delawarehousingassistance.org
+                    </a>
                   </div>
                 </div>
-              ))}
+              </div>
+              
+              {/* Philadelphia Resources */}
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-3 flex items-center">
+                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
+                  Philadelphia, Pennsylvania
+                </h3>
+                <p className="text-gray-600 mb-4">Philadelphia Office of Homeless Services provides emergency housing and prevention services.</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="tel:1-833-585-4273" className="group">
+                      <span className="font-medium">1(833) LVL-HARD</span>
+                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="https://www.phila.gov/services/property-lots-housing/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
+                      phila.gov/housing-services
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* New Jersey Resources */}
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-3 flex items-center">
+                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
+                  Camden, New Jersey
+                </h3>
+                <p className="text-gray-600 mb-4">NJ Department of Community Affairs offers emergency housing vouchers and homelessness prevention.</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="tel:1-833-585-4273" className="group">
+                      <span className="font-medium">1(833) LVL-HARD</span>
+                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="https://www.nj.gov/dca/divisions/dhcr/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
+                      nj.gov/dca/housing
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Maryland Resources */}
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-3 flex items-center">
+                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
+                  Baltimore, Maryland
+                </h3>
+                <p className="text-gray-600 mb-4">Maryland Department of Housing offers resources for homeless veterans and families in crisis.</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="tel:1-833-585-4273" className="group">
+                      <span className="font-medium">1(833) LVL-HARD</span>
+                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                    <a href="https://dhcd.maryland.gov/HomelessServices/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
+                      dhcd.maryland.gov/housing
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
