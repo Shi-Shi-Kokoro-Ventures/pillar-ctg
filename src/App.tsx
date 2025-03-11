@@ -1,4 +1,3 @@
-
 import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -43,6 +42,7 @@ const CommunityEvents = lazy(() => import("./pages/CommunityEvents"));
 const CorporatePartnerships = lazy(() => import("./pages/CorporatePartnerships"));
 const CommunityResources = lazy(() => import("./pages/CommunityResources"));
 const DonorAdvisedFunds = lazy(() => import("./pages/DonorAdvisedFunds"));
+const FindLocalOffice = lazy(() => import("./pages/FindLocalOffice"));
 
 const queryClient = new QueryClient();
 
@@ -86,6 +86,7 @@ const App = () => (
             <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
             <Route path="/community-resources" element={<CommunityResources />} />
             <Route path="/donor-advised-funds" element={<DonorAdvisedFunds />} />
+            <Route path="/find-local-office" element={<FindLocalOffice />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

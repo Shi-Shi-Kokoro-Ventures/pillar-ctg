@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -33,7 +32,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { name: "About Us", link: "/our-mission" },
-                { name: "Find Your Local Office", link: "/all-ways" },
+                { name: "Find Your Local Office", link: "/find-local-office" },
                 { name: "Housing Programs", link: "/housing" },
                 { name: "Ways to Donate", link: "/donate" },
                 { name: "Volunteer", link: "/volunteer" },
