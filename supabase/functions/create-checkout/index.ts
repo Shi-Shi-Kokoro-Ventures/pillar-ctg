@@ -1,3 +1,4 @@
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import Stripe from 'https://esm.sh/stripe@13.11.0'
 
@@ -98,22 +99,11 @@ serve(async (req) => {
       )
     }
 
-    // Enhanced logging for audit purposes
-    const requestData = await req.json();
-    console.log('Processing donation request:', {
-      timestamp: new Date().toISOString(),
-      clientId,
-      donationType: requestData.donationType,
-      amount: requestData.amount,
-      // Don't log sensitive data
-    });
-
-    // Parse request body with better error handling
-    let requestData2;
+    // Parse the request body directly - FIX THE PARSING ISSUE
+    let requestBody;
     try {
-      const bodyText = await req.text();
-      requestData2 = JSON.parse(bodyText);
-      console.log("Request data parsed successfully", requestData2);
+      requestBody = await req.json();
+      console.log("Request data parsed successfully", requestBody);
     } catch (parseError) {
       console.error("Request body parse error:", parseError);
       return new Response(
@@ -122,7 +112,16 @@ serve(async (req) => {
       )
     }
     
-    const { amount, donationType, successUrl, cancelUrl } = requestData2;
+    // Enhanced logging for audit purposes
+    console.log('Processing donation request:', {
+      timestamp: new Date().toISOString(),
+      clientId,
+      donationType: requestBody.donationType,
+      amount: requestBody.amount,
+      // Don't log sensitive data
+    });
+    
+    const { amount, donationType, successUrl, cancelUrl } = requestBody;
 
     // Validate required parameters
     if (!amount || !donationType || !successUrl || !cancelUrl) {

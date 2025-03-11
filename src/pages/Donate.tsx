@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import StripeLoadingIndicator from "@/components/StripeLoadingIndicator";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Donate = () => {
   const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
@@ -138,11 +139,13 @@ const Donate = () => {
       clearAllTimers();
 
       if (supabaseError) {
+        console.error("Supabase function error:", supabaseError);
         throw new Error(supabaseError.message || "Error calling donation service");
       }
 
       if (!data?.url) {
-        throw new Error("No checkout URL returned");
+        console.error("No checkout URL returned:", data);
+        throw new Error("No checkout URL returned from payment processor");
       }
 
       // Force new window/tab for mobile compatibility
@@ -150,10 +153,12 @@ const Donate = () => {
       
       // Clear loading state after redirect
       setLoading(null);
+      toast.success("Redirecting to secure payment page");
 
     } catch (error) {
       clearAllTimers();
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      console.error("Donation processing error:", error);
       setError(errorMessage);
       toast.error(`Error: ${errorMessage}. Please try again later.`);
       setLoading(null);
@@ -384,13 +389,15 @@ const Donate = () => {
         {/* Loading overlay - shown when in loading state */}
         {loading && (
           <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-              <StripeLoadingIndicator 
-                message={loadingMessage} 
-                onCancel={handleCancelCheckout}
-                elapsedTime={elapsedLoadingTime}
-              />
-            </div>
+            <Card className="max-w-md w-full border-none shadow-xl">
+              <CardContent className="pt-6">
+                <StripeLoadingIndicator 
+                  message={loadingMessage} 
+                  onCancel={handleCancelCheckout}
+                  elapsedTime={elapsedLoadingTime}
+                />
+              </CardContent>
+            </Card>
           </div>
         )}
         
