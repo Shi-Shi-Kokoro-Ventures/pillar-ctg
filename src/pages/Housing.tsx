@@ -1,23 +1,18 @@
-
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Home, Users, Calendar, ArrowRight, CheckCircle, MapPin, BookOpen, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Housing = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleReadMoreClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    toast({
-      title: "Coming Soon",
-      description: "More success stories will be available in the near future. Stay tuned!",
-      duration: 5000,
-      variant: "info",
-    });
+    navigate('/coming-soon');
   };
 
   return (
