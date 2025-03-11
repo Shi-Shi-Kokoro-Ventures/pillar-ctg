@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -206,13 +205,13 @@ const Accessibility = () => {
                               1(833) LVL-HARD (1-833-585-4273)
                             </a>
                           </li>
-                          <li className="flex items-center gap-3">
-                            <div className="bg-redcross/10 p-2 rounded-full">
+                          <li className="flex items-start gap-3">
+                            <div className="bg-redcross/10 p-2 rounded-full flex-shrink-0 mt-0.5">
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-redcross"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                             </div>
                             <a 
                               href="mailto:accessibility@pillarinitiativectg.org"
-                              className="text-gray-700 hover:text-redcross transition-colors"
+                              className="text-gray-700 hover:text-redcross transition-colors break-words word-break"
                               aria-label="Email us at accessibility@pillarinitiativectg.org"
                             >
                               accessibility@pillarinitiativectg.org
