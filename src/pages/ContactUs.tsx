@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -98,8 +99,8 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold mb-1 text-gray-800">Phone</h3>
-                        <p className="text-gray-600 mb-1">Main Office: <a href="tel:(555)123-4567" className="text-redcross hover:underline">(555) 123-4567</a></p>
-                        <p className="text-gray-600 mb-1">Housing Crisis Hotline: <a href="tel:1-800-555-HOME" className="text-redcross hover:underline">1-800-555-HOME (4663)</a></p>
+                        <p className="text-gray-600 mb-1">Main Office: <a href="tel:1-800-PILLAR" className="text-redcross hover:underline">1-800-PILLAR (745-5273)</a></p>
+                        <p className="text-gray-600 mb-1">Housing Crisis Hotline: <a href="tel:1-800-PILLAR" className="text-redcross hover:underline">1-800-PILLAR (745-5273)</a></p>
                       </div>
                     </div>
                     
@@ -121,6 +122,7 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold mb-1 text-gray-800">Main Office</h3>
+                        <p className="text-gray-600 mb-1">P.I.L.L.A.R. Initiative Headquarters</p>
                         <p className="text-gray-600 mb-1">1201 Orange St #600</p>
                         <p className="text-gray-600 mb-1">Wilmington, DE 19801</p>
                         <a 
@@ -330,12 +332,13 @@ const ContactUs = () => {
               <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
                   <h3 className="font-bold text-lg mb-3 text-gray-800">Main Office</h3>
+                  <p className="text-gray-600 text-sm mb-1">P.I.L.L.A.R. Initiative Headquarters</p>
                   <p className="text-gray-600 text-sm mb-1">1201 Orange St #600</p>
                   <p className="text-gray-600 text-sm mb-1">Wilmington, DE 19801</p>
                   <p className="text-gray-600 text-sm mt-2">
-                    <a href="tel:(555)123-4567" className="text-redcross hover:underline flex items-center mt-2">
+                    <a href="tel:1-800-PILLAR" className="text-redcross hover:underline flex items-center mt-2">
                       <Phone className="h-4 w-4 mr-1" />
-                      (555) 123-4567
+                      1-800-PILLAR (745-5273)
                     </a>
                   </p>
                   <a 
@@ -354,7 +357,7 @@ const ContactUs = () => {
                   <p className="text-gray-600 mb-3">
                     Our regional directors coordinate services in various communities. Contact our main office to connect with the regional director in your area.
                   </p>
-                  <p className="text-gray-600 text-sm mb-1">Housing Assistance: <a href="tel:1-800-555-HOME" className="text-redcross hover:underline">1-800-555-HOME (4663)</a></p>
+                  <p className="text-gray-600 text-sm mb-1">Housing Assistance: <a href="tel:1-800-PILLAR" className="text-redcross hover:underline">1-800-PILLAR (745-5273)</a></p>
                   <p className="text-gray-600 text-sm mb-1">Email: <a href="mailto:regional@pillarinitiativectg.org" className="text-redcross hover:underline">regional@pillarinitiativectg.org</a></p>
                 </div>
               </div>
@@ -371,7 +374,7 @@ const ContactUs = () => {
                 If you're experiencing a housing crisis or emergency, please call our 24/7 hotline for immediate help.
               </p>
               <div className="text-3xl font-bold mb-8 bg-white/10 py-4 px-6 rounded-lg inline-block">
-                1-800-555-HOME (4663)
+                1-800-PILLAR (745-5273)
               </div>
               <div>
                 <Link to="/housing-crisis-hotline">

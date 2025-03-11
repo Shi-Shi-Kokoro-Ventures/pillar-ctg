@@ -216,25 +216,25 @@ const Emergency = () => {
                 {
                   title: "County Housing Authority",
                   description: "Government agency that provides housing assistance programs and subsidies.",
-                  phone: "(503) 555-1234",
+                  phone: "1-800-PILLAR (745-5273)",
                   website: "www.countyhousing.org"
                 },
                 {
                   title: "Mental Health Crisis Line",
                   description: "24/7 support for mental health emergencies and referrals to treatment.",
-                  phone: "(503) 555-4321",
+                  phone: "1-800-PILLAR (745-5273)",
                   website: "www.mentalhealthsupport.org"
                 },
                 {
                   title: "Domestic Violence Shelter",
                   description: "Emergency shelter and resources for survivors of domestic violence.",
-                  phone: "(503) 555-7890",
+                  phone: "1-800-PILLAR (745-5273)",
                   website: "www.safehousenow.org"
                 },
                 {
                   title: "Veterans Housing Services",
                   description: "Housing assistance specifically for veterans and their families.",
-                  phone: "(503) 555-0987",
+                  phone: "1-800-PILLAR (745-5273)",
                   website: "www.veteranshousing.org"
                 }
               ].map((resource, index) => (
