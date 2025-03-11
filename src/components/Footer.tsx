@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -97,10 +98,10 @@ const Footer = () => {
               © {new Date().getFullYear()} P.I.L.L.A.R. Initiative. All rights reserved. 501(c)(3) Nonprofit Organization.
             </div>
             <div className="flex flex-wrap gap-6 text-gray-400 text-sm">
-              <Link to="/contact-us" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link to="/contact-us" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="/donor-rights" className="hover:text-white transition-colors">Donor Rights</Link>
               <Link to="/contact-us" className="hover:text-white transition-colors">Accessibility</Link>
-              <Link to="/contact-us" className="hover:text-white transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
