@@ -17,29 +17,21 @@ serve(async (req) => {
   }
 
   try {
-    // Get environment variables and properly trim/clean it
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')?.trim()
+    // Get environment variables (unmodified, exactly as provided)
+    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) {
       throw new Error('Missing Stripe API key')
     }
 
-    // Log key diagnostics (without revealing the full key)
-    console.log(`Key prefix: ${stripeKey.substring(0, 7)}...`)
-    console.log(`Key length: ${stripeKey.length}`)
-    console.log(`Valid format check: ${stripeKey.startsWith('sk_test_') || stripeKey.startsWith('sk_live_')}`)
-
-    // Initialize Stripe with proper error handling
-    let stripe
-    try {
-      stripe = new Stripe(stripeKey, {
-        apiVersion: '2023-10-16',
-      })
-      // Quick validation test
-      console.log('Attempting to validate Stripe connection...')
-    } catch (stripeInitError) {
-      console.error('Error initializing Stripe client:', stripeInitError)
-      throw new Error(`Failed to initialize Stripe: ${stripeInitError.message}`)
-    }
+    console.log('Initializing Stripe...')
+    
+    // Initialize Stripe with Deno-compatible fetch client
+    const stripe = new Stripe(stripeKey, {
+      apiVersion: '2023-10-16',
+      httpClient: Stripe.createFetchHttpClient(),
+    })
+    
+    console.log('Stripe initialized successfully')
 
     // Parse request body
     const requestData = await req.json()
