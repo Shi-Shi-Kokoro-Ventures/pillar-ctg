@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface ZipCodeSearchProps {
   onSearch: (zipCode: string) => void;
@@ -15,6 +15,7 @@ const ZipCodeSearch: React.FC<ZipCodeSearchProps> = ({
   isLoading = false 
 }) => {
   const [zipCode, setZipCode] = useState("");
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +24,12 @@ const ZipCodeSearch: React.FC<ZipCodeSearchProps> = ({
     if (/^\d{5}$/.test(zipCode)) {
       onSearch(zipCode);
     } else {
-      toast.error("Please enter a valid 5-digit zip code");
+      toast({
+        title: "Invalid Zip Code",
+        description: "Please enter a valid 5-digit zip code",
+        variant: "error",
+        duration: 3000,
+      });
     }
   };
 
