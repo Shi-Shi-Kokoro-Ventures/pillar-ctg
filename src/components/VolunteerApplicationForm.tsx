@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -896,6 +897,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
               >
                 Submit Application
               </Button>
+              
               {isSubmitted && (
                 <Button 
                   type="button" 
@@ -912,4 +914,16 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
                     });
                   }}
                 >
-                  <Download className
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Application
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default VolunteerApplicationForm;
