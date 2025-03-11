@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar, Clock, Heart, AlertCircle, User, MapPin, Phone, Mail, Briefcase, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import { generatePDF } from "react-to-pdf";
+import generatePDF from "react-to-pdf";
 
 const formSchema = z.object({
   // Personal Information
@@ -861,3 +861,4 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
 };
 
 export default VolunteerApplicationForm;
+
