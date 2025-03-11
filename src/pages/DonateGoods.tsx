@@ -1,11 +1,14 @@
-
+<lov-codelov-code>
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Gift, MapPin, Phone, Mail, Calendar, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const DonateGoods = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -151,7 +154,12 @@ const DonateGoods = () => {
             </div>
             
             <div className="mt-12 text-center">
-              <Button className="bg-blue-600 hover:bg-blue-700">Schedule a Pickup</Button>
+              <Button 
+                onClick={() => navigate('/coming-soon')}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Schedule a Pickup
+              </Button>
             </div>
           </div>
         </section>
