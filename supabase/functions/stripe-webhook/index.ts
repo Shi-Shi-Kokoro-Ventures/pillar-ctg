@@ -4,7 +4,7 @@ import Stripe from 'https://esm.sh/stripe@13.11.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -15,30 +15,17 @@ serve(async (req) => {
   }
 
   try {
+    // Get environment variables and validate Stripe key
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
-    if (!stripeKey) {
-      console.error('Missing Stripe API key')
-      return new Response(
-        JSON.stringify({ error: 'Server configuration error' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-      )
-    }
+    const endpointSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')
 
-    // Get the signature from the headers
-    const signature = req.headers.get('stripe-signature')
-    if (!signature) {
-      console.error('No Stripe signature found')
+    if (!stripeKey || !endpointSecret) {
+      console.error('Missing required environment variables');
       return new Response(
-        JSON.stringify({ error: 'No Stripe signature' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-      )
-    }
-
-    const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')
-    if (!webhookSecret) {
-      console.error('Missing Stripe webhook secret')
-      return new Response(
-        JSON.stringify({ error: 'Server configuration error' }),
+        JSON.stringify({ 
+          error: 'Server configuration error', 
+          details: 'Missing required environment variables' 
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       )
     }
@@ -48,48 +35,83 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient(),
     })
 
-    // Get the raw body as text
-    const body = await req.text()
+    // Get the signature from the headers
+    const signature = req.headers.get('stripe-signature')
+    
+    if (!signature) {
+      console.error('No Stripe signature found in request headers');
+      return new Response(
+        JSON.stringify({ error: 'No Stripe signature', details: 'Request is missing stripe-signature header' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
+    // Get the raw body as text for signature verification
+    const rawBody = await req.text()
+    
     let event: Stripe.Event
 
     try {
-      event = stripe.webhooks.constructEvent(
-        body,
-        signature,
-        webhookSecret
-      )
+      // Verify the event using the raw body and signature
+      event = stripe.webhooks.constructEvent(rawBody, signature, endpointSecret)
+      console.log('Webhook signature verified successfully')
     } catch (err) {
-      console.error(`Webhook signature verification failed: ${err.message}`)
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      console.error(`Webhook signature verification failed: ${errorMessage}`)
       return new Response(
-        JSON.stringify({ error: `Webhook Error: ${err.message}` }),
+        JSON.stringify({ 
+          error: 'Invalid signature', 
+          details: `Webhook Error: ${errorMessage}` 
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       )
     }
 
     // Handle the event
-    console.log(`Received event: ${event.type}`)
+    console.log(`Processing verified webhook event: ${event.type}`)
     
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session
-        console.log(`Payment successful for session: ${session.id}`)
-        // Here you can add code to handle successful payments
-        // For example, update a database, send confirmation emails, etc.
-        break
+    try {
+      switch (event.type) {
+        case 'checkout.session.completed': {
+          const session = event.data.object as Stripe.Checkout.Session
+          console.log(`Payment successful for session: ${session.id}`)
+          // Handle the successful payment
+          // You can add additional logic here like:
+          // - Recording the donation in your database
+          // - Sending confirmation emails
+          // - Updating subscription status
+          break
+        }
+        case 'payment_intent.succeeded': {
+          const paymentIntent = event.data.object as Stripe.PaymentIntent
+          console.log(`Payment intent succeeded: ${paymentIntent.id}`)
+          break
+        }
+        default:
+          console.log(`Unhandled event type: ${event.type}`)
       }
-      // Add other event types as needed
-      default:
-        console.log(`Unhandled event type: ${event.type}`)
-    }
 
-    return new Response(
-      JSON.stringify({ received: true }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-    )
+      return new Response(
+        JSON.stringify({ received: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      )
+    } catch (err) {
+      console.error('Error processing webhook event:', err)
+      return new Response(
+        JSON.stringify({ 
+          error: 'Event processing failed', 
+          details: err instanceof Error ? err.message : 'Unknown error occurred'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      )
+    }
   } catch (err) {
-    console.error('Webhook error:', err)
+    console.error('Webhook handler error:', err)
     return new Response(
-      JSON.stringify({ error: 'Webhook handler failed' }),
+      JSON.stringify({ 
+        error: 'Webhook handler failed', 
+        details: err instanceof Error ? err.message : 'Unknown error occurred'
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
   }
