@@ -154,92 +154,120 @@ const AccessibilityControls = () => {
   };
 
   return (
-    <>
-      {/* Accessibility toggle button - always visible */}
+    <div className="fixed right-4 top-4 z-50 flex flex-col items-end">
+      {/* Accessibility toggle button - always visible with improved styling */}
       <Button 
-        variant="outline" 
-        size="icon" 
+        variant="default" 
+        size="default" 
         onClick={toggleVisibility}
         aria-label="Toggle accessibility controls"
         title="Accessibility Settings"
-        className="fixed right-4 top-4 z-50 bg-white shadow-md border border-gray-200 rounded-full h-10 w-10 flex items-center justify-center"
+        className="shadow-lg flex items-center gap-2 font-medium"
       >
         <Settings className="h-4 w-4" />
+        <span>Accessibility</span>
       </Button>
       
       {/* Accessibility controls panel - only visible when toggled on */}
       {isVisible && (
         <div 
-          className="accessibility-controls fixed right-4 top-20 z-50 flex flex-col gap-2 bg-white p-3 rounded-lg shadow-md border border-gray-200"
+          className="accessibility-controls mt-2 flex flex-col gap-2 bg-white p-4 rounded-lg shadow-md border border-gray-200"
           aria-label="Accessibility controls"
           role="toolbar"
         >
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={increaseFontSize}
-            aria-label="Increase font size"
-            title="Increase font size"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
+          <div className="text-sm font-semibold mb-2 text-center">Accessibility Controls</div>
           
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={decreaseFontSize}
-            aria-label="Decrease font size"
-            title="Decrease font size"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2 justify-between items-center">
+            <span className="text-xs">Font Size</span>
+            <div className="flex gap-1">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={decreaseFontSize}
+                aria-label="Decrease font size"
+                title="Decrease font size"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={increaseFontSize}
+                aria-label="Increase font size"
+                title="Increase font size"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           
-          <Button 
-            variant={highContrast ? "default" : "outline"} 
-            size="icon" 
-            onClick={toggleHighContrast}
-            aria-label={highContrast ? "Disable high contrast mode" : "Enable high contrast mode"}
-            title={highContrast ? "Disable high contrast mode" : "Enable high contrast mode"}
-            aria-pressed={highContrast}
-          >
-            {highContrast ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          </Button>
+          <div className="flex gap-2 justify-between items-center">
+            <span className="text-xs">Contrast</span>
+            <Button 
+              variant={highContrast ? "default" : "outline"} 
+              size="sm" 
+              onClick={toggleHighContrast}
+              aria-label={highContrast ? "Disable high contrast mode" : "Enable high contrast mode"}
+              title={highContrast ? "Disable high contrast mode" : "Enable high contrast mode"}
+              aria-pressed={highContrast}
+              className="w-24"
+            >
+              {highContrast ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
+              {highContrast ? "High" : "Normal"}
+            </Button>
+          </div>
           
-          <Button 
-            variant={cursorSize === 'large' ? "default" : "outline"} 
-            size="icon" 
-            onClick={toggleCursorSize}
-            aria-label={cursorSize === 'large' ? "Use normal cursor" : "Use large cursor"}
-            title={cursorSize === 'large' ? "Use normal cursor" : "Use large cursor"}
-            aria-pressed={cursorSize === 'large'}
-          >
-            <MousePointer2 className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2 justify-between items-center">
+            <span className="text-xs">Cursor</span>
+            <Button 
+              variant={cursorSize === 'large' ? "default" : "outline"} 
+              size="sm" 
+              onClick={toggleCursorSize}
+              aria-label={cursorSize === 'large' ? "Use normal cursor" : "Use large cursor"}
+              title={cursorSize === 'large' ? "Use normal cursor" : "Use large cursor"}
+              aria-pressed={cursorSize === 'large'}
+              className="w-24"
+            >
+              <MousePointer2 className="h-4 w-4 mr-2" />
+              {cursorSize === 'large' ? "Large" : "Normal"}
+            </Button>
+          </div>
           
-          <Button 
-            variant={focusVisible ? "outline" : "default"} 
-            size="icon" 
-            onClick={toggleFocusOutline}
-            aria-label={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
-            title={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
-            aria-pressed={!focusVisible}
-          >
-            <FocusIcon className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2 justify-between items-center">
+            <span className="text-xs">Focus Outline</span>
+            <Button 
+              variant={focusVisible ? "outline" : "default"} 
+              size="sm" 
+              onClick={toggleFocusOutline}
+              aria-label={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
+              title={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
+              aria-pressed={!focusVisible}
+              className="w-24"
+            >
+              <FocusIcon className="h-4 w-4 mr-2" />
+              {focusVisible ? "Show" : "Hide"}
+            </Button>
+          </div>
           
-          <Button 
-            variant={useRoundedCorners ? "outline" : "default"} 
-            size="icon" 
-            onClick={toggleCornerStyle}
-            aria-label={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
-            title={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
-            aria-pressed={!useRoundedCorners}
-          >
-            {useRoundedCorners ? <CircleIcon className="h-4 w-4" /> : <SquareIcon className="h-4 w-4" />}
-          </Button>
+          <div className="flex gap-2 justify-between items-center">
+            <span className="text-xs">Corners</span>
+            <Button 
+              variant={useRoundedCorners ? "outline" : "default"} 
+              size="sm"
+              onClick={toggleCornerStyle}
+              aria-label={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
+              title={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
+              aria-pressed={!useRoundedCorners}
+              className="w-24"
+            >
+              {useRoundedCorners ? <CircleIcon className="h-4 w-4 mr-2" /> : <SquareIcon className="h-4 w-4 mr-2" />}
+              {useRoundedCorners ? "Rounded" : "Square"}
+            </Button>
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

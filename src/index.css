@@ -150,6 +150,25 @@ select {
   outline-offset: 2px !important;
 }
 
+/* Accessibility controls styling */
+.accessibility-controls {
+  max-width: 280px;
+  transition: all 0.3s ease;
+}
+
+/* Accessibility toggle button enhancement */
+.accessibility-toggle-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.accessibility-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
 /* Skip to content link - invisible until focused */
 .skip-to-content {
   position: absolute;
