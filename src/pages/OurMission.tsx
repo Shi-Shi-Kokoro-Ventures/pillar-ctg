@@ -225,22 +225,34 @@ const OurMission = () => {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/donate">
-                <Button size="lg" variant="whiteButton" className="shadow-lg">
+                <Button size="lg" variant="whiteButton" className="shadow-lg hover:scale-105 transition-transform duration-300">
                   Donate
                 </Button>
               </Link>
               <Link to="/volunteer">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white bg-blue-600/40 hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg hover:scale-105 transition-transform duration-300 font-semibold"
+                >
                   Volunteer
                 </Button>
               </Link>
               <Link to="/advocate">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white bg-blue-600/40 hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg hover:scale-105 transition-transform duration-300 font-semibold"
+                >
                   Advocate
                 </Button>
               </Link>
               <Link to="/corporate-partnerships">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white bg-blue-600/40 hover:bg-white hover:text-blue-600 focus:bg-white focus:text-blue-600 focus:ring-2 focus:ring-white shadow-lg hover:scale-105 transition-transform duration-300 font-semibold"
+                >
                   Partner With Us
                 </Button>
               </Link>
