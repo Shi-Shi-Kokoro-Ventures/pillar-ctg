@@ -1,6 +1,5 @@
-
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Menu, Search, X, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,10 +10,15 @@ export const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSubmenu, setActiveSubmenu] = useState<number | null>(null);
+  const [accessibilityVisible, setAccessibilityVisible] = useState(false);
   const location = useLocation();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Check if accessibility features were previously enabled
+    const savedVisibility = localStorage.getItem('accessibility_visible');
+    setAccessibilityVisible(savedVisibility === 'true');
+    
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
@@ -48,6 +52,18 @@ export const Navbar = () => {
     console.log("Searching for:", searchQuery);
     setSearchOpen(false);
     setSearchQuery("");
+  };
+
+  const toggleAccessibility = () => {
+    const newVisibility = !accessibilityVisible;
+    setAccessibilityVisible(newVisibility);
+    localStorage.setItem('accessibility_visible', newVisibility.toString());
+    
+    // Trigger an event so AccessibilityControls component can react to this change
+    const event = new CustomEvent('accessibilityToggled', { 
+      detail: { visible: newVisibility } 
+    });
+    window.dispatchEvent(event);
   };
 
   const menuItems = [
@@ -184,6 +200,20 @@ export const Navbar = () => {
               )}
             </div>
 
+            {/* Accessibility Toggle Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleAccessibility}
+              aria-label={accessibilityVisible ? "Disable accessibility features" : "Enable accessibility features"}
+              className="hidden sm:flex items-center gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+            >
+              <Settings className="h-4 w-4" />
+              <span className="text-xs font-medium">
+                {accessibilityVisible ? "Accessibility On" : "Accessibility"}
+              </span>
+            </Button>
+
             <Button
               asChild
               className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-md px-4 py-2 shadow-sm hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-md button-hover"
@@ -231,6 +261,21 @@ export const Navbar = () => {
                 </div>
               </div>
             ))}
+            
+            {/* Mobile Accessibility Toggle */}
+            <div className="pt-2">
+              <Button
+                variant="outline" 
+                className="w-full flex items-center justify-center gap-2 py-2 border-blue-200 text-blue-600"
+                onClick={toggleAccessibility}
+              >
+                <Settings className="h-4 w-4" />
+                <span>
+                  {accessibilityVisible ? "Disable Accessibility" : "Enable Accessibility"}
+                </span>
+              </Button>
+            </div>
+
             <div className="pt-2">
               <Button 
                 asChild
