@@ -1,4 +1,5 @@
 
+import * as React from "react";
 import { Toast, ToastClose, ToastDescription, ToastTitle } from "@/components/ui/toast";
 import { cva, type VariantProps } from "class-variance-authority";
 import { CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
@@ -10,6 +11,7 @@ const toastVariants = cva(
     variants: {
       variant: {
         default: "border-border bg-white backdrop-blur-sm",
+        destructive: "border-red-300 bg-red-50 text-red-800",
         success: "border-green-300 bg-green-50 text-green-800",
         error: "border-red-300 bg-red-50 text-red-800",
         warning: "border-amber-300 bg-amber-50 text-amber-800",
@@ -25,6 +27,7 @@ const toastVariants = cva(
 
 const IconMap = {
   default: null,
+  destructive: AlertCircle,
   success: CheckCircle,
   error: AlertCircle,
   warning: AlertTriangle,
@@ -32,7 +35,11 @@ const IconMap = {
   primary: Info,
 };
 
-export interface CustomToastProps extends React.ComponentPropsWithoutRef<typeof Toast>, VariantProps<typeof toastVariants> {}
+export type ToastVariant = "default" | "destructive" | "success" | "error" | "warning" | "info" | "primary";
+
+export interface CustomToastProps extends React.ComponentPropsWithoutRef<typeof Toast> {
+  variant?: ToastVariant;
+}
 
 export function CustomToast({
   className,
@@ -45,7 +52,7 @@ export function CustomToast({
   title?: React.ReactNode;
   description?: React.ReactNode;
 }) {
-  const Icon = variant && IconMap[variant as keyof typeof IconMap];
+  const Icon = IconMap[variant as keyof typeof IconMap];
 
   return (
     <Toast className={cn(toastVariants({ variant }), className)} {...props}>

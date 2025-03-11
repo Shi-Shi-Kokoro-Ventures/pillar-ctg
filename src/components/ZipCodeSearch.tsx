@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,10 +9,7 @@ interface ZipCodeSearchProps {
   isLoading?: boolean;
 }
 
-const ZipCodeSearch: React.FC<ZipCodeSearchProps> = ({ 
-  onSearch, 
-  isLoading = false 
-}) => {
+const ZipCodeSearch: React.FC<ZipCodeSearchProps> = ({ onSearch, isLoading = false }) => {
   const [zipCode, setZipCode] = useState("");
   const { toast } = useToast();
 
@@ -27,7 +23,7 @@ const ZipCodeSearch: React.FC<ZipCodeSearchProps> = ({
       toast({
         title: "Invalid Zip Code",
         description: "Please enter a valid 5-digit zip code",
-        variant: "error",
+        variant: "destructive",
         duration: 3000,
       });
     }

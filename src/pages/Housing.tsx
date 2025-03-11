@@ -16,7 +16,7 @@ const Housing = () => {
       title: "Coming Soon",
       description: "More success stories will be available in the near future. Stay tuned!",
       duration: 5000,
-      variant: "primary", // Use our custom variant
+      variant: "info",
     });
   };
 
