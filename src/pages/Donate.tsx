@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,6 +12,7 @@ const Donate = () => {
   const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleOneTimeSelection = (amount: string) => {
     setSelectedOneTimeAmount(amount);
@@ -37,6 +39,7 @@ const Donate = () => {
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
       setLoading(donationType);
+      setError(null);
       
       // Validate amount
       const numericAmount = amount.replace(/^\$/, "").trim();
@@ -68,18 +71,32 @@ const Donate = () => {
       });
 
       if (error) {
-        throw new Error(error.message);
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Error calling Supabase function");
+      }
+
+      if (!data) {
+        throw new Error("No data returned from checkout function");
+      }
+
+      // Handle Stripe error returned in successful response
+      if (data.error) {
+        console.error("Stripe error:", data.error, data.details);
+        throw new Error(data.error + (data.details?.message ? `: ${data.details.message}` : ""));
       }
 
       // Redirect to Stripe Checkout
       if (data?.url) {
+        console.log("Redirecting to Stripe checkout:", data.url);
         window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
-      toast.error("There was an error processing your donation. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      setError(errorMessage);
+      toast.error(`Error: ${errorMessage}. Please try again later.`);
       setLoading(null);
     }
   };
@@ -116,6 +133,13 @@ const Donate = () => {
     }
   }, []);
 
+  // Show error message if donation processing failed
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { duration: 6000 });
+    }
+  }, [error]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -144,6 +168,15 @@ const Donate = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Ways to Give</h2>
+            
+            {/* Error notice if applicable */}
+            {error && (
+              <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 font-medium">There was a problem processing donations.</p>
+                <p className="text-sm text-red-500">Technical details: {error}</p>
+                <p className="text-sm mt-2">Please try again later or contact our support team.</p>
+              </div>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white rounded-lg shadow-md p-8 border border-gray-100 hover:shadow-lg transition-shadow">
