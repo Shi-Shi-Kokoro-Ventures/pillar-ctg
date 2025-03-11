@@ -44,7 +44,12 @@ serve(async (req) => {
       throw new Error('Invalid amount')
     }
 
-    console.log(`Creating ${donationType} checkout session for amount: $${numericAmount} (${amountInCents} cents)`)
+    // Map frontend donation type to Stripe's expected format
+    // "one-time" or "monthly" from frontend, but Stripe expects "payment" or "subscription"
+    const stripeMode = donationType === 'monthly' ? 'subscription' : 'payment'
+    const displayType = donationType === 'monthly' ? 'Monthly' : 'One-Time'
+
+    console.log(`Creating ${donationType} checkout session for amount: $${numericAmount} (${amountInCents} cents), mode: ${stripeMode}`)
 
     // Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -54,8 +59,8 @@ serve(async (req) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: donationType === 'monthly' ? 'Monthly Donation' : 'One-Time Donation',
-              description: `${donationType === 'monthly' ? 'Monthly' : 'One-Time'} donation to P.I.L.L.A.R. Initiative`,
+              name: `${displayType} Donation`,
+              description: `${displayType} donation to P.I.L.L.A.R. Initiative`,
             },
             unit_amount: amountInCents,
             recurring: donationType === 'monthly' ? { interval: 'month' } : undefined,
@@ -63,7 +68,7 @@ serve(async (req) => {
           quantity: 1,
         },
       ],
-      mode: donationType === 'monthly' ? 'subscription' : 'payment',
+      mode: stripeMode,
       success_url: successUrl,
       cancel_url: cancelUrl,
       // Add customer email collection
