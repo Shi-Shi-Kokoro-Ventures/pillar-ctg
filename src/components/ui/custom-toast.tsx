@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { Toast, ToastClose, ToastDescription, ToastTitle, type ToastProps } from "@/components/ui/toast";
+import { Toast, ToastClose, ToastDescription, ToastTitle } from "@/components/ui/toast";
 import { cva, type VariantProps } from "class-variance-authority";
 import { CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -37,8 +37,7 @@ const IconMap = {
 
 export type ToastVariant = "default" | "destructive" | "success" | "error" | "warning" | "info" | "primary";
 
-// Define the custom toast props separately from the base Toast component
-export interface CustomToastProps extends Omit<React.ComponentPropsWithoutRef<typeof Toast>, "variant"> {
+export interface CustomToastProps extends React.ComponentPropsWithoutRef<typeof Toast> {
   variant?: ToastVariant;
   title?: React.ReactNode;
   description?: React.ReactNode;
@@ -55,15 +54,13 @@ export function CustomToast({
   const Icon = IconMap[variant as keyof typeof IconMap];
 
   // Map our custom variants to the base Toast variants
-  const toastVariant: "default" | "destructive" = 
-    variant === "destructive" ? "destructive" : "default";
+  const baseVariant = variant === "destructive" || variant === "error" ? "destructive" : "default";
 
   return (
     <Toast 
       className={cn(toastVariants({ variant }), className)} 
       {...props}
-      // Pass the compatible variant to the base Toast component
-      variant={toastVariant}
+      variant={baseVariant}
     >
       <div className="flex w-full items-start gap-3">
         {Icon && (
