@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,10 @@ const formSchema = z.object({
   state: z.string().min(2, { message: "Please enter your state." }),
   zipCode: z.string().min(5, { message: "Please enter a valid ZIP code." }),
   dateOfBirth: z.string().optional(),
+  ssn: z.string()
+    .min(9, { message: "Please enter a valid 9-digit Social Security Number." })
+    .max(9, { message: "SSN must be exactly 9 digits." })
+    .regex(/^\d+$/, { message: "SSN must contain only numbers." }),
   
   // Emergency Contact
   emergencyContactName: z.string().min(2, { message: "Please provide an emergency contact name." }),
@@ -78,6 +82,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
 }) => {
   const { toast } = useToast();
   const pdfRef = useRef<HTMLDivElement>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -90,6 +95,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
       state: "",
       zipCode: "",
       dateOfBirth: "",
+      ssn: "",
       emergencyContactName: "",
       emergencyContactPhone: "",
       emergencyContactRelationship: "",
@@ -135,7 +141,6 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
     const formattedData = formatDataForPDF(data);
     
     try {
-      // Generate PDF without returnJsPDFDocObject option
       const pdfResponse = await generatePDF(pdfRef, {
         filename: `volunteer_application_${data.name.replace(/\s+/g, '_')}.pdf`,
         page: { 
@@ -145,10 +150,8 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
         },
       });
       
-      // PDF is now generated, we can store it for email attachment
       let pdfBlob: Blob | null = null;
       
-      // Attempt to get the PDF as a blob for email attachment
       if (pdfRef.current) {
         try {
           const canvas = await html2canvas(pdfRef.current);
@@ -176,8 +179,8 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
         });
       }
       
+      setIsSubmitted(true);
       form.reset();
-      onOpenChange(false);
     } catch (error) {
       console.error("Error processing form submission:", error);
       toast({
@@ -375,6 +378,27 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
                   )}
                 />
               </div>
+              
+              <FormField
+                control={form.control}
+                name="ssn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Social Security Number <span className="text-red-500">*</span></FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="password" 
+                        placeholder="Enter your 9-digit SSN (numbers only)" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Required for background check. Your SSN is securely stored and encrypted.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -866,42 +890,26 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
             </div>
             
             <DialogFooter className="flex flex-col sm:flex-row gap-2">
-              <Button type="submit" className="w-full bg-redcross hover:bg-redcross/90">
+              <Button 
+                type="submit" 
+                className="w-full bg-redcross hover:bg-redcross/90"
+              >
                 Submit Application
               </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  if (form.formState.isValid) {
+              {isSubmitted && (
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
                     generatePDF(pdfRef, {
-                      filename: `volunteer_application_preview.pdf`,
+                      filename: `volunteer_application_${form.getValues("name").replace(/\s+/g, '_')}.pdf`,
                       page: { 
                         margin: 20,
                         format: 'letter',
                         orientation: 'portrait'
                       }
                     });
-                  } else {
-                    toast({
-                      title: "Form Incomplete",
-                      description: "Please complete all required fields to download the form.",
-                      variant: "destructive",
-                      duration: 3000,
-                    });
-                    form.trigger();
-                  }
-                }}
-              >
-                <Download className="mr-2 h-4 w-4" /> Download as PDF
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-export default VolunteerApplicationForm;
+                  }}
+                >
+                  <Download className
