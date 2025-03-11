@@ -53,12 +53,12 @@ const MissionStatement = () => {
               </blockquote>
               
               <p>
-                Our comprehensive approach includes transitional housing, financial literacy education, job training, mental health resources, and community-building programs that address the root causes of housing insecurity.
+                Our approach includes plans for transitional housing, financial literacy education, job training, mental health resources, and community-building programs that address the root causes of housing insecurity.
               </p>
               
               <div className="pt-4">
                 <a 
-                  href="#learn-more" 
+                  href="/our-mission" 
                   className="inline-flex items-center text-redcross hover:text-redcross-dark font-medium transition-colors"
                 >
                   Learn more about our approach

@@ -68,25 +68,25 @@ const FeaturedPrograms = () => {
     {
       icon: <Home className="w-8 h-8 text-redcross" />,
       title: "Affordable Housing",
-      description: "Access quality affordable housing units across the country with our subsidized programs.",
+      description: "Our planned affordable housing initiative aims to provide quality living spaces for families in need.",
       link: "/affordable-housing"
     },
     {
       icon: <Briefcase className="w-8 h-8 text-redcross" />,
       title: "Job Training",
-      description: "Gain valuable skills with our industry-recognized job training and placement services.",
+      description: "Future job training programs designed to help participants develop skills for sustainable employment.",
       link: "/job-training"
     },
     {
       icon: <Heart className="w-8 h-8 text-redcross" />,
       title: "Mental Health",
-      description: "Access counseling, therapy, and mental health resources tailored to your needs.",
+      description: "Upcoming mental health resources to support individuals and families on their journey to stability.",
       link: "/mental-health"
     },
     {
       icon: <UsersRound className="w-8 h-8 text-redcross" />,
       title: "Family Support",
-      description: "Comprehensive assistance for families facing housing insecurity and related challenges.",
+      description: "Planned comprehensive assistance for families facing housing insecurity and related challenges.",
       link: "/family-support"
     }
   ];
@@ -108,14 +108,14 @@ const FeaturedPrograms = () => {
           className="text-center mb-16"
         >
           <span className="inline-block py-1 px-3 rounded-full text-redcross bg-redcross/10 text-sm font-medium tracking-wide mb-3">
-            Our Programs
+            Planned Programs
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-gray-900">Building Better Futures</span>
             <span className="bg-gradient-to-r from-redcross to-redcross-light bg-clip-text text-transparent"> Together</span>
           </h2>
           <p className="max-w-2xl mx-auto text-gray-600 text-lg">
-            Our comprehensive suite of programs addresses the root causes of housing insecurity through innovative, people-centered approaches.
+            Our vision includes a comprehensive suite of programs designed to address the root causes of housing insecurity through innovative, people-centered approaches.
           </p>
         </motion.div>
         

@@ -120,36 +120,36 @@ const Statistics = React.memo(() => {
           className="max-w-3xl mx-auto text-center mb-16"
         >
           <span className="inline-block py-1 px-3 rounded-full text-redcross bg-redcross/10 text-sm font-medium tracking-wide mb-3">
-            Our Impact
+            Our Impact Goals
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Transforming Lives Through Action</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Building Foundations for Change</h2>
           <p className="text-lg text-gray-600">
-            Every day, the P.I.L.L.A.R. Initiative works to provide stable housing and support services to those in need, building foundations for lasting independence.
+            The P.I.L.L.A.R. Initiative aims to provide stable housing and support services to those in need, building foundations for lasting independence.
           </p>
         </motion.div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <Stat 
-            number="500+" 
-            label="Families Assisted Annually" 
+            number="100+" 
+            label="Families We Aim to Assist Annually" 
             icon={<Users size={28} />}
             delay={0}
           />
           <Stat 
-            number="100+" 
-            label="Affordable Housing Units Developed" 
+            number="25+" 
+            label="Affordable Housing Units Planned" 
             icon={<Home size={28} />}
             delay={150}
           />
           <Stat 
-            number="1,000+" 
-            label="Individuals Trained in Financial Literacy" 
+            number="200+" 
+            label="Future Financial Literacy Graduates" 
             icon={<GraduationCap size={28} />}
             delay={300}
           />
           <Stat 
-            number="5,000+" 
-            label="Volunteer Hours" 
+            number="1,000+" 
+            label="Volunteer Hours Goal" 
             icon={<HeartHandshake size={28} />}
             delay={450}
           />
