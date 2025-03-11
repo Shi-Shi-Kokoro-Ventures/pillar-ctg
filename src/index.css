@@ -532,3 +532,11 @@ body[data-accessibility-enabled="true"] :focus-visible {
 .text-glow {
   animation: glow-pulse 3s infinite alternate;
 }
+
+/* Add grid pattern for hero background */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(30, 174, 219, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 174, 219, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
