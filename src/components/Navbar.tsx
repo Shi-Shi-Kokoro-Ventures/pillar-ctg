@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -231,12 +232,12 @@ export const Navbar = () => {
               </div>
             ))}
             <div className="pt-2">
-              <Link
-                to="/donate"
-                className="block w-full py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-center font-medium rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm"
+              <Button 
+                asChild
+                className="w-full py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-center font-medium rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm"
               >
-                Donate Now
-              </Link>
+                <Link to="/donate">Donate Now</Link>
+              </Button>
             </div>
           </div>
         </div>
