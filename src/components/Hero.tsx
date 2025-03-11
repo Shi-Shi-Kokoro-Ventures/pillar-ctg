@@ -47,6 +47,15 @@ const Hero = () => {
     color: "transparent",
     display: "inline-block"
   };
+  
+  const glowingTextStyle = {
+    textShadow: "0 0 10px rgba(30, 174, 219, 0.5), 0 0 20px rgba(30, 174, 219, 0.3), 0 0 30px rgba(30, 174, 219, 0.2)",
+    animation: "glow 3s infinite alternate",
+    padding: "0.2em 0.4em",
+    borderRadius: "4px",
+    position: "relative" as "relative",
+    zIndex: 2,
+  };
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden pt-16 md:pt-20">
@@ -99,6 +108,15 @@ const Hero = () => {
         ))}
       </div>
       
+      {/* Add keyframe animation for the glow effect */}
+      <style jsx="true">{`
+        @keyframes glow {
+          0% { text-shadow: 0 0 10px rgba(30, 174, 219, 0.5), 0 0 20px rgba(30, 174, 219, 0.3), 0 0 30px rgba(30, 174, 219, 0.2); }
+          50% { text-shadow: 0 0 15px rgba(30, 174, 219, 0.7), 0 0 25px rgba(30, 174, 219, 0.5), 0 0 35px rgba(30, 174, 219, 0.3); }
+          100% { text-shadow: 0 0 10px rgba(30, 174, 219, 0.5), 0 0 20px rgba(30, 174, 219, 0.3), 0 0 30px rgba(30, 174, 219, 0.2); }
+        }
+      `}</style>
+      
       {/* Content Container - With motion animations */}
       <div className="relative container mx-auto px-4 h-[calc(100vh-4rem)] flex flex-col justify-center z-10 pt-10 md:pt-16">
         <motion.div 
@@ -118,7 +136,7 @@ const Hero = () => {
             variants={fadeInUp} 
             className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
           >
-            <span className="drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">Changing The Game,</span><br />
+            <span style={glowingTextStyle} className="drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">Changing The Game,</span><br />
             <span style={textGradientStyle}>One Good Deed At A Time</span>
           </motion.h1>
           
@@ -192,3 +210,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
