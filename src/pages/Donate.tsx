@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -129,7 +128,6 @@ const Donate = () => {
       
       console.log(`Starting ${donationType} donation checkout for ${processedAmount}`);
       
-      // Call the Supabase Edge Function to create Checkout session
       const { data, error: supabaseError } = await supabase.functions.invoke('create-checkout', {
         body: {
           amount: processedAmount,
@@ -158,17 +156,17 @@ const Donate = () => {
         throw new Error(errorMsg);
       }
 
-      // Redirect to Stripe Checkout
+      // Redirect to Stripe Checkout using window.location.href
       if (data?.url) {
         console.log("Redirecting to Stripe checkout:", data.url);
-        window.location.href = data.url;
+        // Force the browser to treat this as a new navigation
+        window.location.replace(data.url);
       } else {
         throw new Error("No checkout URL returned");
       }
+
     } catch (error) {
-      // Clear all timers as we got an error
       clearAllTimers();
-      
       console.error("Error creating checkout session:", error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       setError(errorMessage);

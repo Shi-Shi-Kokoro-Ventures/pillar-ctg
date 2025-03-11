@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import Stripe from 'https://esm.sh/stripe@13.11.0'
@@ -136,6 +135,11 @@ serve(async (req) => {
 
       // Return the session URL directly with proper logging
       console.log('Checkout session created successfully:', session.id, 'with URL:', session.url);
+      
+      if (!session.url) {
+        throw new Error('No URL returned from Stripe');
+      }
+
       return new Response(
         JSON.stringify({ 
           sessionId: session.id,
