@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Heart, Home, Clock, DollarSign, GraduationCap, Users } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -88,7 +87,7 @@ const WaysToHelp = () => {
             description="Even a few hours of your time can make a significant impact in helping families secure stable housing."
             icon={<Clock className="w-7 h-7" />}
             bgColor="bg-blue-800"
-            link="/time"
+            link="/time-bank"
           />
           
           <HelpCard 

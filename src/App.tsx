@@ -44,7 +44,7 @@ const InformationRoutes = {
   Classes: lazy(() => import("./pages/Classes")),
   Emergency: lazy(() => import("./pages/Emergency")),
   TimeBank: lazy(() => import("./pages/TimeBank")),
-  FindLocalOffice: lazy(() => import("./pages/FindLocalOffice")), // Added FindLocalOffice to InformationRoutes
+  FindLocalOffice: lazy(() => import("./pages/FindLocalOffice")),
 };
 
 const AboutRoutes = {
@@ -66,6 +66,7 @@ const LegalRoutes = {
 const N8nIntegration = lazy(() => import("./pages/N8nIntegration"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ComingSoon = lazy(() => import("./pages/ComingSoon"));
+const Time = lazy(() => import("./pages/Time"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
@@ -170,6 +171,9 @@ const App = () => (
               <Route path="/apply-for-assistance" element={<Navigate to="/coming-soon" />} />
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
               <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
+              
+              {/* Additional routes */}
+              <Route path="/time" element={<Time />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="/coming-soon" element={<ComingSoon />} />
