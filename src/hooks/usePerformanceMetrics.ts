@@ -8,6 +8,16 @@ export interface PerformanceMetrics {
   cumulativeLayoutShift: number | null;
 }
 
+// Define the extended interfaces for Web Performance API
+interface PerformanceEntryWithProcessingStart extends PerformanceEntry {
+  processingStart: number;
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+}
+
 export const usePerformanceMetrics = () => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     firstContentfulPaint: null,
@@ -34,7 +44,7 @@ export const usePerformanceMetrics = () => {
 
     // First Input Delay
     const fidObserver = new PerformanceObserver((list) => {
-      const firstInput = list.getEntries()[0];
+      const firstInput = list.getEntries()[0] as PerformanceEntryWithProcessingStart;
       setMetrics(prev => ({ ...prev, firstInputDelay: firstInput.processingStart - firstInput.startTime }));
     });
 
@@ -42,8 +52,8 @@ export const usePerformanceMetrics = () => {
     const clsObserver = new PerformanceObserver((list) => {
       let cumulativeLayoutShift = 0;
       for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) {
-          cumulativeLayoutShift += (entry as any).value;
+        if (!(entry as LayoutShiftEntry).hadRecentInput) {
+          cumulativeLayoutShift += (entry as LayoutShiftEntry).value;
         }
       }
       setMetrics(prev => ({ ...prev, cumulativeLayoutShift }));
