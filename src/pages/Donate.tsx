@@ -6,13 +6,16 @@ import { CheckCircle, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import StripeLoadingIndicator from "@/components/StripeLoadingIndicator";
 
 const Donate = () => {
   const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState<string>("Connecting to payment processor...");
   const loadingTimerRef = useRef<number | null>(null);
+  const redirectTimerRef = useRef<number | null>(null);
 
   const handleOneTimeSelection = (amount: string) => {
     setSelectedOneTimeAmount(amount);
@@ -42,25 +45,34 @@ const Donate = () => {
       if (loadingTimerRef.current) {
         window.clearTimeout(loadingTimerRef.current);
       }
+      if (redirectTimerRef.current) {
+        window.clearTimeout(redirectTimerRef.current);
+      }
     };
   }, []);
 
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
-      // Clear any previous errors
+      // Clear any previous errors and set loading state
       setError(null);
       setLoading(donationType);
+      setLoadingMessage("Connecting to payment processor...");
       
-      // Set a timeout to clear loading state if it takes too long
+      // Set a timeout to update loading message after 3 seconds
       if (loadingTimerRef.current) {
         window.clearTimeout(loadingTimerRef.current);
       }
       
       loadingTimerRef.current = window.setTimeout(() => {
-        setLoading(null);
-        setError("Request timed out. Please try again later.");
-        toast.error("Request timed out. The donation process is taking longer than expected.");
-      }, 20000); // 20 second timeout
+        setLoadingMessage("Still preparing your checkout experience...");
+        
+        // Set another timeout for final timeout message
+        loadingTimerRef.current = window.setTimeout(() => {
+          setLoading(null);
+          setError("Request timed out. Please try again later.");
+          toast.error("Request timed out. The donation process is taking longer than expected.");
+        }, 12000); // Add 12 more seconds (total 15 seconds timeout)
+      }, 3000);
       
       // Validate amount
       const numericAmount = amount.replace(/^\$/, "").trim();
@@ -88,7 +100,7 @@ const Donate = () => {
       const { data, error: supabaseError } = await supabase.functions.invoke('create-checkout', {
         body: {
           amount: processedAmount,
-          donationType: donationType,
+          donationType: donationType === "one-time" ? "one-time" : "monthly",
           successUrl,
           cancelUrl,
         },
@@ -112,14 +124,18 @@ const Donate = () => {
       // Handle Stripe error returned in successful response
       if (data.error) {
         console.error("Stripe error:", data.error, data.details);
-        const errorMsg = data.error + (data.details?.message ? `: ${data.details.message}` : "");
+        const errorMsg = data.error + (data.details ? `: ${data.details}` : "");
         throw new Error(errorMsg);
       }
 
       // Redirect to Stripe Checkout
       if (data?.url) {
         console.log("Redirecting to Stripe checkout:", data.url);
-        window.location.href = data.url;
+        
+        // Set a small delay to show the loading state before redirecting
+        redirectTimerRef.current = window.setTimeout(() => {
+          window.location.href = data.url;
+        }, 500);
       } else {
         throw new Error("No checkout URL returned");
       }
@@ -128,6 +144,11 @@ const Donate = () => {
       if (loadingTimerRef.current) {
         window.clearTimeout(loadingTimerRef.current);
         loadingTimerRef.current = null;
+      }
+      
+      if (redirectTimerRef.current) {
+        window.clearTimeout(redirectTimerRef.current);
+        redirectTimerRef.current = null;
       }
       
       console.error("Error creating checkout session:", error);
@@ -176,6 +197,15 @@ const Donate = () => {
       toast.error(error, { duration: 6000 });
     }
   }, [error]);
+
+  // Dynamic loading content based on current state
+  const renderLoadingState = (type: string) => {
+    if (loading === type) {
+      return <StripeLoadingIndicator message={loadingMessage} />;
+    }
+    
+    return type === "one-time" ? "Donate Now" : "Become a Monthly Donor";
+  };
 
   // Rest of the component
   return (
@@ -266,13 +296,13 @@ const Donate = () => {
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleDonateNow}
-                  disabled={loading === "one-time"}
+                  disabled={loading !== null}
                 >
                   {loading === "one-time" ? (
-                    <>
+                    <div className="flex items-center justify-center py-1">
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
-                    </>
+                    </div>
                   ) : (
                     "Donate Now"
                   )}
@@ -322,13 +352,13 @@ const Donate = () => {
                 <Button 
                   className="w-full bg-redcross hover:bg-redcross/90"
                   onClick={handleMonthlyDonation}
-                  disabled={loading === "monthly"}
+                  disabled={loading !== null}
                 >
                   {loading === "monthly" ? (
-                    <>
+                    <div className="flex items-center justify-center py-1">
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
-                    </>
+                    </div>
                   ) : (
                     "Become a Monthly Donor"
                   )}
@@ -368,6 +398,16 @@ const Donate = () => {
           </div>
         </section>
         
+        {/* Loading overlay - shown when in loading state */}
+        {loading && (
+          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+              <StripeLoadingIndicator message={loadingMessage} />
+            </div>
+          </div>
+        )}
+        
+        {/* Rest of sections */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Your Donation's Impact</h2>
