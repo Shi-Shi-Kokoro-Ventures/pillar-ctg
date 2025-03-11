@@ -22,6 +22,7 @@ const Advocate = lazy(() => import("./pages/Advocate"));
 const AllWays = lazy(() => import("./pages/AllWays"));
 const AllNews = lazy(() => import("./pages/AllNews"));
 const Housing = lazy(() => import("./pages/Housing"));
+const HousingWaitlist = lazy(() => import("./pages/HousingWaitlist"));
 const AffordableHousing = lazy(() => import("./pages/AffordableHousing"));
 const RentalAssistance = lazy(() => import("./pages/RentalAssistance"));
 const JobTraining = lazy(() => import("./pages/JobTraining"));
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/all-ways" element={<AllWays />} />
             <Route path="/all-news" element={<AllNews />} />
             <Route path="/housing" element={<Housing />} />
+            <Route path="/housing-waitlist" element={<HousingWaitlist />} />
             <Route path="/affordable-housing" element={<AffordableHousing />} />
             <Route path="/rental-assistance" element={<RentalAssistance />} />
             <Route path="/job-training" element={<JobTraining />} />

@@ -126,7 +126,7 @@ const Housing = () => {
                         <li>• Commitment to program goals</li>
                       </ul>
                     </div>
-                    <Link to="/apply-for-assistance">
+                    <Link to="/housing-waitlist">
                       <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
                         Learn More <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
@@ -170,7 +170,7 @@ const Housing = () => {
               Contact us today to learn more about eligibility and availability.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/apply-for-assistance">
+              <Link to="/housing-waitlist">
                 <Button className="bg-white text-blue-600 hover:bg-gray-100">
                   Apply for Housing
                 </Button>
