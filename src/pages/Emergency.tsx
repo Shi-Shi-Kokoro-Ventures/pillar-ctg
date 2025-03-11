@@ -172,7 +172,7 @@ const Emergency = () => {
   // If full map is visible, show only that
   if (isFullMapVisible) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+      <div className="min-h-screen flex flex-col bg-black text-white">
         <Navbar />
         <main className="flex-grow pt-16">
           <div className="p-4">
@@ -186,7 +186,7 @@ const Emergency = () => {
                 Back to Emergency Page
               </Button>
             </div>
-            <div className="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+            <div className="bg-gray-900/80 backdrop-blur-md p-6 rounded-lg shadow-[0_0_20px_rgba(255,0,0,0.2)] border border-red-500/30">
               <InteractiveMap fullScreen={true} />
             </div>
           </div>
@@ -197,39 +197,86 @@ const Emergency = () => {
   }
   
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-black text-white overflow-hidden">
       <Navbar />
       
       <main className="flex-grow pt-16">
-        {/* Emergency Alert Banner - Kept as requested but enhanced */}
-        <div className="bg-red-600 text-white py-4 relative overflow-hidden animate-pulse-subtle">
-          <div className="absolute inset-0 bg-gradient-to-r from-red-700/30 to-transparent"></div>
-          <div className="container mx-auto px-4 flex items-center justify-center relative z-10">
-            <Siren className="h-6 w-6 mr-3 animate-pulse" />
-            <p className="text-lg font-medium tracking-wide">If you are in immediate danger, call 911</p>
+        {/* Emergency Alert Banner with animated highlight effect */}
+        <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.1)_0%,_transparent_70%)]"></div>
+          <div className="absolute inset-0">
+            {[...Array(3)].map((_, i) => (
+              <div 
+                key={i}
+                className="absolute h-px bg-red-400/30"
+                style={{
+                  left: 0,
+                  right: 0,
+                  top: `${i * 33}%`,
+                  animation: `scanline ${3 + i}s linear infinite`,
+                  opacity: 0.6 - (i * 0.15)
+                }}
+              />
+            ))}
+          </div>
+          <div className="container mx-auto px-4 py-4 flex items-center justify-center relative z-10">
+            <Siren className="h-6 w-6 mr-3 animate-pulse text-white" />
+            <p className="text-lg md:text-xl font-medium tracking-wide text-white">
+              <span className="inline-block animate-pulse">If you are in immediate danger, call </span>
+              <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-red-200 ml-1">911</span>
+            </p>
           </div>
         </div>
         
-        {/* Hero Section - Enhanced with futuristic styling */}
-        <section className="bg-gradient-to-b from-gray-900 to-gray-800 py-16 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-red-600/10 via-transparent to-transparent"></div>
+        {/* Hero Section with cyberpunk styling */}
+        <section className="relative py-16 overflow-hidden">
+          {/* Dynamic background with animated grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.9),rgba(20,0,0,0.95))]">
+            <div className="absolute inset-0" style={{ 
+              backgroundImage: 'radial-gradient(circle at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
+            }}></div>
+            
+            {/* Cyberpunk grid lines */}
+            <div className="absolute inset-0 opacity-10" style={{
+              backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent)`,
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+          
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-glow">Emergency Housing Assistance</h1>
-              <p className="text-xl text-gray-300 mb-8 animate-fade-in">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200 animate-pulse-subtle">
+                Emergency Housing Assistance
+              </h1>
+              <p className="text-xl text-gray-300 mb-8 animate-fade-in leading-relaxed">
                 If you or someone you know is experiencing a housing emergency or homelessness, 
-                the P.I.L.L.A.R. Initiative can help connect you with immediate resources and support.
+                the <span className="text-red-400 font-semibold">P.I.L.L.A.R. Initiative</span> can help connect you with immediate resources and support.
               </p>
-              <div className="bg-gray-800/80 backdrop-blur-sm p-8 rounded-lg shadow-[0_0_15px_rgba(234,56,76,0.3)] border border-red-500/30 mb-8 animate-scale-in neo-glass">
-                <div className="flex items-start">
-                  <div className="h-12 w-12 rounded-full bg-red-500 flex items-center justify-center mr-4 shrink-0 animate-pulse">
-                    <Phone className="h-6 w-6 text-white" />
+              
+              {/* Call hotline section with futuristic styling */}
+              <div className="bg-black/70 backdrop-blur-xl p-8 rounded-lg shadow-[0_0_30px_rgba(255,0,0,0.2)] border border-red-500/40 mb-8 animate-scale-in relative overflow-hidden">
+                {/* Circuit board pattern overlay */}
+                <div className="absolute inset-0 opacity-5" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ff0000' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                  backgroundSize: '100px 100px'
+                }}></div>
+                
+                {/* Animated accent line */}
+                <div className="absolute h-0.5 w-full left-0 top-0 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
+                <div className="absolute h-0.5 w-full left-0 bottom-0 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
+                
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mr-4 shrink-0 shadow-[0_0_15px_rgba(255,0,0,0.5)]">
+                    <Phone className="h-8 w-8 text-white" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2 gradient-text">24/7 Housing Crisis Hotline</h2>
-                    <p className="text-gray-300 mb-4">Our trained staff is available around the clock to provide assistance and information.</p>
-                    <a href="tel:1-833-585-4273" className="group inline-block">
-                      <span className="text-2xl font-bold text-red-500 group-hover:underline">1-833-585-4273</span>
+                  <div className="flex-1 text-center md:text-left">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-red-300 to-red-500">24/7 Housing Crisis Hotline</h2>
+                    <p className="text-gray-300 mb-4 max-w-2xl">Our specialized emergency response team is available around the clock to provide immediate assistance, connect you with resources, and guide you through the housing crisis process.</p>
+                    <a href="tel:1-833-585-4273" className="group inline-flex items-center">
+                      <span className="relative text-3xl font-bold text-red-500 group-hover:text-red-400 transition-colors">
+                        1-833-585-4273
+                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                      </span>
                       <span className="text-gray-400 text-lg ml-2">(1-833-LVL-HARD)</span>
                     </a>
                   </div>
@@ -239,19 +286,34 @@ const Emergency = () => {
           </div>
         </section>
 
-        {/* Emergency Services - Enhanced with cards */}
-        <section className="py-16 bg-gray-800 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-700/50 to-transparent"></div>
+        {/* Emergency Services - Enhanced with high-tech cards */}
+        <section className="py-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
+          }}></div>
           <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-12 text-glow">Emergency Services We Provide</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 relative inline-block mx-auto">
+              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Emergency Services We Provide</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
+            </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Service 1 */}
-              <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] p-8 border border-gray-700 hover:border-red-500/50 transition-all duration-300 hover:transform hover:-translate-y-2 neo-glass">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mb-6 mx-auto">
-                  <Home className="h-7 w-7 text-white" />
+              {/* Service 1 - Shelter */}
+              <div className="bg-black/60 backdrop-blur-md rounded-lg p-8 border border-red-500/20 hover:border-red-500/50 transition-all duration-500 hover:transform hover:-translate-y-2 group relative overflow-hidden shadow-[0_10px_20px_rgba(255,0,0,0.07)]">
+                {/* Scanning line animation */}
+                <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+                  <div className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-red-500 to-transparent top-0 -left-full group-hover:animate-[scan_3s_linear_infinite]"></div>
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-center">Emergency Shelter</h3>
+                
+                {/* Light edge effect */}
+                <div className="absolute top-0 right-0 w-[1px] h-0 bg-red-500/50 group-hover:h-full transition-all duration-700 delay-300"></div>
+                <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700 delay-150"></div>
+                
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center mb-6 mx-auto shadow-[0_0_15px_rgba(255,0,0,0.2)] group-hover:shadow-[0_0_25px_rgba(255,0,0,0.4)] transition-all duration-500">
+                  <Home className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-center text-white group-hover:text-red-300 transition-colors duration-300">Emergency Shelter</h3>
                 <p className="text-gray-300 mb-6 text-center">
                   Immediate temporary housing for individuals and families facing homelessness or unsafe living conditions.
                 </p>
@@ -265,19 +327,33 @@ const Emergency = () => {
                     <span className="text-gray-300">Multiple locations throughout Delaware</span>
                   </li>
                 </ul>
-                <Link to="/housing" className="w-full">
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white button-border-light">
+                <Link to="/housing" className="w-full group">
+                  <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
+                    <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <Home className="mr-2" /> Find Shelter
                   </Button>
                 </Link>
               </div>
               
-              {/* Service 2 */}
-              <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] p-8 border border-gray-700 hover:border-red-500/50 transition-all duration-300 hover:transform hover:-translate-y-2 neo-glass">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mb-6 mx-auto">
-                  <Shield className="h-7 w-7 text-white" />
+              {/* Service 2 - Eviction Prevention */}
+              <div className="bg-black/60 backdrop-blur-md rounded-lg p-8 border border-red-500/20 hover:border-red-500/50 transition-all duration-500 hover:transform hover:-translate-y-2 group relative overflow-hidden shadow-[0_10px_20px_rgba(255,0,0,0.07)]">
+                {/* Scanning line animation */}
+                <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+                  <div className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-red-500 to-transparent top-0 -left-full group-hover:animate-[scan_3s_linear_infinite]"></div>
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-center">Eviction Prevention</h3>
+                
+                {/* Light edge effect */}
+                <div className="absolute top-0 right-0 w-[1px] h-0 bg-red-500/50 group-hover:h-full transition-all duration-700 delay-300"></div>
+                <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700 delay-150"></div>
+                
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center mb-6 mx-auto shadow-[0_0_15px_rgba(255,0,0,0.2)] group-hover:shadow-[0_0_25px_rgba(255,0,0,0.4)] transition-all duration-500">
+                  <Shield className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-center text-white group-hover:text-red-300 transition-colors duration-300">Eviction Prevention</h3>
                 <p className="text-gray-300 mb-6 text-center">
                   Financial assistance and mediation services to help prevent eviction for households in crisis.
                 </p>
@@ -291,19 +367,33 @@ const Emergency = () => {
                     <span className="text-gray-300">Services available throughout Delaware</span>
                   </li>
                 </ul>
-                <Link to="/apply-for-assistance" className="w-full">
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white button-border-light">
+                <Link to="/apply-for-assistance" className="w-full group">
+                  <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
+                    <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <FileText className="mr-2" /> Apply for Assistance
                   </Button>
                 </Link>
               </div>
               
-              {/* Service 3 */}
-              <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] p-8 border border-gray-700 hover:border-red-500/50 transition-all duration-300 hover:transform hover:-translate-y-2 neo-glass">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mb-6 mx-auto">
-                  <LifeBuoy className="h-7 w-7 text-white" />
+              {/* Service 3 - Crisis Support */}
+              <div className="bg-black/60 backdrop-blur-md rounded-lg p-8 border border-red-500/20 hover:border-red-500/50 transition-all duration-500 hover:transform hover:-translate-y-2 group relative overflow-hidden shadow-[0_10px_20px_rgba(255,0,0,0.07)]">
+                {/* Scanning line animation */}
+                <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+                  <div className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-red-500 to-transparent top-0 -left-full group-hover:animate-[scan_3s_linear_infinite]"></div>
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-center">Crisis Support</h3>
+                
+                {/* Light edge effect */}
+                <div className="absolute top-0 right-0 w-[1px] h-0 bg-red-500/50 group-hover:h-full transition-all duration-700 delay-300"></div>
+                <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700 delay-150"></div>
+                
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center mb-6 mx-auto shadow-[0_0_15px_rgba(255,0,0,0.2)] group-hover:shadow-[0_0_25px_rgba(255,0,0,0.4)] transition-all duration-500">
+                  <LifeBuoy className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-center text-white group-hover:text-red-300 transition-colors duration-300">Crisis Support</h3>
                 <p className="text-gray-300 mb-6 text-center">
                   Mental health resources, case management, and support services for individuals experiencing housing instability.
                 </p>
@@ -317,8 +407,13 @@ const Emergency = () => {
                     <span className="text-gray-300">Phone and in-person support</span>
                   </li>
                 </ul>
-                <Link to="/housing-crisis-hotline" className="w-full">
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white button-border-light">
+                <Link to="/housing-crisis-hotline" className="w-full group">
+                  <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
+                    <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <LifeBuoy className="mr-2" /> Get Support
                   </Button>
                 </Link>
@@ -327,31 +422,63 @@ const Emergency = () => {
           </div>
         </section>
         
-        {/* Resource Map - Enhanced with futuristic design */}
-        <section className="py-16 bg-gradient-to-b from-gray-800 to-gray-900 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-red-600/5 via-transparent to-transparent"></div>
+        {/* Resource Map with high-tech UI */}
+        <section className="py-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
           <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-12 text-glow">Find Help Near You</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 relative inline-block mx-auto">
+              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Find Help Near You</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
+            </h2>
             
-            <div className="bg-gray-800/80 backdrop-blur-md p-8 rounded-lg shadow-[0_0_20px_rgba(0,0,0,0.3)] max-w-4xl mx-auto border border-gray-700 neo-glass">
+            <div className="bg-black/70 backdrop-blur-xl p-8 rounded-lg shadow-[0_0_30px_rgba(255,0,0,0.1)] border border-red-500/30 max-w-4xl mx-auto relative overflow-hidden">
+              {/* Animated corner details */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-red-500/50"></div>
+              <div className="absolute top-0 right-0 w-6 h-6 border-t border-r border-red-500/50"></div>
+              <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l border-red-500/50"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-red-500/50"></div>
+              
               <div className="mb-6">
                 <ZipCodeSearch onSearch={handleZipCodeSearch} isLoading={isSearching} />
               </div>
-              <div className="border border-gray-700 rounded-lg overflow-hidden">
+              <div className="border border-red-500/30 rounded-lg overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
+                {/* Map scan line effect */}
+                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden opacity-30">
+                  <div className="absolute h-[50%] w-full bg-gradient-to-b from-red-500/5 to-transparent top-0 animate-[mapScan_4s_ease-in-out_infinite_alternate]"></div>
+                </div>
                 <InteractiveMap onViewFullMap={handleViewFullMap} />
               </div>
               <p className="text-gray-300 mt-6 mb-6">
-                Use our interactive map to find emergency housing resources in your area, 
+                Use our advanced interactive map to find emergency housing resources in your area, 
                 including shelters, food banks, healthcare facilities, and other support services.
               </p>
+              <Button 
+                onClick={handleViewFullMap} 
+                variant="outline" 
+                className="mx-auto block mt-4 border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 group"
+              >
+                <span className="mr-2">View Full Screen Map</span> 
+                <span className="inline-block transition-transform group-hover:scale-110">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <polyline points="9 21 3 21 3 15"></polyline>
+                    <line x1="21" y1="3" x2="14" y2="10"></line>
+                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                  </svg>
+                </span>
+              </Button>
             </div>
           </div>
         </section>
         
-        {/* Community Resources - Enhanced with modern cards */}
-        <section className="py-16 bg-gray-900 relative">
+        {/* Community Resources with high-tech listing */}
+        <section className="py-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-black to-gray-900"></div>
           <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-8 text-glow">Community Resources</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 relative inline-block mx-auto">
+              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Community Resources</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
+            </h2>
             
             {searchedZipCode && (
               <p className="text-center text-gray-300 mb-8 animate-fade-in">
@@ -364,8 +491,13 @@ const Emergency = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {filteredResources.map(resource => (
-                <div key={resource.id} className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg shadow-md border border-gray-700 hover:border-red-500/30 transition-all duration-300 animate-slide-in neo-glass">
-                  <h3 className="text-xl font-bold mb-3 flex items-center text-white">
+                <div key={resource.id} className="bg-black/60 backdrop-blur-xl p-6 rounded-lg shadow-[0_4px_20px_rgba(255,0,0,0.07)] border border-red-500/20 hover:border-red-500/40 transition-all duration-500 group animate-slide-in relative overflow-hidden">
+                  {/* Tech details */}
+                  <div className="absolute top-0 right-0 h-8 w-16 overflow-hidden">
+                    <div className="absolute top-0 right-0 h-8 w-16 bg-red-500/20 rotate-45 translate-y-[-50%] translate-x-[50%]"></div>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-3 flex items-center text-white group-hover:text-red-300 transition-colors">
                     <MapPin className="h-5 w-5 text-red-500 mr-2" />
                     {resource.name}
                   </h3>
@@ -374,14 +506,16 @@ const Emergency = () => {
                   <div className="space-y-2">
                     <div className="flex items-center">
                       <Phone className="h-4 w-4 text-red-500 mr-2" />
-                      <a href={`tel:${resource.phone.replace(/[^0-9]/g, '')}`} className="group">
-                        <span className="font-medium text-gray-200">{resource.phone}</span>
+                      <a href={`tel:${resource.phone.replace(/[^0-9]/g, '')}`} className="group relative inline-block">
+                        <span className="font-medium text-gray-200 group-hover:text-red-300 transition-colors">{resource.phone}</span>
+                        <span className="absolute bottom-0 left-0 w-full h-px bg-red-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
                       </a>
                     </div>
                     <div className="flex items-center">
                       <ExternalLink className="h-4 w-4 text-red-500 mr-2" />
-                      <a href={resource.website} className="text-red-400 hover:text-red-300 hover:underline" target="_blank" rel="noreferrer">
-                        {resource.website.replace(/^https?:\/\/(www\.)?/i, '')}
+                      <a href={resource.website} className="text-red-400 hover:text-red-300 relative inline-block group" target="_blank" rel="noreferrer">
+                        <span>{resource.website.replace(/^https?:\/\/(www\.)?/i, '')}</span>
+                        <span className="absolute bottom-0 left-0 w-full h-px bg-red-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
                       </a>
                     </div>
                   </div>
@@ -391,21 +525,47 @@ const Emergency = () => {
           </div>
         </section>
         
-        {/* Emergency Preparation - Enhanced with visual appeal */}
-        <section className="py-16 bg-gradient-to-b from-gray-900 to-gray-800 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-600/10 via-transparent to-transparent"></div>
+        {/* Emergency Preparation with high-tech CTA */}
+        <section className="py-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black"></div>
+          
+          {/* Animated particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(20)].map((_, i) => (
+              <div 
+                key={i}
+                className="absolute w-1 h-1 bg-red-500/30 rounded-full"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animation: `float ${Math.random() * 5 + 5}s linear infinite`
+                }}
+              ></div>
+            ))}
+          </div>
+          
           <div className="container mx-auto px-4 text-center relative z-10">
-            <h2 className="text-3xl font-bold mb-6 text-glow">Know Before You Need Help</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 relative inline-block">
+              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Know Before You Need Help</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
+            </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
               Take steps now to prepare for potential housing emergencies. Download our emergency housing guide 
               and keep important resources handy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-red-600 hover:bg-red-700 text-white button-border-light">
+              <Button className="bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white relative overflow-hidden group shadow-[0_0_15px_rgba(255,0,0,0.2)] hover:shadow-[0_0_25px_rgba(255,0,0,0.4)] transition-all duration-300">
+                <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
+                  background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                  backgroundSize: '250% 250%',
+                  animation: 'shimmer 3s linear infinite'
+                }}></span>
                 Download Emergency Guide
               </Button>
-              <Button variant="outline" className="border-red-500 text-red-400 hover:bg-red-500/10 button-cyberpunk">
-                Sign Up for Alert Notifications
+              <Button variant="outline" className="border-red-500/50 text-red-400 hover:bg-red-500/10 relative overflow-hidden">
+                <span className="relative z-10">Sign Up for Alert Notifications</span>
+                <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700"></span>
+                <span className="absolute top-0 right-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700"></span>
               </Button>
             </div>
           </div>
@@ -413,6 +573,29 @@ const Emergency = () => {
       </main>
       
       <Footer />
+      
+      {/* Add keyframe animations */}
+      <style jsx global>{`
+        @keyframes scan {
+          0%, 100% { transform: translateX(-100%); }
+          50% { transform: translateX(100%); }
+        }
+        
+        @keyframes scanline {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
+        
+        @keyframes mapScan {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+      `}</style>
     </div>
   );
 };

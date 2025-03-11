@@ -164,6 +164,38 @@ export default {
 					'50%': {
 						opacity: '0.9'
 					}
+				},
+				'scan': {
+					'0%, 100%': {
+						transform: 'translateX(-100%)'
+					},
+					'50%': {
+						transform: 'translateX(100%)'
+					}
+				},
+				'scanline': {
+					'0%': {
+						transform: 'translateY(-100%)'
+					},
+					'100%': {
+						transform: 'translateY(100vh)'
+					}
+				},
+				'mapScan': {
+					'0%': {
+						transform: 'translateY(-100%)'
+					},
+					'100%': {
+						transform: 'translateY(100%)'
+					}
+				},
+				'shimmer': {
+					'0%': {
+						backgroundPosition: '-200% 0'
+					},
+					'100%': {
+						backgroundPosition: '200% 0'
+					}
 				}
 			},
 			animation: {
@@ -176,7 +208,11 @@ export default {
 				'slide-in-right': 'slide-in-right 0.5s ease-out',
 				'slow-pulse': 'slow-pulse 3s infinite ease-in-out',
 				'float': 'float 5s infinite ease-in-out',
-				'pulse-subtle': 'pulse-subtle 2s infinite ease-in-out'
+				'pulse-subtle': 'pulse-subtle 2s infinite ease-in-out',
+				'scan': 'scan 3s linear infinite',
+				'scanline': 'scanline 3s linear infinite',
+				'mapScan': 'mapScan 4s ease-in-out infinite alternate',
+				'shimmer': 'shimmer 3s linear infinite'
 			}
 		}
 	},
