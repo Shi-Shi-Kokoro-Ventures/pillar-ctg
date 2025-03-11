@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -89,99 +88,110 @@ const ContactUs = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                   <h2 className="text-3xl font-bold mb-8 text-gray-800 border-b border-gray-200 pb-4">Get in Touch</h2>
                   
                   <div className="space-y-8">
-                    <div className="flex items-start">
-                      <div className="bg-blue-100 p-3 rounded-full mr-4">
+                    <div className="flex items-start group hover:bg-blue-50/50 p-4 rounded-lg transition-colors duration-300">
+                      <div className="bg-blue-100 p-4 rounded-full mr-4 group-hover:bg-blue-200 transition-colors duration-300">
                         <Phone className="h-6 w-6 text-redcross" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold mb-1 text-gray-800">Phone</h3>
-                        <p className="text-gray-600 mb-1">
-                          Main Office: <a href="tel:1-833-585-4273" className="text-redcross hover:underline">
-                            <span className="font-medium">1(833) LVL-HARD</span> 
-                            <span className="text-sm text-gray-500 ml-1">(1-833-585-4273)</span>
+                        <h3 className="text-xl font-bold mb-2 text-gray-800">Phone</h3>
+                        <p className="text-gray-600 mb-2 hover:text-redcross transition-colors">
+                          Main Office: <a href="tel:1-833-585-4273" className="text-redcross hover:text-redcross-dark font-medium">
+                            1(833) LVL-HARD
+                            <span className="text-sm text-gray-500 ml-2">(1-833-585-4273)</span>
                           </a>
                         </p>
-                        <p className="text-gray-600 mb-1">
-                          Housing Crisis Hotline: <a href="tel:1-833-585-4273" className="text-redcross hover:underline">
-                            <span className="font-medium">1(833) LVL-HARD</span> 
-                            <span className="text-sm text-gray-500 ml-1">(1-833-585-4273)</span>
+                        <p className="text-gray-600 hover:text-redcross transition-colors">
+                          Housing Crisis Hotline: <a href="tel:1-833-585-4273" className="text-redcross hover:text-redcross-dark font-medium">
+                            1(833) LVL-HARD
+                            <span className="text-sm text-gray-500 ml-2">(1-833-585-4273)</span>
                           </a>
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex items-start">
-                      <div className="bg-blue-100 p-3 rounded-full mr-4">
+                    <div className="flex items-start group hover:bg-blue-50/50 p-4 rounded-lg transition-colors duration-300">
+                      <div className="bg-blue-100 p-4 rounded-full mr-4 group-hover:bg-blue-200 transition-colors duration-300">
                         <Mail className="h-6 w-6 text-redcross" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold mb-1 text-gray-800">Email</h3>
-                        <p className="text-gray-600 mb-1">General Inquiries: <a href="mailto:info@pillarinitiativectg.org" className="text-redcross hover:underline">info@pillarinitiativectg.org</a></p>
-                        <p className="text-gray-600 mb-1">Housing Assistance: <a href="mailto:housing@pillarinitiativectg.org" className="text-redcross hover:underline">housing@pillarinitiativectg.org</a></p>
-                        <p className="text-gray-600">Volunteer Opportunities: <a href="mailto:volunteer@pillarinitiativectg.org" className="text-redcross hover:underline">volunteer@pillarinitiativectg.org</a></p>
+                        <h3 className="text-xl font-bold mb-2 text-gray-800">Email</h3>
+                        <p className="text-gray-600 mb-2">
+                          General Inquiries: <a href="mailto:info@pillarinitiativectg.org" className="text-redcross hover:text-redcross-dark font-medium">info@pillarinitiativectg.org</a>
+                        </p>
+                        <p className="text-gray-600 mb-2">
+                          Housing Assistance: <a href="mailto:housing@pillarinitiativectg.org" className="text-redcross hover:text-redcross-dark font-medium">housing@pillarinitiativectg.org</a>
+                        </p>
+                        <p className="text-gray-600">
+                          Volunteer Opportunities: <a href="mailto:volunteer@pillarinitiativectg.org" className="text-redcross hover:text-redcross-dark font-medium">volunteer@pillarinitiativectg.org</a>
+                        </p>
                       </div>
                     </div>
                     
-                    <div className="flex items-start">
-                      <div className="bg-blue-100 p-3 rounded-full mr-4">
+                    <div className="flex items-start group hover:bg-blue-50/50 p-4 rounded-lg transition-colors duration-300">
+                      <div className="bg-blue-100 p-4 rounded-full mr-4 group-hover:bg-blue-200 transition-colors duration-300">
                         <MapPin className="h-6 w-6 text-redcross" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold mb-1 text-gray-800">Main Office</h3>
-                        <p className="text-gray-600 mb-1">P.I.L.L.A.R. Initiative Headquarters</p>
+                        <h3 className="text-xl font-bold mb-2 text-gray-800">Main Office</h3>
+                        <p className="text-gray-600 mb-1 font-medium">P.I.L.L.A.R. Initiative Headquarters</p>
                         <p className="text-gray-600 mb-1">1201 Orange St #600</p>
-                        <p className="text-gray-600 mb-1">Wilmington, DE 19801</p>
+                        <p className="text-gray-600 mb-3">Wilmington, DE 19801</p>
                         <a 
                           href="https://maps.google.com/?q=1201+Orange+St+600+Wilmington+DE+19801" 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-redcross hover:underline mt-2 inline-block"
+                          className="inline-flex items-center text-redcross hover:text-redcross-dark font-medium"
                         >
                           Get Directions
+                          <svg className="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
                         </a>
                       </div>
                     </div>
                     
-                    <div className="flex items-start">
-                      <div className="bg-blue-100 p-3 rounded-full mr-4">
+                    <div className="flex items-start group hover:bg-blue-50/50 p-4 rounded-lg transition-colors duration-300">
+                      <div className="bg-blue-100 p-4 rounded-full mr-4 group-hover:bg-blue-200 transition-colors duration-300">
                         <Clock className="h-6 w-6 text-redcross" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold mb-1 text-gray-800">Office Hours</h3>
-                        <p className="text-gray-600 mb-1">Monday - Friday: 8:30 AM - 5:00 PM</p>
-                        <p className="text-gray-600 mb-1">Saturday: 10:00 AM - 2:00 PM (Resource Center only)</p>
-                        <p className="text-gray-600">Sunday: Closed</p>
+                        <h3 className="text-xl font-bold mb-2 text-gray-800">Office Hours</h3>
+                        <div className="space-y-1">
+                          <p className="text-gray-600">Monday - Friday: <span className="font-medium">8:30 AM - 5:00 PM</span></p>
+                          <p className="text-gray-600">Saturday: <span className="font-medium">10:00 AM - 2:00 PM</span> <span className="text-sm text-gray-500">(Resource Center only)</span></p>
+                          <p className="text-gray-600">Sunday: <span className="font-medium">Closed</span></p>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
                   <div className="mt-8 pt-6 border-t border-gray-200">
-                    <h3 className="text-lg font-bold mb-4 text-gray-800">Connect With Us</h3>
+                    <h3 className="text-xl font-bold mb-4 text-gray-800">Connect With Us</h3>
                     <div className="flex space-x-4">
-                      <a href="#" className="bg-blue-100 p-3 rounded-full text-redcross hover:bg-blue-200 transition">
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <a href="#" className="bg-blue-100 p-4 rounded-full text-redcross hover:bg-blue-200 hover:text-redcross-dark transition-all duration-300 transform hover:scale-110">
+                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                         </svg>
                       </a>
                       
-                      <a href="#" className="bg-blue-100 p-3 rounded-full text-redcross hover:bg-blue-200 transition">
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <a href="#" className="bg-blue-100 p-4 rounded-full text-redcross hover:bg-blue-200 hover:text-redcross-dark transition-all duration-300 transform hover:scale-110">
+                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                         </svg>
                       </a>
                       
-                      <a href="#" className="bg-blue-100 p-3 rounded-full text-redcross hover:bg-blue-200 transition">
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <a href="#" className="bg-blue-100 p-4 rounded-full text-redcross hover:bg-blue-200 hover:text-redcross-dark transition-all duration-300 transform hover:scale-110">
+                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm13.5 12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764z" />
                         </svg>
                       </a>
                       
-                      <a href="#" className="bg-blue-100 p-3 rounded-full text-redcross hover:bg-blue-200 transition">
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <a href="#" className="bg-blue-100 p-4 rounded-full text-redcross hover:bg-blue-200 hover:text-redcross-dark transition-all duration-300 transform hover:scale-110">
+                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                         </svg>
                       </a>
