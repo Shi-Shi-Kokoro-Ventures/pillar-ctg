@@ -6,9 +6,86 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Phone, MapPin, Clock, ExternalLink, Home, FileText, LifeBuoy } from "lucide-react";
 import InteractiveMap from "@/components/InteractiveMap";
+import ZipCodeSearch from "@/components/ZipCodeSearch";
+import { toast } from "sonner";
+
+// Resource location interface
+interface ResourceLocation {
+  id: number;
+  name: string;
+  category: "shelter" | "healthcare" | "food" | "crisis";
+  address: string;
+  phone: string;
+  zipCode: string;
+  city: string;
+  state: string;
+  website: string;
+}
+
+// Delaware resource locations
+const delawareResources: ResourceLocation[] = [
+  {
+    id: 1,
+    name: "Delaware Housing Assistance Program",
+    category: "shelter",
+    address: "18 The Green, Dover, DE 19901",
+    phone: "1-833-585-4273",
+    zipCode: "19901",
+    city: "Dover",
+    state: "DE",
+    website: "https://www.delawarehousingassistance.org"
+  },
+  {
+    id: 2,
+    name: "Wilmington Community Health Center",
+    category: "healthcare",
+    address: "1001 N. Market St, Wilmington, DE 19801",
+    phone: "1-833-585-4273",
+    zipCode: "19801",
+    city: "Wilmington",
+    state: "DE",
+    website: "https://www.wilmingtoncommunityhealth.org"
+  },
+  {
+    id: 3,
+    name: "Delaware Food Bank",
+    category: "food",
+    address: "222 Lake Dr, Newark, DE 19702",
+    phone: "1-833-585-4273",
+    zipCode: "19702",
+    city: "Newark",
+    state: "DE",
+    website: "https://www.delfoodbank.org"
+  },
+  {
+    id: 4,
+    name: "Crisis Support Center of Delaware",
+    category: "crisis",
+    address: "500 Main St, Middletown, DE 19709",
+    phone: "1-833-585-4273",
+    zipCode: "19709",
+    city: "Middletown",
+    state: "DE",
+    website: "https://www.delawarecrisis.org"
+  },
+  {
+    id: 5,
+    name: "New Castle County Shelter",
+    category: "shelter",
+    address: "400 N. Walnut St, Wilmington, DE 19801",
+    phone: "1-833-585-4273",
+    zipCode: "19801",
+    city: "Wilmington",
+    state: "DE",
+    website: "https://www.delawareshelters.org"
+  }
+];
 
 const Emergency = () => {
   const [isFullMapVisible, setIsFullMapVisible] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [filteredResources, setFilteredResources] = useState<ResourceLocation[]>(delawareResources);
+  const [searchedZipCode, setSearchedZipCode] = useState<string | null>(null);
   
   // Toggle full map view
   const handleViewFullMap = () => {
@@ -53,6 +130,32 @@ const Emergency = () => {
     
     return () => timers.forEach(timer => clearTimeout(timer));
   }, []);
+  
+  // Handle ZIP code search
+  const handleZipCodeSearch = (zipCode: string) => {
+    setIsSearching(true);
+    setSearchedZipCode(zipCode);
+    
+    // Simulate API call with timeout
+    setTimeout(() => {
+      // For demo purposes, we'll filter based on exact match or first 2 digits
+      const zipCodePrefix = zipCode.substring(0, 2);
+      const results = delawareResources.filter(
+        resource => resource.zipCode === zipCode || resource.zipCode.startsWith(zipCodePrefix)
+      );
+      
+      if (results.length > 0) {
+        setFilteredResources(results);
+        toast.success(`Found ${results.length} resources near ${zipCode}`);
+      } else {
+        // If no results, show all Delaware resources
+        setFilteredResources(delawareResources);
+        toast.info("No exact matches found. Showing all Delaware resources.");
+      }
+      
+      setIsSearching(false);
+    }, 1000);
+  };
   
   // If full map is visible, show only that
   if (isFullMapVisible) {
@@ -106,8 +209,8 @@ const Emergency = () => {
                     <h2 className="text-2xl font-bold mb-2">24/7 Housing Crisis Hotline</h2>
                     <p className="text-gray-600 mb-4">Our trained staff is available around the clock to provide assistance and information.</p>
                     <a href="tel:1-833-585-4273" className="group">
-                      <span className="text-2xl font-bold text-blue-500 group-hover:underline">1(833) LVL-HARD</span>
-                      <span className="text-gray-500 text-lg ml-2">(1-833-585-4273)</span>
+                      <span className="text-2xl font-bold text-blue-500 group-hover:underline">1-833-585-4273</span>
+                      <span className="text-gray-500 text-lg ml-2">(1-833-LVL-HARD)</span>
                     </a>
                   </div>
                 </div>
@@ -135,7 +238,7 @@ const Emergency = () => {
                   </li>
                   <li className="flex items-start">
                     <MapPin className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Multiple locations throughout the city</span>
+                    <span>Multiple locations throughout Delaware</span>
                   </li>
                 </ul>
                 <Link to="/housing" className="w-full">
@@ -158,7 +261,7 @@ const Emergency = () => {
                   </li>
                   <li className="flex items-start">
                     <MapPin className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Services available in all counties</span>
+                    <span>Services available throughout Delaware</span>
                   </li>
                 </ul>
                 <Link to="/apply-for-assistance" className="w-full">
@@ -200,6 +303,9 @@ const Emergency = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Find Help Near You</h2>
             
             <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+              <div className="mb-6">
+                <ZipCodeSearch onSearch={handleZipCodeSearch} isLoading={isSearching} />
+              </div>
               <InteractiveMap onViewFullMap={handleViewFullMap} />
               <p className="text-gray-600 mt-6 mb-6">
                 Use our interactive map to find emergency housing resources in your area, 
@@ -212,104 +318,42 @@ const Emergency = () => {
         {/* Community Resources */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Community Resources By Location</h2>
+            <h2 className="text-3xl font-bold text-center mb-8">Community Resources</h2>
+            
+            {searchedZipCode && (
+              <p className="text-center text-gray-600 mb-8">
+                {filteredResources.length > 0 
+                  ? `Showing resources near zip code ${searchedZipCode}`
+                  : `No resources found for zip code ${searchedZipCode}. Showing all Delaware resources.`
+                }
+              </p>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Delaware Resources */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-3 flex items-center">
-                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
-                  Wilmington, Delaware
-                </h3>
-                <p className="text-gray-600 mb-4">Delaware Housing Assistance Program (DEHAP) provides emergency rental and utility assistance.</p>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="tel:1-833-585-4273" className="group">
-                      <span className="font-medium">1(833) LVL-HARD</span>
-                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="https://www.delawarehousingassistance.org" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
-                      delawarehousingassistance.org
-                    </a>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Philadelphia Resources */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-3 flex items-center">
-                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
-                  Philadelphia, Pennsylvania
-                </h3>
-                <p className="text-gray-600 mb-4">Philadelphia Office of Homeless Services provides emergency housing and prevention services.</p>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="tel:1-833-585-4273" className="group">
-                      <span className="font-medium">1(833) LVL-HARD</span>
-                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="https://www.phila.gov/services/property-lots-housing/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
-                      phila.gov/housing-services
-                    </a>
+              {filteredResources.map(resource => (
+                <div key={resource.id} className="bg-white p-6 rounded-lg shadow-md">
+                  <h3 className="text-xl font-bold mb-3 flex items-center">
+                    <MapPin className="h-5 w-5 text-blue-500 mr-2" />
+                    {resource.name}
+                  </h3>
+                  <p className="text-gray-600 mb-2">{resource.address}</p>
+                  <p className="text-gray-600 mb-4">{resource.city}, {resource.state} {resource.zipCode}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <Phone className="h-4 w-4 text-blue-500 mr-2" />
+                      <a href={`tel:${resource.phone.replace(/[^0-9]/g, '')}`} className="group">
+                        <span className="font-medium">{resource.phone}</span>
+                      </a>
+                    </div>
+                    <div className="flex items-center">
+                      <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
+                      <a href={resource.website} className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
+                        {resource.website.replace(/^https?:\/\/(www\.)?/i, '')}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* New Jersey Resources */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-3 flex items-center">
-                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
-                  Camden, New Jersey
-                </h3>
-                <p className="text-gray-600 mb-4">NJ Department of Community Affairs offers emergency housing vouchers and homelessness prevention.</p>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="tel:1-833-585-4273" className="group">
-                      <span className="font-medium">1(833) LVL-HARD</span>
-                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="https://www.nj.gov/dca/divisions/dhcr/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
-                      nj.gov/dca/housing
-                    </a>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Maryland Resources */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-3 flex items-center">
-                  <MapPin className="h-5 w-5 text-blue-500 mr-2" />
-                  Baltimore, Maryland
-                </h3>
-                <p className="text-gray-600 mb-4">Maryland Department of Housing offers resources for homeless veterans and families in crisis.</p>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="tel:1-833-585-4273" className="group">
-                      <span className="font-medium">1(833) LVL-HARD</span>
-                      <span className="text-gray-500 text-sm ml-1">(1-833-585-4273)</span>
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
-                    <a href="https://dhcd.maryland.gov/HomelessServices/" className="text-blue-500 hover:underline" target="_blank" rel="noreferrer">
-                      dhcd.maryland.gov/housing
-                    </a>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
