@@ -8,7 +8,10 @@ import {
   Moon, 
   Type, 
   MousePointer2,
-  Settings
+  Settings,
+  CircleIcon,
+  SquareIcon,
+  FocusIcon
 } from "lucide-react";
 
 const AccessibilityControls = () => {
@@ -16,6 +19,8 @@ const AccessibilityControls = () => {
   const [highContrast, setHighContrast] = useState(false);
   const [cursorSize, setCursorSize] = useState<'normal' | 'large'>('normal');
   const [isVisible, setIsVisible] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(true);
+  const [useRoundedCorners, setUseRoundedCorners] = useState(true);
   
   // Apply font size changes to the document
   useEffect(() => {
@@ -46,6 +51,30 @@ const AccessibilityControls = () => {
     localStorage.setItem('accessibility_cursorSize', cursorSize);
   }, [cursorSize]);
   
+  // Toggle focus outlines visibility
+  useEffect(() => {
+    if (!focusVisible) {
+      document.documentElement.classList.add('no-focus-outline');
+    } else {
+      document.documentElement.classList.remove('no-focus-outline');
+    }
+    // Save preference
+    localStorage.setItem('accessibility_focusVisible', focusVisible.toString());
+  }, [focusVisible]);
+  
+  // Toggle rounded corners
+  useEffect(() => {
+    if (useRoundedCorners) {
+      document.documentElement.classList.add('use-rounded-corners');
+      document.documentElement.classList.remove('use-square-corners');
+    } else {
+      document.documentElement.classList.remove('use-rounded-corners');
+      document.documentElement.classList.add('use-square-corners');
+    }
+    // Save preference
+    localStorage.setItem('accessibility_roundedCorners', useRoundedCorners.toString());
+  }, [useRoundedCorners]);
+  
   // Load saved preferences on component mount
   useEffect(() => {
     const savedFontSize = localStorage.getItem('accessibility_fontSize');
@@ -68,11 +97,24 @@ const AccessibilityControls = () => {
       setIsVisible(savedVisibility === 'true');
     }
     
+    const savedFocusVisible = localStorage.getItem('accessibility_focusVisible');
+    if (savedFocusVisible) {
+      setFocusVisible(savedFocusVisible === 'true');
+    }
+    
+    const savedRoundedCorners = localStorage.getItem('accessibility_roundedCorners');
+    if (savedRoundedCorners) {
+      setUseRoundedCorners(savedRoundedCorners === 'true');
+    }
+    
     // Add cleanup function
     return () => {
       // Reset document styles when component unmounts
       document.documentElement.style.fontSize = '';
       document.documentElement.classList.remove('high-contrast-mode');
+      document.documentElement.classList.remove('no-focus-outline');
+      document.documentElement.classList.remove('use-rounded-corners');
+      document.documentElement.classList.remove('use-square-corners');
       document.body.classList.remove('large-cursor');
     };
   }, []);
@@ -95,6 +137,14 @@ const AccessibilityControls = () => {
   
   const toggleCursorSize = () => {
     setCursorSize(cursorSize === 'normal' ? 'large' : 'normal');
+  };
+  
+  const toggleFocusOutline = () => {
+    setFocusVisible(!focusVisible);
+  };
+  
+  const toggleCornerStyle = () => {
+    setUseRoundedCorners(!useRoundedCorners);
   };
   
   const toggleVisibility = () => {
@@ -120,7 +170,7 @@ const AccessibilityControls = () => {
       {/* Accessibility controls panel - only visible when toggled on */}
       {isVisible && (
         <div 
-          className="accessibility-controls fixed right-4 top-24 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-md border border-gray-200"
+          className="accessibility-controls fixed right-4 top-20 z-50 flex flex-col gap-2 bg-white p-3 rounded-lg shadow-md border border-gray-200"
           aria-label="Accessibility controls"
           role="toolbar"
         >
@@ -164,6 +214,28 @@ const AccessibilityControls = () => {
             aria-pressed={cursorSize === 'large'}
           >
             <MousePointer2 className="h-4 w-4" />
+          </Button>
+          
+          <Button 
+            variant={focusVisible ? "outline" : "default"} 
+            size="icon" 
+            onClick={toggleFocusOutline}
+            aria-label={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
+            title={focusVisible ? "Hide focus outlines" : "Show focus outlines"}
+            aria-pressed={!focusVisible}
+          >
+            <FocusIcon className="h-4 w-4" />
+          </Button>
+          
+          <Button 
+            variant={useRoundedCorners ? "outline" : "default"} 
+            size="icon" 
+            onClick={toggleCornerStyle}
+            aria-label={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
+            title={useRoundedCorners ? "Use square corners" : "Use rounded corners"}
+            aria-pressed={!useRoundedCorners}
+          >
+            {useRoundedCorners ? <CircleIcon className="h-4 w-4" /> : <SquareIcon className="h-4 w-4" />}
           </Button>
         </div>
       )}

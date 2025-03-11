@@ -67,6 +67,46 @@ select {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
+/* Focus outline control */
+.no-focus-outline :focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+.no-focus-outline :focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+/* Corner style control */
+.use-rounded-corners button,
+.use-rounded-corners input,
+.use-rounded-corners textarea,
+.use-rounded-corners select,
+.use-rounded-corners .card,
+.use-rounded-corners .glass-card,
+.use-rounded-corners .neo-glass,
+.use-rounded-corners img,
+.use-rounded-corners div[role="dialog"],
+.use-rounded-corners .btn {
+  border-radius: 0.5rem !important;
+}
+
+.use-square-corners button,
+.use-square-corners input,
+.use-square-corners textarea,
+.use-square-corners select,
+.use-square-corners .card,
+.use-square-corners .glass-card,
+.use-square-corners .neo-glass,
+.use-square-corners img,
+.use-square-corners div[role="dialog"],
+.use-square-corners .btn {
+  border-radius: 0 !important;
+}
+
 /* Accessibility enhancement styles */
 .high-contrast-mode {
   background-color: #000 !important;
