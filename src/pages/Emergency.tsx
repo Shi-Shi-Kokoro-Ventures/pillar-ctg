@@ -135,7 +135,7 @@ const Emergency = () => {
                     <span>Multiple locations throughout the city</span>
                   </li>
                 </ul>
-                <Link to="/housing">
+                <Link to="/housing" className="w-full">
                   <Button className="w-full">
                     <Home className="mr-2" /> Find Shelter
                   </Button>
@@ -158,7 +158,7 @@ const Emergency = () => {
                     <span>Services available in all counties</span>
                   </li>
                 </ul>
-                <Link to="/apply-for-assistance">
+                <Link to="/apply-for-assistance" className="w-full">
                   <Button className="w-full">
                     <FileText className="mr-2" /> Apply for Assistance
                   </Button>
@@ -181,7 +181,7 @@ const Emergency = () => {
                     <span>Phone and in-person support</span>
                   </li>
                 </ul>
-                <Link to="/housing-crisis-hotline">
+                <Link to="/housing-crisis-hotline" className="w-full">
                   <Button className="w-full">
                     <LifeBuoy className="mr-2" /> Get Support
                   </Button>
