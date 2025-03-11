@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import Stripe from 'https://esm.sh/stripe@13.11.0'
 
@@ -6,10 +5,14 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Content-Security-Policy': "default-src 'self' https://api.stripe.com",
+  'X-XSS-Protection': '1; mode=block'
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders, status: 204 })
   }
@@ -91,6 +94,14 @@ serve(async (req) => {
           console.log(`Unhandled event type: ${event.type}`)
       }
 
+      // Enhanced logging for successful webhook events
+      console.log('Webhook event processed successfully:', {
+        timestamp: new Date().toISOString(),
+        eventType: event.type,
+        eventId: event.id,
+        // Don't log sensitive data
+      });
+
       return new Response(
         JSON.stringify({ received: true }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -116,4 +127,3 @@ serve(async (req) => {
     )
   }
 })
-

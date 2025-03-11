@@ -1,5 +1,3 @@
-
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import Stripe from 'https://esm.sh/stripe@13.11.0'
 
@@ -7,6 +5,39 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Content-Security-Policy': "default-src 'self' https://checkout.stripe.com",
+  'X-XSS-Protection': '1; mode=block'
+}
+
+// Simple rate limiting
+const RATE_LIMIT_WINDOW = 3600000; // 1 hour in milliseconds
+const MAX_REQUESTS_PER_WINDOW = 10;
+const requestLog = new Map<string, { count: number; timestamp: number }>();
+
+function isRateLimited(clientId: string): boolean {
+  const now = Date.now();
+  const clientRequests = requestLog.get(clientId);
+
+  if (!clientRequests) {
+    requestLog.set(clientId, { count: 1, timestamp: now });
+    return false;
+  }
+
+  if (now - clientRequests.timestamp > RATE_LIMIT_WINDOW) {
+    // Reset if window has passed
+    requestLog.set(clientId, { count: 1, timestamp: now });
+    return false;
+  }
+
+  if (clientRequests.count >= MAX_REQUESTS_PER_WINDOW) {
+    return true;
+  }
+
+  clientRequests.count++;
+  return false;
 }
 
 serve(async (req) => {
@@ -16,6 +47,24 @@ serve(async (req) => {
   }
 
   try {
+    // Get client identifier (IP address or token)
+    const clientId = req.headers.get('x-forwarded-for') || 'unknown';
+    
+    // Check rate limit
+    if (isRateLimited(clientId)) {
+      console.warn(`Rate limit exceeded for client: ${clientId}`);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Rate limit exceeded', 
+          details: 'Too many requests, please try again later' 
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 429 
+        }
+      )
+    }
+
     // Get environment variables and validate Stripe key
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) {
@@ -49,12 +98,22 @@ serve(async (req) => {
       )
     }
 
+    // Enhanced logging for audit purposes
+    const requestData = await req.json();
+    console.log('Processing donation request:', {
+      timestamp: new Date().toISOString(),
+      clientId,
+      donationType: requestData.donationType,
+      amount: requestData.amount,
+      // Don't log sensitive data
+    });
+
     // Parse request body with better error handling
-    let requestData;
+    let requestData2;
     try {
       const bodyText = await req.text();
-      requestData = JSON.parse(bodyText);
-      console.log("Request data parsed successfully", requestData);
+      requestData2 = JSON.parse(bodyText);
+      console.log("Request data parsed successfully", requestData2);
     } catch (parseError) {
       console.error("Request body parse error:", parseError);
       return new Response(
@@ -63,7 +122,7 @@ serve(async (req) => {
       )
     }
     
-    const { amount, donationType, successUrl, cancelUrl } = requestData;
+    const { amount, donationType, successUrl, cancelUrl } = requestData2;
 
     // Validate required parameters
     if (!amount || !donationType || !successUrl || !cancelUrl) {
@@ -184,4 +243,3 @@ serve(async (req) => {
     )
   }
 })
-
