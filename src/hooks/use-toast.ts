@@ -13,6 +13,7 @@ type ToasterToast = {
   action?: ToastActionElement
   open: boolean
   variant?: ToastVariant
+  duration?: number
   onOpenChange?: (open: boolean) => void
 }
 
@@ -56,7 +57,7 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-const addToRemoveQueue = (toastId: string) => {
+const addToRemoveQueue = (toastId: string, duration?: number) => {
   if (toastTimeouts.has(toastId)) {
     return
   }
@@ -67,7 +68,7 @@ const addToRemoveQueue = (toastId: string) => {
       type: "REMOVE_TOAST",
       toastId: toastId,
     })
-  }, TOAST_REMOVE_DELAY)
+  }, duration || TOAST_REMOVE_DELAY)
 
   toastTimeouts.set(toastId, timeout)
 }
@@ -149,6 +150,13 @@ function toast({ ...props }: Toast) {
       toast: { ...props, id },
     })
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
+
+  // Handle duration automatically
+  if (props.duration) {
+    setTimeout(() => {
+      dismiss()
+    }, props.duration)
+  }
 
   dispatch({
     type: "ADD_TOAST",

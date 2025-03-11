@@ -69,6 +69,7 @@ export function CustomToast({
       open={open}
       onOpenChange={onOpenChange}
       {...props}
+      // Override the variant property with the mapped base variant
       variant={baseVariant}
     >
       <div className="flex w-full items-start gap-3">

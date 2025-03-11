@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -169,6 +168,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
       toast({
         title: "Application Submitted!",
         description: "Thank you for your interest in volunteering. We'll contact you soon.",
+        variant: "success",
         duration: 5000,
       });
       
@@ -176,6 +176,7 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
         toast({
           title: "Application Routed",
           description: "Your application has been sent to our team for review.",
+          variant: "info",
           duration: 3000,
         });
       }
@@ -910,20 +911,3 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
                         margin: 20,
                         format: 'letter',
                         orientation: 'portrait'
-                      }
-                    });
-                  }}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Application
-                </Button>
-              )}
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-export default VolunteerApplicationForm;
