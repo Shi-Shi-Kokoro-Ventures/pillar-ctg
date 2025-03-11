@@ -1,25 +1,20 @@
-
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Wrench, BookOpen, Heart, Star, ArrowRight } from "lucide-react";
-import VolunteerApplicationForm from "@/components/VolunteerApplicationForm";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const Volunteer = () => {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const navigate = useNavigate();
   
   const { ref: heroRef, inView: heroInView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const { ref: opportunitiesRef, inView: opportunitiesInView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const { ref: benefitsRef, inView: benefitsInView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const { ref: testimonialRef, inView: testimonialInView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const { ref: ctaRef, inView: ctaInView } = useInView({ triggerOnce: true, threshold: 0.1 });
-  
-  const openVolunteerForm = () => {
-    setIsFormOpen(true);
-  };
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -47,7 +42,7 @@ const Volunteer = () => {
             <Button 
               className="bg-redcross hover:bg-redcross/90 px-8 py-6 text-lg font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group"
               size="lg"
-              onClick={openVolunteerForm}
+              onClick={() => navigate("/volunteer-application")}
             >
               Apply to Volunteer
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -139,7 +134,7 @@ const Volunteer = () => {
                     <Button 
                       variant="outline" 
                       className="w-full border-redcross text-redcross hover:bg-redcross hover:text-white transition-colors duration-300"
-                      onClick={openVolunteerForm}
+                      onClick={() => navigate("/volunteer-application")}
                     >
                       Learn More
                     </Button>
@@ -290,7 +285,7 @@ const Volunteer = () => {
               <Button 
                 className="bg-white text-redcross hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
                 size="lg"
-                onClick={openVolunteerForm}
+                onClick={() => navigate("/volunteer-application")}
               >
                 Apply to Volunteer
               </Button>
@@ -298,7 +293,7 @@ const Volunteer = () => {
                 variant="outline" 
                 className="border-2 border-white text-white bg-redcross/40 hover:bg-white hover:text-redcross focus:bg-white focus:text-redcross focus:ring-2 focus:ring-white shadow-lg hover:scale-105 transition-all duration-300 px-8 py-6 text-lg font-semibold"
                 size="lg"
-                onClick={() => window.location.href = "/contact-us"}
+                onClick={() => navigate("/contact-us")}
               >
                 Contact Us With Questions
               </Button>
@@ -308,12 +303,6 @@ const Volunteer = () => {
       </main>
       
       <Footer />
-      
-      {/* Volunteer Application Form Dialog */}
-      <VolunteerApplicationForm 
-        open={isFormOpen} 
-        onOpenChange={setIsFormOpen} 
-      />
     </div>
   );
 };

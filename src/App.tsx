@@ -1,3 +1,4 @@
+
 import { lazy, Suspense } from "react";
 import { CustomToaster } from "@/components/ui/custom-toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,6 +13,7 @@ import Index from "./pages/Index";
 // Lazy load other pages to improve initial load time
 const Donate = lazy(() => import("./pages/Donate"));
 const Volunteer = lazy(() => import("./pages/Volunteer"));
+const VolunteerApplication = lazy(() => import("./pages/VolunteerApplication"));
 const Emergency = lazy(() => import("./pages/Emergency"));
 const TimeBank = lazy(() => import("./pages/TimeBank"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -58,6 +60,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/volunteer" element={<Volunteer />} />
+            <Route path="/volunteer-application" element={<VolunteerApplication />} />
             <Route path="/emergency" element={<Emergency />} />
             <Route path="/time" element={<TimeBank />} />
             <Route path="/donate-goods" element={<DonateGoods />} />
