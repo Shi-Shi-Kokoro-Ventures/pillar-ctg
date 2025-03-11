@@ -574,28 +574,30 @@ const Emergency = () => {
       
       <Footer />
       
-      {/* Add keyframe animations */}
-      <style jsx global>{`
-        @keyframes scan {
-          0%, 100% { transform: translateX(-100%); }
-          50% { transform: translateX(100%); }
-        }
-        
-        @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
-        }
-        
-        @keyframes mapScan {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-        
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
+      {/* Add keyframe animations as inline style */}
+      <style>
+        {`
+          @keyframes scan {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+          }
+          
+          @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+          }
+          
+          @keyframes mapScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+          }
+          
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+        `}
+      </style>
     </div>
   );
 };
