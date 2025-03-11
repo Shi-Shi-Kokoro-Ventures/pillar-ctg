@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 const Donate = () => {
-  const { toast } = useToast();
   const [selectedOneTimeAmount, setSelectedOneTimeAmount] = useState<string>("$100");
   const [selectedMonthlyAmount, setSelectedMonthlyAmount] = useState<string>("$25");
   const [loading, setLoading] = useState<string | null>(null);
@@ -40,11 +39,7 @@ const Donate = () => {
       setLoading(donationType);
       
       if (amount === "$" || amount === "$0" || amount === "") {
-        toast({
-          title: "Invalid amount",
-          description: "Please enter a valid donation amount",
-          variant: "destructive",
-        });
+        toast.error("Please enter a valid donation amount");
         setLoading(null);
         return;
       }
@@ -78,11 +73,7 @@ const Donate = () => {
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
-      toast({
-        title: "Payment Error",
-        description: "There was an error processing your donation. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("There was an error processing your donation. Please try again.");
       setLoading(null);
     }
   };
@@ -110,21 +101,13 @@ const Donate = () => {
     const amount = url.searchParams.get("amount");
 
     if (status === "success" && type && amount) {
-      toast({
-        title: "Thank you for your donation!",
-        description: `Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`,
-      });
-
+      toast.success(`Your ${type === "monthly" ? "monthly" : "one-time"} donation of ${amount} has been processed.`);
       window.history.replaceState({}, document.title, "/donate");
     } else if (status === "canceled") {
-      toast({
-        title: "Donation Canceled",
-        description: "Your donation has been canceled. No charges were made.",
-      });
-
+      toast.error("Your donation has been canceled. No charges were made.");
       window.history.replaceState({}, document.title, "/donate");
     }
-  }, [toast]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
