@@ -48,6 +48,41 @@ a {
   @apply btn bg-gray-200 text-gray-800 hover:bg-gray-300;
 }
 
+/* Enhanced Futuristic Buttons */
+button {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Futuristic Button Effects */
+.button-hover-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-hover-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.button-hover-glow:hover::before {
+  left: 100%;
+}
+
 /* Forms */
 input[type="text"],
 input[type="email"],
@@ -334,4 +369,139 @@ body[data-accessibility-enabled="true"] :focus-visible {
   to {
     transform: rotate(30deg) translate(1%, 1%);
   }
+}
+
+/* New futuristic button styles and animations */
+@keyframes button-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(30, 174, 219, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(30, 174, 219, 0.8), 0 0 30px rgba(30, 174, 219, 0.4);
+  }
+}
+
+.button-glow {
+  animation: button-glow 3s infinite ease-in-out;
+}
+
+.button-neo {
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 7px 15px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.button-neo:hover {
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 10px 20px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+}
+
+/* Button with light border effect */
+.button-border-light {
+  position: relative;
+  border: none;
+  background: linear-gradient(45deg, #1EAEDB, #33C3F0);
+  z-index: 1;
+}
+
+.button-border-light::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  background: linear-gradient(45deg, #0D6E97, #1EAEDB, #33C3F0, #0D6E97);
+  background-size: 400%;
+  filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.button-border-light:hover::before {
+  opacity: 1;
+  animation: border-light-run 20s linear infinite;
+}
+
+@keyframes border-light-run {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Button with moving gradient */
+.button-moving-gradient {
+  background-size: 200% 200%;
+  background-image: linear-gradient(45deg, #1EAEDB, #33C3F0, #0D6E97, #1EAEDB);
+  transition: all 0.5s ease;
+}
+
+.button-moving-gradient:hover {
+  background-position: 100% 100%;
+}
+
+/* Button with pulse effect */
+.button-pulse {
+  transition: all 0.3s ease;
+}
+
+.button-pulse:hover {
+  animation: button-pulse 2s infinite;
+}
+
+@keyframes button-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Button with cyberpunk effect */
+.button-cyberpunk {
+  position: relative;
+  border: 1px solid #1EAEDB;
+  background: transparent;
+  color: #1EAEDB;
+  text-shadow: 0 0 5px rgba(30, 174, 219, 0.5);
+  transition: all 0.3s ease;
+}
+
+.button-cyberpunk::before,
+.button-cyberpunk::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 1px;
+  background: #1EAEDB;
+}
+
+.button-cyberpunk::before {
+  top: -1px;
+  left: -1px;
+}
+
+.button-cyberpunk::after {
+  bottom: -1px;
+  right: -1px;
+}
+
+.button-cyberpunk:hover {
+  box-shadow: 0 0 15px rgba(30, 174, 219, 0.5);
+  text-shadow: 0 0 8px rgba(30, 174, 219, 0.8);
 }
