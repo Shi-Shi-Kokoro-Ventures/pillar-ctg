@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,8 +15,10 @@ const Donate = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>("Connecting to payment processor...");
+  const [elapsedLoadingTime, setElapsedLoadingTime] = useState<number>(0);
   const loadingTimerRef = useRef<number | null>(null);
   const redirectTimerRef = useRef<number | null>(null);
+  const elapsedTimeIntervalRef = useRef<number | null>(null);
 
   const handleOneTimeSelection = (amount: string) => {
     setSelectedOneTimeAmount(amount);
@@ -39,17 +42,36 @@ const Donate = () => {
     }
   };
 
-  // Clear any loading timers when component unmounts
+  // Clear all timers when component unmounts
   useEffect(() => {
     return () => {
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-      }
-      if (redirectTimerRef.current) {
-        window.clearTimeout(redirectTimerRef.current);
-      }
+      clearAllTimers();
     };
   }, []);
+
+  // Helper to clear all timers
+  const clearAllTimers = () => {
+    if (loadingTimerRef.current) {
+      window.clearTimeout(loadingTimerRef.current);
+      loadingTimerRef.current = null;
+    }
+    if (redirectTimerRef.current) {
+      window.clearTimeout(redirectTimerRef.current);
+      redirectTimerRef.current = null;
+    }
+    if (elapsedTimeIntervalRef.current) {
+      window.clearInterval(elapsedTimeIntervalRef.current);
+      elapsedTimeIntervalRef.current = null;
+    }
+  };
+
+  const handleCancelCheckout = () => {
+    clearAllTimers();
+    setLoading(null);
+    setElapsedLoadingTime(0);
+    setError(null);
+    toast.info("Donation process canceled. You can try again when ready.");
+  };
 
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
@@ -57,8 +79,18 @@ const Donate = () => {
       setError(null);
       setLoading(donationType);
       setLoadingMessage("Connecting to payment processor...");
+      setElapsedLoadingTime(0);
       
-      // Set a timeout to update loading message after 3 seconds
+      // Start timer to track elapsed time
+      if (elapsedTimeIntervalRef.current) {
+        window.clearInterval(elapsedTimeIntervalRef.current);
+      }
+      
+      elapsedTimeIntervalRef.current = window.setInterval(() => {
+        setElapsedLoadingTime(prev => prev + 1);
+      }, 1000);
+      
+      // Set a timeout to update loading message after 5 seconds
       if (loadingTimerRef.current) {
         window.clearTimeout(loadingTimerRef.current);
       }
@@ -68,17 +100,18 @@ const Donate = () => {
         
         // Set another timeout for final timeout message
         loadingTimerRef.current = window.setTimeout(() => {
+          clearAllTimers();
           setLoading(null);
           setError("Request timed out. Please try again later.");
           toast.error("Request timed out. The donation process is taking longer than expected.");
-        }, 12000); // Add 12 more seconds (total 15 seconds timeout)
-      }, 3000);
+        }, 15000); // Timeout after 15 more seconds (total 20 seconds timeout)
+      }, 5000);
       
       // Validate amount
       const numericAmount = amount.replace(/^\$/, "").trim();
       if (!numericAmount || numericAmount === "0" || isNaN(Number(numericAmount))) {
+        clearAllTimers();
         setLoading(null);
-        if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
         toast.error("Please enter a valid donation amount");
         return;
       }
@@ -106,11 +139,8 @@ const Donate = () => {
         },
       });
 
-      // Clear the timeout as we got a response
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-        loadingTimerRef.current = null;
-      }
+      // Clear the interval and timeout as we got a response
+      clearAllTimers();
 
       if (supabaseError) {
         console.error("Supabase function error:", supabaseError);
@@ -131,25 +161,13 @@ const Donate = () => {
       // Redirect to Stripe Checkout
       if (data?.url) {
         console.log("Redirecting to Stripe checkout:", data.url);
-        
-        // Set a small delay to show the loading state before redirecting
-        redirectTimerRef.current = window.setTimeout(() => {
-          window.location.href = data.url;
-        }, 500);
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
-      // Clear the timeout as we got an error
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-        loadingTimerRef.current = null;
-      }
-      
-      if (redirectTimerRef.current) {
-        window.clearTimeout(redirectTimerRef.current);
-        redirectTimerRef.current = null;
-      }
+      // Clear all timers as we got an error
+      clearAllTimers();
       
       console.error("Error creating checkout session:", error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
@@ -201,7 +219,10 @@ const Donate = () => {
   // Dynamic loading content based on current state
   const renderLoadingState = (type: string) => {
     if (loading === type) {
-      return <StripeLoadingIndicator message={loadingMessage} />;
+      return <div className="flex items-center justify-center py-1">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        Processing...
+      </div>;
     }
     
     return type === "one-time" ? "Donate Now" : "Become a Monthly Donor";
@@ -298,14 +319,7 @@ const Donate = () => {
                   onClick={handleDonateNow}
                   disabled={loading !== null}
                 >
-                  {loading === "one-time" ? (
-                    <div className="flex items-center justify-center py-1">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    "Donate Now"
-                  )}
+                  {renderLoadingState("one-time")}
                 </Button>
               </div>
               
@@ -354,14 +368,7 @@ const Donate = () => {
                   onClick={handleMonthlyDonation}
                   disabled={loading !== null}
                 >
-                  {loading === "monthly" ? (
-                    <div className="flex items-center justify-center py-1">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    "Become a Monthly Donor"
-                  )}
+                  {renderLoadingState("monthly")}
                 </Button>
               </div>
               
@@ -400,9 +407,13 @@ const Donate = () => {
         
         {/* Loading overlay - shown when in loading state */}
         {loading && (
-          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-              <StripeLoadingIndicator message={loadingMessage} />
+              <StripeLoadingIndicator 
+                message={loadingMessage} 
+                onCancel={handleCancelCheckout}
+                elapsedTime={elapsedLoadingTime}
+              />
             </div>
           </div>
         )}

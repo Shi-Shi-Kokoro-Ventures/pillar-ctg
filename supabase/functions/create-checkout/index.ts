@@ -26,35 +26,37 @@ serve(async (req) => {
       )
     }
 
-    // Initialize Stripe
-    const stripe = new Stripe(stripeKey, {
-      apiVersion: '2023-10-16',
-      httpClient: Stripe.createFetchHttpClient(),
-    })
-
+    // Initialize Stripe with proper error handling
+    let stripe;
     try {
-      // Verify Stripe key is valid by making a simple API call
+      stripe = new Stripe(stripeKey, {
+        apiVersion: '2023-10-16',
+        httpClient: Stripe.createFetchHttpClient(),
+        maxNetworkRetries: 3, // Add retries for reliability
+      })
+      
+      // Verify Stripe key is valid with a lightweight API call
       await stripe.paymentMethods.list({ limit: 1 });
       console.log("Stripe key verification successful");
-    } catch (stripeAuthError) {
-      console.error("Stripe key verification failed:", stripeAuthError);
+    } catch (stripeInitError) {
+      console.error("Stripe initialization or key validation error:", stripeInitError);
       return new Response(
         JSON.stringify({ 
-          error: 'Invalid Stripe configuration', 
-          details: 'The Stripe API key is invalid or has insufficient permissions'
+          error: 'Stripe configuration error', 
+          details: 'Could not initialize Stripe with the provided credentials' 
         }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       )
     }
 
-    // Parse request body
-    const bodyText = await req.text();
+    // Parse request body with better error handling
     let requestData;
-    
     try {
+      const bodyText = await req.text();
       requestData = JSON.parse(bodyText);
+      console.log("Request data parsed successfully", requestData);
     } catch (parseError) {
-      console.error("Request body parse error:", parseError, "Raw body:", bodyText);
+      console.error("Request body parse error:", parseError);
       return new Response(
         JSON.stringify({ error: 'Invalid request format', details: 'Could not parse request JSON' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
@@ -80,10 +82,17 @@ serve(async (req) => {
       )
     }
 
-    // Clean and validate amount
-    const numericAmount = amount.replace(/[^0-9.]/g, '')
+    // Clean and validate amount with more robust parsing
+    let numericAmount = amount.replace(/[^0-9.]/g, '')
+    if (numericAmount === "") {
+      console.error('Empty amount after cleaning:', amount);
+      return new Response(
+        JSON.stringify({ error: 'Invalid amount', details: 'Amount must contain numeric digits' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+    
     const amountInCents = Math.round(parseFloat(numericAmount) * 100)
-
     if (isNaN(amountInCents) || amountInCents <= 0) {
       console.error('Invalid amount:', amount, 'parsed as:', numericAmount);
       return new Response(
@@ -92,7 +101,7 @@ serve(async (req) => {
       )
     }
 
-    // Create line items based on donation type
+    // Create Stripe checkout session with better error handling
     const stripeMode = donationType === 'monthly' ? 'subscription' : 'payment'
     const displayType = donationType === 'monthly' ? 'Monthly' : 'One-Time'
 
@@ -125,7 +134,7 @@ serve(async (req) => {
         },
       });
 
-      // Return the session URL directly
+      // Return the session URL directly with proper logging
       console.log('Checkout session created successfully:', session.id, 'with URL:', session.url);
       return new Response(
         JSON.stringify({ 
@@ -139,15 +148,20 @@ serve(async (req) => {
       )
     } catch (stripeError) {
       console.error('Stripe session creation error:', stripeError);
+      const errorCode = stripeError.code || 'unknown';
+      const statusCode = stripeError.statusCode || 500;
+      
+      // Provide more detailed error information
       return new Response(
         JSON.stringify({ 
           error: 'Payment processing error',
           details: stripeError.message,
-          code: stripeError.code || 'unknown'
+          code: errorCode,
+          type: stripeError.type
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: stripeError.statusCode || 500
+          status: statusCode
         }
       )
     }
