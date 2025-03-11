@@ -1,3 +1,4 @@
+
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -77,6 +78,12 @@ const queryClient = new QueryClient({
   },
 });
 
+// Helper function to convert route key to path
+const routeKeyToPath = (key: string) => {
+  // Convert camelCase to kebab-case without trailing dash
+  return `/${key.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '')}`;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -105,7 +112,7 @@ const App = () => (
               {Object.entries(HousingRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
@@ -114,7 +121,7 @@ const App = () => (
               {Object.entries(SupportRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
@@ -123,7 +130,7 @@ const App = () => (
               {Object.entries(GetInvolvedRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
@@ -132,7 +139,7 @@ const App = () => (
               {Object.entries(InformationRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
@@ -141,7 +148,7 @@ const App = () => (
               {Object.entries(AboutRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
@@ -150,7 +157,7 @@ const App = () => (
               {Object.entries(LegalRoutes).map(([key, Component]) => (
                 <Route 
                   key={key} 
-                  path={`/${key.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()}`} 
+                  path={routeKeyToPath(key)} 
                   element={<Component />} 
                 />
               ))}
