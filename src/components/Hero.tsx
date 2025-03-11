@@ -109,7 +109,7 @@ const Hero = () => {
       </div>
       
       {/* Add keyframe animation for the glow effect */}
-      <style jsx="true">{`
+      <style>{`
         @keyframes glow {
           0% { text-shadow: 0 0 10px rgba(30, 174, 219, 0.5), 0 0 20px rgba(30, 174, 219, 0.3), 0 0 30px rgba(30, 174, 219, 0.2); }
           50% { text-shadow: 0 0 15px rgba(30, 174, 219, 0.7), 0 0 25px rgba(30, 174, 219, 0.5), 0 0 35px rgba(30, 174, 219, 0.3); }
@@ -210,4 +210,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
