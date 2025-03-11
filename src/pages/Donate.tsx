@@ -72,9 +72,26 @@ const Donate = () => {
     toast.info("Donation process canceled. You can try again when ready.");
   };
 
+  const handleDonateNow = async () => {
+    try {
+      await createCheckoutSession(selectedOneTimeAmount, "one-time");
+    } catch (error) {
+      console.error('Donation error:', error);
+      toast.error('Unable to process donation. Please try again.');
+    }
+  };
+
+  const handleMonthlyDonation = async () => {
+    try {
+      await createCheckoutSession(selectedMonthlyAmount, "monthly");
+    } catch (error) {
+      console.error('Monthly donation error:', error);
+      toast.error('Unable to process monthly donation. Please try again.');
+    }
+  };
+
   const createCheckoutSession = async (amount: string, donationType: "one-time" | "monthly") => {
     try {
-      // Clear any previous errors and set loading state
       setError(null);
       setLoading(donationType);
       setLoadingMessage("Connecting to payment processor...");
@@ -89,23 +106,6 @@ const Donate = () => {
         setElapsedLoadingTime(prev => prev + 1);
       }, 1000);
       
-      // Set a timeout to update loading message after 5 seconds
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-      }
-      
-      loadingTimerRef.current = window.setTimeout(() => {
-        setLoadingMessage("Still preparing your checkout experience...");
-        
-        // Set another timeout for final timeout message
-        loadingTimerRef.current = window.setTimeout(() => {
-          clearAllTimers();
-          setLoading(null);
-          setError("Request timed out. Please try again later.");
-          toast.error("Request timed out. The donation process is taking longer than expected.");
-        }, 15000); // Timeout after 15 more seconds (total 20 seconds timeout)
-      }, 5000);
-      
       // Validate amount
       const numericAmount = amount.replace(/^\$/, "").trim();
       if (!numericAmount || numericAmount === "0" || isNaN(Number(numericAmount))) {
@@ -115,13 +115,11 @@ const Donate = () => {
         return;
       }
       
-      // Use default amounts if "Other" is selected but no value entered
       let processedAmount = amount;
       if (processedAmount === "Other" || processedAmount === "$") {
         processedAmount = donationType === "one-time" ? "$100" : "$25";
       }
       
-      // Create success and cancel URLs
       const origin = window.location.origin;
       const successUrl = `${origin}/donate?status=success&type=${donationType}&amount=${encodeURIComponent(processedAmount)}`;
       const cancelUrl = `${origin}/donate?status=canceled`;
@@ -137,50 +135,29 @@ const Donate = () => {
         },
       });
 
-      // Clear the interval and timeout as we got a response
       clearAllTimers();
 
       if (supabaseError) {
-        console.error("Supabase function error:", supabaseError);
         throw new Error(supabaseError.message || "Error calling donation service");
       }
 
-      if (!data) {
-        throw new Error("No data returned from checkout function");
-      }
-
-      // Handle Stripe error returned in successful response
-      if (data.error) {
-        console.error("Stripe error:", data.error, data.details);
-        const errorMsg = data.error + (data.details ? `: ${data.details}` : "");
-        throw new Error(errorMsg);
-      }
-
-      // Redirect to Stripe Checkout using window.location.href
-      if (data?.url) {
-        console.log("Redirecting to Stripe checkout:", data.url);
-        // Force the browser to treat this as a new navigation
-        window.location.replace(data.url);
-      } else {
+      if (!data?.url) {
         throw new Error("No checkout URL returned");
       }
 
+      // Force new window/tab for mobile compatibility
+      window.open(data.url, '_blank', 'noopener,noreferrer');
+      
+      // Clear loading state after redirect
+      setLoading(null);
+
     } catch (error) {
       clearAllTimers();
-      console.error("Error creating checkout session:", error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       setError(errorMessage);
       toast.error(`Error: ${errorMessage}. Please try again later.`);
       setLoading(null);
     }
-  };
-
-  const handleDonateNow = async () => {
-    await createCheckoutSession(selectedOneTimeAmount, "one-time");
-  };
-
-  const handleMonthlyDonation = async () => {
-    await createCheckoutSession(selectedMonthlyAmount, "monthly");
   };
 
   const handleInfoRequest = (type: string) => {
