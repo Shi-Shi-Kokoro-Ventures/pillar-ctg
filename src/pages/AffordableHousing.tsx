@@ -83,15 +83,10 @@ const AffordableHousing = () => {
               Our affordable housing programs help individuals and families find stable, 
               quality housing they can afford. Contact us today to learn more about eligibility and availability.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link to="/apply-for-assistance">
                 <Button className="bg-white text-blue-600 hover:bg-gray-100">
                   Apply Now
-                </Button>
-              </Link>
-              <Link to="/contact-us">
-                <Button variant="outline" className="border-white text-white hover:bg-blue-700">
-                  Contact a Housing Specialist
                 </Button>
               </Link>
             </div>
