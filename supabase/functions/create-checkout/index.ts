@@ -23,14 +23,14 @@ serve(async (req) => {
       throw new Error('Missing Stripe API key')
     }
 
-    console.log('Stripe key valid format check:', stripeKey.startsWith('sk_'));
-    console.log('Initializing Stripe with key length:', stripeKey.length);
+    // Simplified initialization with basic logging
+    console.log('Stripe key format check: starts with sk_', stripeKey.startsWith('sk_'))
+    console.log('Stripe key length:', stripeKey.length)
 
-    // Initialize Stripe with explicit configuration
+    // Initialize Stripe with minimal configuration
     const stripe = new Stripe(stripeKey, {
       apiVersion: '2023-10-16',
-      httpClient: Stripe.createFetchHttpClient(),
-    });
+    })
 
     // Parse request body
     const requestData = await req.json()
@@ -96,13 +96,20 @@ serve(async (req) => {
     )
   } catch (error) {
     console.error('Error creating checkout session:', error)
-    // More detailed error logging
-    if (error.type && error.message) {
-      console.error(`Stripe error type: ${error.type}, message: ${error.message}`);
+    
+    // Detailed error reporting for debugging
+    if (error.type) {
+      console.error(`Stripe error type: ${error.type}`)
+    }
+    if (error.message) {
+      console.error(`Error message: ${error.message}`)
+    }
+    if (error.stack) {
+      console.error(`Stack trace: ${error.stack}`)
     }
     
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error.message || 'Unknown error occurred' }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400 
