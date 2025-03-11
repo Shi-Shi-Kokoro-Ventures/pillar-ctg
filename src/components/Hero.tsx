@@ -49,7 +49,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative min-h-screen w-full overflow-hidden pt-16 md:pt-20">
       {/* Full-screen background image with parallax effect */}
       <div 
         className="absolute inset-0 bg-cover bg-center" 
@@ -58,7 +58,8 @@ const Hero = () => {
           backgroundSize: "cover",
           backgroundPosition: `center ${scrollPosition * 0.2}px`,
           transform: `scale(${1 + scrollPosition * 0.0005})`,
-          transition: "transform 0.1s ease-out"
+          transition: "transform 0.1s ease-out",
+          zIndex: 0
         }}
         aria-hidden="true"
       >
@@ -70,10 +71,10 @@ const Hero = () => {
       </div>
       
       {/* Futuristic Gradient Overlay with mesh gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-redcross-dark/30 to-redcross/40 mix-blend-multiply"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-redcross-dark/30 to-redcross/40 mix-blend-multiply z-0"></div>
       
       {/* Animated light streaks */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-1">
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
@@ -99,7 +100,7 @@ const Hero = () => {
       </div>
       
       {/* Content Container - With motion animations */}
-      <div className="relative container mx-auto px-4 h-full flex flex-col justify-center z-10">
+      <div className="relative container mx-auto px-4 h-[calc(100vh-4rem)] flex flex-col justify-center z-10 pt-10 md:pt-16">
         <motion.div 
           className="max-w-3xl text-white"
           initial="hidden"
@@ -115,7 +116,7 @@ const Hero = () => {
           
           <motion.h1 
             variants={fadeInUp} 
-            className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
           >
             <span className="drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">Changing The Game,</span><br />
             <span style={textGradientStyle}>One Home At A Time</span>
@@ -123,7 +124,7 @@ const Hero = () => {
           
           <motion.p 
             variants={fadeInUp} 
-            className="text-xl md:text-2xl lg:text-3xl mb-8 max-w-xl text-white/90 drop-shadow-md leading-relaxed"
+            className="text-lg md:text-xl lg:text-2xl mb-8 max-w-xl text-white/90 drop-shadow-md leading-relaxed"
           >
             Providing secure housing and transformative support services to end homelessness, because everyone deserves a place to call home.
           </motion.p>
@@ -134,7 +135,7 @@ const Hero = () => {
           >
             <Link 
               to="/donate" 
-              className="bg-gradient-to-r from-redcross to-redcross-light text-white font-medium py-4 px-8 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-xl flex items-center justify-center group overflow-hidden relative"
+              className="bg-gradient-to-r from-redcross to-redcross-light text-white font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-xl flex items-center justify-center group overflow-hidden relative"
             >
               <span className="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></span>
               <span className="relative flex items-center">
@@ -145,7 +146,7 @@ const Hero = () => {
             
             <Link 
               to="/volunteer" 
-              className="bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white font-medium py-4 px-8 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-xl border border-white/30"
+              className="bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-xl border border-white/30"
             >
               Volunteer With Us
               <ArrowRight className="ml-2 h-5 w-5 inline-block" />
@@ -156,7 +157,7 @@ const Hero = () => {
       
       {/* Animated Scrolling Indicator */}
       <motion.div 
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-10"
         animate={{
           y: [0, 10, 0],
           opacity: [0.3, 1, 0.3]
@@ -174,9 +175,9 @@ const Hero = () => {
       </motion.div>
       
       {/* Floating Emergency Banner with glassmorphism */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-redcross to-redcross-dark backdrop-blur-md py-5 text-white border-t border-white/10">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-redcross to-redcross-dark backdrop-blur-md py-4 text-white border-t border-white/10 z-10">
         <div className="container mx-auto px-4 flex flex-wrap md:flex-nowrap justify-between items-center">
-          <p className="font-medium text-lg flex items-center">
+          <p className="font-medium text-base lg:text-lg flex items-center">
             <span className="inline-block w-3 h-3 bg-white rounded-full mr-3 animate-pulse"></span>
             Emergency: Affordable Housing Initiative Underway
           </p>
