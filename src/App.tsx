@@ -1,4 +1,3 @@
-
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -74,7 +73,6 @@ const queryClient = new QueryClient({
       gcTime: 900000, // 15 minutes (replaces cacheTime)
       retry: 1,
       refetchOnWindowFocus: true,
-      suspense: true,
     },
   },
 });
