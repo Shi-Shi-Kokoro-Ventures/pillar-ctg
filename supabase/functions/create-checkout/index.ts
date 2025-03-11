@@ -17,8 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    // Get environment variables
-    const stripeKey = Deno.env.get('STRIPE_API_KEY_LIVE')
+    // Get environment variables - now using the standard STRIPE_SECRET_KEY instead of STRIPE_API_KEY_LIVE
+    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) {
       throw new Error('Missing Stripe API key')
     }
