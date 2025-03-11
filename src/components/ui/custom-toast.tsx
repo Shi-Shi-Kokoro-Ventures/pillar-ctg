@@ -37,10 +37,15 @@ const IconMap = {
 
 export type ToastVariant = "default" | "destructive" | "success" | "error" | "warning" | "info" | "primary";
 
-export interface CustomToastProps extends React.ComponentPropsWithoutRef<typeof Toast> {
+export interface CustomToastProps {
+  className?: string;
   variant?: ToastVariant;
   title?: React.ReactNode;
   description?: React.ReactNode;
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  id?: string;
 }
 
 export function CustomToast({
@@ -49,6 +54,8 @@ export function CustomToast({
   title,
   description,
   children,
+  open,
+  onOpenChange,
   ...props
 }: CustomToastProps) {
   const Icon = IconMap[variant as keyof typeof IconMap];
@@ -59,6 +66,8 @@ export function CustomToast({
   return (
     <Toast 
       className={cn(toastVariants({ variant }), className)} 
+      open={open}
+      onOpenChange={onOpenChange}
       {...props}
       variant={baseVariant}
     >

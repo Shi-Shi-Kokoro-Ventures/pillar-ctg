@@ -8,14 +8,17 @@ export function CustomToaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
+      {toasts.map(function ({ id, title, description, action, variant, open, onOpenChange, ...props }) {
         return (
           <CustomToast 
             key={id} 
+            id={id}
+            open={open}
+            onOpenChange={onOpenChange}
             variant={variant}
-            {...props}
             title={title}
             description={description}
+            {...props}
           >
             {action}
           </CustomToast>

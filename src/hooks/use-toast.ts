@@ -1,16 +1,19 @@
+
 import * as React from "react"
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+import type { ToastActionElement } from "@/components/ui/toast"
 import { ToastVariant } from "@/components/ui/custom-toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
-type ToasterToast = ToastProps & {
+type ToasterToast = {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
+  open: boolean
   variant?: ToastVariant
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -135,7 +138,7 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
+type Toast = Omit<ToasterToast, "id" | "open" | "onOpenChange">
 
 function toast({ ...props }: Toast) {
   const id = genId()
