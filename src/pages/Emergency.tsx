@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -104,7 +105,10 @@ const Emergency = () => {
                   <div>
                     <h2 className="text-2xl font-bold mb-2">24/7 Housing Crisis Hotline</h2>
                     <p className="text-gray-600 mb-4">Our trained staff is available around the clock to provide assistance and information.</p>
-                    <a href="tel:1-833-585-4273" className="text-2xl font-bold text-blue-500 hover:underline">1(833) LVL-HARD (1-833-585-4273)</a>
+                    <a href="tel:1-833-585-4273" className="group">
+                      <span className="text-2xl font-bold text-blue-500 group-hover:underline">1(833) LVL-HARD</span>
+                      <span className="text-gray-500 text-lg ml-2">(1-833-585-4273)</span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -215,25 +219,29 @@ const Emergency = () => {
                 {
                   title: "County Housing Authority",
                   description: "Government agency that provides housing assistance programs and subsidies.",
-                  phone: "1(833) LVL-HARD (1-833-585-4273)",
+                  phone: "1(833) LVL-HARD",
+                  phoneDetail: "(1-833-585-4273)",
                   website: "www.countyhousing.org"
                 },
                 {
                   title: "Mental Health Crisis Line",
                   description: "24/7 support for mental health emergencies and referrals to treatment.",
-                  phone: "1(833) LVL-HARD (1-833-585-4273)",
+                  phone: "1(833) LVL-HARD",
+                  phoneDetail: "(1-833-585-4273)",
                   website: "www.mentalhealthsupport.org"
                 },
                 {
                   title: "Domestic Violence Shelter",
                   description: "Emergency shelter and resources for survivors of domestic violence.",
-                  phone: "1(833) LVL-HARD (1-833-585-4273)",
+                  phone: "1(833) LVL-HARD",
+                  phoneDetail: "(1-833-585-4273)",
                   website: "www.safehousenow.org"
                 },
                 {
                   title: "Veterans Housing Services",
                   description: "Housing assistance specifically for veterans and their families.",
-                  phone: "1(833) LVL-HARD (1-833-585-4273)",
+                  phone: "1(833) LVL-HARD",
+                  phoneDetail: "(1-833-585-4273)",
                   website: "www.veteranshousing.org"
                 }
               ].map((resource, index) => (
@@ -243,7 +251,10 @@ const Emergency = () => {
                   <div className="space-y-2">
                     <div className="flex items-center">
                       <Phone className="h-4 w-4 text-blue-500 mr-2" />
-                      <span>{resource.phone}</span>
+                      <span>
+                        <span className="font-medium">{resource.phone}</span>
+                        <span className="text-gray-500 text-sm ml-1">{resource.phoneDetail}</span>
+                      </span>
                     </div>
                     <div className="flex items-center">
                       <ExternalLink className="h-4 w-4 text-blue-500 mr-2" />
