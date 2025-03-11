@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { Helmet } from "react-helmet";
 import AccessibilityControls from "./components/AccessibilityControls";
@@ -165,6 +165,11 @@ const App = () => (
 
               {/* Integration Routes */}
               <Route path="/n8n-integration" element={<N8nIntegration />} />
+              
+              {/* Redirect routes for referenced but unimplemented pages */}
+              <Route path="/apply-for-assistance" element={<Navigate to="/coming-soon" />} />
+              <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
+              <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="/coming-soon" element={<ComingSoon />} />
