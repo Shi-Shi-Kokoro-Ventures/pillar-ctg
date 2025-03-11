@@ -813,3 +813,99 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
                       </FormDescription>
                     </div>
                   </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="agreeToTerms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Terms and Conditions <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormDescription>
+                        I agree to abide by the P.I.L.L.A.R. Initiative's volunteer terms and conditions, which include adherence to organizational policies.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="agreeToCodeOfConduct"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Code of Conduct <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormDescription>
+                        I agree to follow the P.I.L.L.A.R. Initiative's code of conduct, which includes maintaining professionalism and respecting confidentiality.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="agreeToRelease"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Liability Release <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormDescription>
+                        I release the P.I.L.L.A.R. Initiative from any liability related to my volunteer activities, except in cases of gross negligence or intentional misconduct.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <DialogFooter className="mt-8 pt-4 border-t">
+              {isSubmitted ? (
+                <Button
+                  type="button"
+                  className="w-full md:w-auto"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Close Application
+                </Button>
+              ) : (
+                <Button type="submit" className="w-full md:w-auto">
+                  Submit Application
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default VolunteerApplicationForm;
