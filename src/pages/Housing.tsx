@@ -186,11 +186,11 @@ const Housing = () => {
                   <Star className="h-6 w-6 text-amber-500" />
                 </div>
                 <blockquote className="text-xl italic text-gray-700 mb-8 leading-relaxed">
-                  "After losing my job and apartment, I didn't know where to turn. The P.I.L.L.A.R. transitional housing program gave me not just a place to stay, but the tools to rebuild my life. Within 10 months, I had a full-time job and moved into my own apartment."
+                  "When I first connected with P.I.L.L.A.R. Initiative CTG, I was facing eviction and had no idea where to turn. Even though they were just starting out, they worked quickly to help me find safe, temporary housing. Their team also helped me enroll in a job training course and introduced me to a financial literacy workshop. It's only been a few weeks, but I already feel like I have a clearer path forward. I'm grateful for the support and compassion they've shown me during a really uncertain time."
                 </blockquote>
                 <div>
-                  <p className="font-bold text-gray-800">Michael R.</p>
-                  <p className="text-sm text-gray-500">Program Graduate, 2022</p>
+                  <p className="font-bold text-gray-800">Alex G.</p>
+                  <p className="text-sm text-gray-500">Program Participant, 2025</p>
                 </div>
               </div>
               
