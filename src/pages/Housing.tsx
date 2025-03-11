@@ -1,3 +1,4 @@
+importtypescript
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,8 +13,9 @@ const Housing = () => {
       
       <main className="flex-grow pt-20">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-50 to-blue-100 py-20 md:py-28">
-          <div className="container mx-auto px-4">
+        <section className="bg-gradient-to-br from-blue-100 via-blue-50 to-white py-20 md:py-28 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(109.6deg,rgba(223,234,247,1)_11.2%,rgba(244,248,252,1)_91.1%)] opacity-70"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">Transitional Housing Programs</h1>
               <p className="text-xl text-gray-600 mb-10 leading-relaxed">
