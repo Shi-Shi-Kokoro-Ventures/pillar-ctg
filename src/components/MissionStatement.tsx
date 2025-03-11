@@ -24,11 +24,18 @@ const MissionStatement = () => {
             <div className="relative">
               <div className="absolute -top-6 -left-6 w-24 h-24 bg-redcross/10 rounded-full"></div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-redcross/10 rounded-full"></div>
-              <img 
-                src="/lovable-uploads/7cdd71bb-0dc9-483e-b14d-679c78fd4ee8.png" 
-                alt="Donation center with food and supplies" 
-                className="rounded-lg shadow-xl relative z-10 object-cover w-full h-[500px]"
-              />
+              
+              {/* Canva animated logo embed replacing the previous image */}
+              <div className="relative w-full h-0 pt-[100%] shadow-xl rounded-lg overflow-hidden z-10">
+                <iframe 
+                  loading="lazy" 
+                  className="absolute w-full h-full top-0 left-0 border-none p-0 m-0"
+                  src="https://www.canva.com/design/DAGc8qqpCyE/XbAEM4MKqlmGdQeGrRSdlQ/watch?embed" 
+                  allowFullScreen
+                  allow="fullscreen"
+                  title="PILLAR Initiative Animated Logo"
+                ></iframe>
+              </div>
             </div>
           </div>
           
