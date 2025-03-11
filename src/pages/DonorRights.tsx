@@ -140,7 +140,7 @@ const DonorRights = () => {
                   over $250 in accordance with IRS requirements.
                 </p>
                 <p className="mt-4 font-semibold">
-                  Our Tax Identification Number (EIN) is: XX-XXXXXXX
+                  Our Tax Identification Number (EIN) is: 33-3833739
                 </p>
               </div>
             </section>
