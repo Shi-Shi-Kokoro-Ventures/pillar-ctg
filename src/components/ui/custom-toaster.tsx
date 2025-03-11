@@ -12,7 +12,7 @@ export function CustomToaster() {
         return (
           <CustomToast 
             key={id} 
-            variant={variant as any}
+            variant={variant}
             {...props}
             title={title}
             description={description}
