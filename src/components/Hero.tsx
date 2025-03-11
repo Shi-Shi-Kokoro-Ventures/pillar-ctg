@@ -119,7 +119,7 @@ const Hero = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
           >
             <span className="drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">Changing The Game,</span><br />
-            <span style={textGradientStyle}>One Home At A Time</span>
+            <span style={textGradientStyle}>One Good Deed At A Time</span>
           </motion.h1>
           
           <motion.p 
