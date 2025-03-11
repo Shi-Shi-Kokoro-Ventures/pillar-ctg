@@ -77,6 +77,7 @@ const AccessibilityControls = () => {
   
   // Load saved preferences on component mount
   useEffect(() => {
+    // Only apply saved settings once component mounts
     const savedFontSize = localStorage.getItem('accessibility_fontSize');
     if (savedFontSize) {
       setFontSize(parseInt(savedFontSize, 10));
@@ -105,6 +106,21 @@ const AccessibilityControls = () => {
     const savedRoundedCorners = localStorage.getItem('accessibility_roundedCorners');
     if (savedRoundedCorners) {
       setUseRoundedCorners(savedRoundedCorners === 'true');
+    }
+    
+    // Make sure default styles are applied correctly on initial load
+    if (!savedFocusVisible || savedFocusVisible === 'true') {
+      document.documentElement.classList.remove('no-focus-outline');
+    } else {
+      document.documentElement.classList.add('no-focus-outline');
+    }
+    
+    if (!savedRoundedCorners || savedRoundedCorners === 'true') {
+      document.documentElement.classList.add('use-rounded-corners');
+      document.documentElement.classList.remove('use-square-corners');
+    } else {
+      document.documentElement.classList.remove('use-rounded-corners');
+      document.documentElement.classList.add('use-square-corners');
     }
     
     // Add cleanup function
@@ -154,7 +170,7 @@ const AccessibilityControls = () => {
   };
 
   return (
-    <div className="fixed right-4 top-4 z-50 flex flex-col items-end">
+    <div className="fixed right-4 top-4 z-50 flex flex-col items-end" role="region" aria-label="Accessibility controls">
       {/* Accessibility toggle button - always visible with improved styling */}
       <Button 
         variant="default" 
@@ -162,7 +178,7 @@ const AccessibilityControls = () => {
         onClick={toggleVisibility}
         aria-label="Toggle accessibility controls"
         title="Accessibility Settings"
-        className="shadow-lg flex items-center gap-2 font-medium"
+        className="shadow-lg flex items-center gap-2 font-medium bg-blue-600 hover:bg-blue-700 text-white"
       >
         <Settings className="h-4 w-4" />
         <span>Accessibility</span>
