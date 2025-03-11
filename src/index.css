@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -67,7 +66,15 @@ select {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-/* Focus outline control */
+/* Focus outline control - Only apply when accessibility is enabled */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: none;
+}
+
 .no-focus-outline :focus {
   outline: none !important;
   box-shadow: none !important;
@@ -80,7 +87,7 @@ select {
   border-color: inherit !important;
 }
 
-/* Corner style control */
+/* Corner style control - Only apply when classes are explicitly added */
 .use-rounded-corners button,
 .use-rounded-corners input,
 .use-rounded-corners textarea,
@@ -107,7 +114,7 @@ select {
   border-radius: 0 !important;
 }
 
-/* Accessibility enhancement styles */
+/* Accessibility enhancement styles - Only apply when high contrast mode is enabled */
 .high-contrast-mode {
   background-color: #000 !important;
   color: #fff !important;
@@ -140,14 +147,20 @@ select {
   border: 2px solid #fff !important;
 }
 
+/* Large cursor styles - Only apply when enabled */
 .large-cursor * {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M1 1l7 14h1l4-6 3 3V1z"/></svg>') 0 0, auto !important;
 }
 
-/* Focus styles for improved accessibility - only apply when focus outlines are enabled */
+/* Focus styles - Only apply when focus outlines are enabled */
 :focus:not(.no-focus-outline *) {
-  outline: 3px solid #007bff !important;
-  outline-offset: 2px !important;
+  outline: none;
+}
+
+body:not([data-accessibility-enabled="true"]) :focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
 }
 
 /* Accessibility controls styling */

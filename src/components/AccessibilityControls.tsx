@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -183,6 +182,16 @@ const AccessibilityControls = () => {
   const toggleCornerStyle = () => {
     setUseRoundedCorners(!useRoundedCorners);
   };
+
+  // Update body data attribute when accessibility visibility changes
+  useEffect(() => {
+    document.body.setAttribute('data-accessibility-enabled', isVisible.toString());
+    
+    // Remove attribute when component unmounts
+    return () => {
+      document.body.removeAttribute('data-accessibility-enabled');
+    };
+  }, [isVisible]);
 
   // Don't render the floating button anymore as it's now in the navbar
   if (!isVisible) {
