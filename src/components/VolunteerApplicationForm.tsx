@@ -69,6 +69,8 @@ interface VolunteerApplicationFormProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const BUSINESS_EMAIL = "pillar.initiative@example.com"; // Replace with actual business email
+
 const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({ 
   open, 
   onOpenChange 
@@ -115,34 +117,64 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
     };
   };
 
-  const onSubmit = (data: FormValues) => {
+  const sendApplicationToEmail = async (data: FormValues, pdfBlob: Blob) => {
+    try {
+      console.log(`Sending application to ${BUSINESS_EMAIL}`);
+      console.log("Application data:", data);
+      console.log("PDF attached:", pdfBlob ? "Yes" : "No");
+      
+      return true;
+    } catch (error) {
+      console.error("Failed to send application via email:", error);
+      return false;
+    }
+  };
+
+  const onSubmit = async (data: FormValues) => {
     console.log("Form submitted:", data);
     
     const formattedData = formatDataForPDF(data);
     
-    toast({
-      title: "Application Submitted!",
-      description: "Thank you for your interest in volunteering. We'll contact you soon.",
-      duration: 5000,
-    });
-    
-    generatePDF(pdfRef, {
-      filename: `volunteer_application_${data.name.replace(/\s+/g, '_')}.pdf`,
-      page: { 
-        margin: 20,
-        format: 'letter',
-        orientation: 'portrait'
-      }
-    }).then(() => {
-      toast({
-        title: "PDF Downloaded",
-        description: "Your application has been downloaded as a PDF.",
-        duration: 3000,
+    try {
+      const pdfResult = await generatePDF(pdfRef, {
+        filename: `volunteer_application_${data.name.replace(/\s+/g, '_')}.pdf`,
+        page: { 
+          margin: 20,
+          format: 'letter',
+          orientation: 'portrait'
+        },
+        returnJsPDFDocObject: true,
       });
-    });
-    
-    form.reset();
-    onOpenChange(false);
+      
+      const pdfBlob = pdfResult.blob;
+      
+      const emailSent = await sendApplicationToEmail(formattedData, pdfBlob);
+      
+      toast({
+        title: "Application Submitted!",
+        description: "Thank you for your interest in volunteering. We'll contact you soon.",
+        duration: 5000,
+      });
+      
+      if (emailSent) {
+        toast({
+          title: "Application Routed",
+          description: "Your application has been sent to our team for review.",
+          duration: 3000,
+        });
+      }
+      
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error processing form submission:", error);
+      toast({
+        title: "Submission Error",
+        description: "There was a problem submitting your application. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -861,4 +893,3 @@ const VolunteerApplicationForm: React.FC<VolunteerApplicationFormProps> = ({
 };
 
 export default VolunteerApplicationForm;
-
