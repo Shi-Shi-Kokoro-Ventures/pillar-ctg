@@ -54,7 +54,7 @@ const Hero = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center" 
         style={{ 
-          backgroundImage: "url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=75')",
+          backgroundImage: "url('/lovable-uploads/82278e8f-7eef-4bcd-b1aa-5df26fc3b9a5.png')",
           backgroundSize: "cover",
           backgroundPosition: `center ${scrollPosition * 0.2}px`,
           transform: `scale(${1 + scrollPosition * 0.0005})`,
@@ -65,13 +65,13 @@ const Hero = () => {
       >
         <link 
           rel="preload" 
-          href="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=75" 
+          href="/lovable-uploads/82278e8f-7eef-4bcd-b1aa-5df26fc3b9a5.png" 
           as="image"
         />
       </div>
       
       {/* Futuristic Gradient Overlay with mesh gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-redcross-dark/30 to-redcross/40 mix-blend-multiply z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-redcross-dark/40 to-redcross/50 mix-blend-multiply z-0"></div>
       
       {/* Animated light streaks */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-1">
