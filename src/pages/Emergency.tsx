@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -105,7 +104,7 @@ const Emergency = () => {
                   <div>
                     <h2 className="text-2xl font-bold mb-2">24/7 Housing Crisis Hotline</h2>
                     <p className="text-gray-600 mb-4">Our trained staff is available around the clock to provide assistance and information.</p>
-                    <a href="tel:1-833-585-4273" className="text-2xl font-bold text-blue-500 hover:underline">(833) LVL-HARD (833-585-4273)</a>
+                    <a href="tel:1-833-585-4273" className="text-2xl font-bold text-blue-500 hover:underline">1(833) LVL-HARD (1-833-585-4273)</a>
                   </div>
                 </div>
               </div>
@@ -216,25 +215,25 @@ const Emergency = () => {
                 {
                   title: "County Housing Authority",
                   description: "Government agency that provides housing assistance programs and subsidies.",
-                  phone: "(833) LVL-HARD (833-585-4273)",
+                  phone: "1(833) LVL-HARD (1-833-585-4273)",
                   website: "www.countyhousing.org"
                 },
                 {
                   title: "Mental Health Crisis Line",
                   description: "24/7 support for mental health emergencies and referrals to treatment.",
-                  phone: "(833) LVL-HARD (833-585-4273)",
+                  phone: "1(833) LVL-HARD (1-833-585-4273)",
                   website: "www.mentalhealthsupport.org"
                 },
                 {
                   title: "Domestic Violence Shelter",
                   description: "Emergency shelter and resources for survivors of domestic violence.",
-                  phone: "(833) LVL-HARD (833-585-4273)",
+                  phone: "1(833) LVL-HARD (1-833-585-4273)",
                   website: "www.safehousenow.org"
                 },
                 {
                   title: "Veterans Housing Services",
                   description: "Housing assistance specifically for veterans and their families.",
-                  phone: "(833) LVL-HARD (833-585-4273)",
+                  phone: "1(833) LVL-HARD (1-833-585-4273)",
                   website: "www.veteranshousing.org"
                 }
               ].map((resource, index) => (
