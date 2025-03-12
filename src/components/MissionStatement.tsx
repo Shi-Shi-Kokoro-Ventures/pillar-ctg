@@ -28,7 +28,7 @@ const MissionStatement = () => {
               {/* PILLAR logo image */}
               <div className="relative w-full shadow-xl rounded-lg overflow-hidden z-10">
                 <img 
-                  src="/lovable-uploads/c2725c89-9993-4cd8-a5c8-3178f1204dc0.png" 
+                  src="/lovable-uploads/edfffd3f-0692-4cf0-8f35-98a3309fc707.png" 
                   alt="PILLAR Initiative Logo"
                   className="w-full h-auto"
                 />
