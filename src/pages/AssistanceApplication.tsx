@@ -713,3 +713,4 @@ const AssistanceApplication = () => {
                             Yes
                           </Label>
                         </div>
+                      </div>
