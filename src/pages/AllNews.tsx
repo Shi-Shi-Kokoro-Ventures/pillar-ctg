@@ -10,74 +10,74 @@ import { motion } from "framer-motion";
 const newsItems = [
   {
     id: 1,
-    title: "P.I.L.L.A.R. Opens New Transitional Housing Complex",
-    excerpt: "Our new 24-unit transitional housing complex will provide safe, stable housing for families while they receive comprehensive support services.",
+    title: "HUD Awards $136 Million to Support Housing & Services for People Experiencing Homelessness",
+    excerpt: "The U.S. Department of Housing and Urban Development (HUD) awarded $136 million to 43 communities to provide housing assistance and supportive services for people experiencing homelessness.",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    date: "Sept 28, 2023",
+    date: "May 8, 2024",
     category: "Housing Projects"
   },
   {
     id: 2,
-    title: "Financial Literacy Program Reaches Milestone",
-    excerpt: "Our financial education program has now helped over 500 individuals develop budgeting skills, repair credit, and prepare for homeownership.",
+    title: "Financial Literacy Programs Show Success in Preventing Homelessness",
+    excerpt: "Recent studies show that comprehensive financial education programs are helping vulnerable households develop budgeting skills, repair credit, and maintain stable housing situations.",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-    date: "Aug 15, 2023",
+    date: "April 17, 2024",
     category: "Programs"
   },
   {
     id: 3,
-    title: "P.I.L.L.A.R. Partners with Local Employers",
-    excerpt: "Our new job placement program connects clients with local employers, providing living-wage employment opportunities and career advancement.",
+    title: "New Public-Private Partnership Aims to Create 20,000 Affordable Housing Units",
+    excerpt: "A collaborative effort between government agencies, employers, and nonprofit organizations launches initiative to develop affordable housing and provide job opportunities in high-cost urban areas.",
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "July 2, 2023",
+    date: "March 21, 2024",
     category: "Partnerships"
   },
   {
     id: 4,
-    title: "Annual Fundraising Gala Raises Record Amount",
-    excerpt: "Our annual Home for the Future gala raised over $250,000 to support our housing and support services for families experiencing homelessness.",
+    title: "Annual Housing Conference Raises Record Funds for Homelessness Prevention",
+    excerpt: "The annual Building Futures conference raised over $3 million for housing assistance programs, emergency shelter operations, and homelessness prevention initiatives nationwide.",
     image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "June 10, 2023",
+    date: "March 1, 2024",
     category: "Events"
   },
   {
     id: 5,
-    title: "New Mental Health Services Added to Support Programs",
-    excerpt: "P.I.L.L.A.R. has expanded its support services to include on-site mental health counseling and trauma-informed care for program participants.",
+    title: "Study Shows Trauma-Informed Care Essential for Successful Housing Programs",
+    excerpt: "Research confirms that housing programs incorporating mental health services and trauma-informed approaches achieve significantly higher long-term stability rates for participants.",
     image: "https://images.unsplash.com/photo-1527689368864-3a821dbccc34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "May 18, 2023",
+    date: "February 22, 2024",
     category: "Programs"
   },
   {
     id: 6,
-    title: "P.I.L.L.A.R. Awarded Federal Grant for Housing Innovation",
-    excerpt: "Our organization has been awarded a $500,000 federal grant to develop innovative affordable housing solutions using sustainable building practices.",
+    title: "$9 Billion in Grants Announced for Affordable Housing Development",
+    excerpt: "The federal government has announced $9 billion in grants to develop and preserve affordable housing units in high-need communities across the country.",
     image: "https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2064&q=80",
-    date: "Apr 5, 2023",
+    date: "February 5, 2024",
     category: "Grants"
   },
   {
     id: 7,
-    title: "Success Story: Thompson Family Finds Permanent Housing",
-    excerpt: "After six months in our transitional housing program, the Thompson family has moved into permanent affordable housing and achieved financial stability.",
+    title: "From Shelter to Stable Housing: The Johnson Family's Journey",
+    excerpt: "After participating in a comprehensive housing and employment program, the Johnson family has successfully transitioned from shelter living to permanent affordable housing and financial stability.",
     image: "https://images.unsplash.com/photo-1574282893982-ff1675ba4900?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "Mar 22, 2023",
+    date: "January 18, 2024",
     category: "Success Stories"
   },
   {
     id: 8,
-    title: "Volunteer Spotlight: Local Construction Team Renovates Housing Units",
-    excerpt: "A team of local construction professionals volunteered their time and skills to renovate five transitional housing units, making them ready for new families.",
+    title: "Corporate Volunteer Initiative Renovates 50 Housing Units for Veterans",
+    excerpt: "A coordinated volunteer effort involving five major companies completed renovations on 50 housing units specifically designated for veterans experiencing homelessness.",
     image: "https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2031&q=80",
-    date: "Feb 15, 2023",
+    date: "January 5, 2024",
     category: "Volunteers"
   },
   {
     id: 9,
-    title: "P.I.L.L.A.R. Testifies at State Housing Committee",
-    excerpt: "Our Executive Director presented testimony to the State Housing Committee on the importance of expanding affordable housing programs and rental assistance.",
+    title: "Housing Legislation Advances with Bipartisan Support",
+    excerpt: "New legislation expanding housing voucher programs and providing incentives for affordable housing development has advanced with strong bipartisan support in Congress.",
     image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "Jan 30, 2023",
+    date: "December 12, 2023",
     category: "Advocacy"
   }
 ];

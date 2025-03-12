@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Calendar, ArrowRight, Newspaper, BookOpen, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -8,24 +7,24 @@ import { toast } from "sonner";
 const newsItems = [
   {
     id: 1,
-    title: "P.I.L.L.A.R. Opens New Transitional Housing Complex",
-    excerpt: "Our new 24-unit transitional housing complex will provide safe, stable housing for families while they receive comprehensive support services.",
+    title: "HUD Awards $136 Million to Support Housing & Services for People Experiencing Homelessness",
+    excerpt: "The U.S. Department of Housing and Urban Development (HUD) awarded $136 million to 43 communities to provide housing assistance and supportive services for people experiencing homelessness.",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    date: "Sept 28, 2023"
+    date: "May 8, 2024"
   },
   {
     id: 2,
-    title: "Financial Literacy Program Reaches Milestone",
-    excerpt: "Our financial education program has now helped over 500 individuals develop budgeting skills, repair credit, and prepare for homeownership.",
+    title: "Financial Literacy Programs Show Success in Preventing Homelessness",
+    excerpt: "Recent studies show that comprehensive financial education programs are helping vulnerable households develop budgeting skills, repair credit, and maintain stable housing situations.",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-    date: "Aug 15, 2023"
+    date: "April 17, 2024"
   },
   {
     id: 3,
-    title: "P.I.L.L.A.R. Partners with Local Employers",
-    excerpt: "Our new job placement program connects clients with local employers, providing living-wage employment opportunities and career advancement.",
+    title: "New Public-Private Partnership Aims to Create 20,000 Affordable Housing Units",
+    excerpt: "A collaborative effort between government agencies, employers, and nonprofit organizations launches initiative to develop affordable housing and provide job opportunities in high-cost urban areas.",
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "July 2, 2023"
+    date: "March 21, 2024"
   }
 ];
 
