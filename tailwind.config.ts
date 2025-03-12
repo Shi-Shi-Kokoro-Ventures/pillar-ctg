@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -28,7 +27,16 @@ export default {
 				redcross: {
 					DEFAULT: '#1EAEDB',
 					dark: '#0D6E97',
-					light: '#33C3F0'
+					light: '#33C3F0',
+					ultralight: '#E6F7FC',
+					ultradark: '#074E6F'
+				},
+				form: {
+					bg: '#F8FBFF',
+					border: '#E1E9F8',
+					focus: '#1EAEDB',
+					placeholder: '#A0AEC0',
+					label: '#4A5568'
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -196,6 +204,44 @@ export default {
 					'100%': {
 						backgroundPosition: '200% 0'
 					}
+				},
+				'form-pulse': {
+					'0%, 100%': {
+						'box-shadow': '0 0 0 0 rgba(30, 174, 219, 0)'
+					},
+					'50%': {
+						'box-shadow': '0 0 0 10px rgba(30, 174, 219, 0.1)'
+					}
+				},
+				'form-float': {
+					'0%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'50%': {
+						transform: 'translateY(-5px)'
+					}
+				},
+				'form-glow': {
+					'0%, 100%': {
+						'border-color': 'rgba(30, 174, 219, 0.2)'
+					},
+					'50%': {
+						'border-color': 'rgba(30, 174, 219, 0.6)'
+					}
+				},
+				'form-appear': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'shine': {
+					'0%': { 'background-position': '-200% 0' },
+					'100%': { 'background-position': '200% 0' }
 				}
 			},
 			animation: {
@@ -212,7 +258,12 @@ export default {
 				'scan': 'scan 3s linear infinite',
 				'scanline': 'scanline 3s linear infinite',
 				'mapScan': 'mapScan 4s ease-in-out infinite alternate',
-				'shimmer': 'shimmer 3s linear infinite'
+				'shimmer': 'shimmer 3s linear infinite',
+				'form-pulse': 'form-pulse 2s infinite',
+				'form-float': 'form-float 3s ease-in-out infinite',
+				'form-glow': 'form-glow 2s ease-in-out infinite',
+				'form-appear': 'form-appear 0.4s ease-out forwards',
+				'shine': 'shine 3s linear infinite'
 			}
 		}
 	},
