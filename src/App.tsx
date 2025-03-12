@@ -68,6 +68,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 const Time = lazy(() => import("./pages/Time"));
 const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
+const EmploymentApplication = lazy(() => import("./pages/EmploymentApplication"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
@@ -170,6 +171,7 @@ const App = () => (
               
               {/* Application Routes */}
               <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
+              <Route path="/apply-for-employment" element={<EmploymentApplication />} />
               
               {/* Redirect routes for referenced but unimplemented pages */}
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
