@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -713,4 +714,318 @@ const AssistanceApplication = () => {
                     
                     {form.watch("hasOtherIncome") && (
                       <div className="mt-4 space-y-2">
-                        <Label htmlFor="
+                        <Label htmlFor="otherIncomeDetails" className="text-form-label">
+                          Other Income Details
+                        </Label>
+                        <Textarea
+                          id="otherIncomeDetails"
+                          {...form.register("otherIncomeDetails")}
+                          placeholder="Please provide details about other sources of income"
+                          className="bg-form-bg border-form-border focus:border-form-focus"
+                        />
+                      </div>
+                    )}
+                    
+                    {form.watch("isUnemployed") && (
+                      <div className="mt-4 space-y-2">
+                        <Label htmlFor="unemploymentDetails" className="text-form-label">
+                          Unemployment Details
+                        </Label>
+                        <Textarea
+                          id="unemploymentDetails"
+                          {...form.register("unemploymentDetails")}
+                          placeholder="Please provide details about your unemployment situation"
+                          className="bg-form-bg border-form-border focus:border-form-focus"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Assistance Needs Section */}
+                  <div className="p-6 bg-white rounded-xl shadow-md border border-gray-100 neo-glass-card">
+                    <h2 className="text-xl font-semibold mb-6 pb-2 border-b flex items-center gap-2 text-gradient-primary">
+                      <Home className="h-5 w-5 text-redcross" />
+                      Assistance Needs
+                    </h2>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-form-label flex items-center gap-1 mb-3">
+                          Type of Assistance Needed <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {assistanceTypeOptions.map((option) => (
+                            <div key={option.id} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={option.id}
+                                checked={(form.watch("assistanceType") || []).includes(option.id)}
+                                onCheckedChange={(checked) => {
+                                  const currentValues = form.watch("assistanceType") || [];
+                                  const newValues = checked
+                                    ? [...currentValues, option.id]
+                                    : currentValues.filter(value => value !== option.id);
+                                  form.setValue("assistanceType", newValues, { shouldValidate: true });
+                                }}
+                                className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                              />
+                              <Label htmlFor={option.id} className="font-normal">
+                                {option.label}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                        {form.formState.errors.assistanceType && (
+                          <p className="text-red-500 text-sm mt-2">{form.formState.errors.assistanceType.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="amountNeeded" className="text-form-label flex items-center gap-1">
+                            Amount Needed <span className="text-red-500">*</span>
+                          </Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <Input
+                              id="amountNeeded"
+                              {...form.register("amountNeeded")}
+                              className={`pl-7 bg-form-bg border-form-border focus:border-form-focus ${form.formState.errors.amountNeeded ? 'border-red-300' : ''}`}
+                            />
+                          </div>
+                          {form.formState.errors.amountNeeded && (
+                            <p className="text-red-500 text-sm">{form.formState.errors.amountNeeded.message}</p>
+                          )}
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label className="text-form-label flex items-center gap-1">
+                            Past Due Amount?
+                          </Label>
+                          <div className="flex items-center space-x-2 h-10 px-3">
+                            <Checkbox
+                              id="isPastDue"
+                              checked={form.watch("isPastDue")}
+                              onCheckedChange={(checked) => {
+                                form.setValue("isPastDue", checked as boolean);
+                              }}
+                              className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                            />
+                            <Label htmlFor="isPastDue" className="font-normal">
+                              Yes, I have past due bills
+                            </Label>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {form.watch("isPastDue") && (
+                        <div className="space-y-2">
+                          <Label htmlFor="pastDueAmount" className="text-form-label">
+                            Past Due Amount
+                          </Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <Input
+                              id="pastDueAmount"
+                              {...form.register("pastDueAmount")}
+                              className="pl-7 bg-form-bg border-form-border focus:border-form-focus"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="assistanceReason" className="text-form-label flex items-center gap-1">
+                          Reason for Assistance <span className="text-red-500">*</span>
+                        </Label>
+                        <Textarea
+                          id="assistanceReason"
+                          {...form.register("assistanceReason")}
+                          placeholder="Please explain why you need assistance at this time"
+                          className={`bg-form-bg border-form-border focus:border-form-focus ${form.formState.errors.assistanceReason ? 'border-red-300' : ''}`}
+                        />
+                        {form.formState.errors.assistanceReason && (
+                          <p className="text-red-500 text-sm">{form.formState.errors.assistanceReason.message}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Additional Information Section */}
+                  <div className="p-6 bg-white rounded-xl shadow-md border border-gray-100 neo-glass-card">
+                    <h2 className="text-xl font-semibold mb-6 pb-2 border-b flex items-center gap-2 text-gradient-primary">
+                      <FileText className="h-5 w-5 text-redcross" />
+                      Additional Information
+                    </h2>
+                    
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label className="text-form-label">Prior Assistance?</Label>
+                        <div className="flex items-center space-x-2 h-10 px-3">
+                          <Checkbox
+                            id="hasPriorAssistance"
+                            checked={form.watch("hasPriorAssistance")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("hasPriorAssistance", checked as boolean);
+                            }}
+                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <Label htmlFor="hasPriorAssistance" className="font-normal">
+                            Yes, I have received assistance before
+                          </Label>
+                        </div>
+                      </div>
+                      
+                      {form.watch("hasPriorAssistance") && (
+                        <div className="space-y-2">
+                          <Label htmlFor="priorAssistanceDetails" className="text-form-label">
+                            Prior Assistance Details
+                          </Label>
+                          <Textarea
+                            id="priorAssistanceDetails"
+                            {...form.register("priorAssistanceDetails")}
+                            placeholder="Please provide details about previous assistance received (when, from whom, amount)"
+                            className="bg-form-bg border-form-border focus:border-form-focus"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="additionalInformation" className="text-form-label">
+                          Additional Information
+                        </Label>
+                        <Textarea
+                          id="additionalInformation"
+                          {...form.register("additionalInformation")}
+                          placeholder="Please provide any additional information that may help us process your application"
+                          className="bg-form-bg border-form-border focus:border-form-focus"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-form-label">Documents Available?</Label>
+                        <div className="flex items-center space-x-2 h-10 px-3">
+                          <Checkbox
+                            id="hasDocuments"
+                            checked={form.watch("hasDocuments")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("hasDocuments", checked as boolean);
+                            }}
+                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <Label htmlFor="hasDocuments" className="font-normal">
+                            Yes, I have documents to support my application (ID, bills, lease, etc.)
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Consent and Agreement Section */}
+                  <div className="p-6 bg-white rounded-xl shadow-md border border-gray-100 neo-glass-card">
+                    <h2 className="text-xl font-semibold mb-6 pb-2 border-b flex items-center gap-2 text-gradient-primary">
+                      <ShieldCheck className="h-5 w-5 text-redcross" />
+                      Consent and Agreement
+                    </h2>
+                    
+                    <div className="space-y-6">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="consentToVerification"
+                          checked={form.watch("consentToVerification")}
+                          onCheckedChange={(checked) => {
+                            form.setValue("consentToVerification", checked as boolean, { shouldValidate: true });
+                          }}
+                          className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross mt-1"
+                        />
+                        <div>
+                          <Label htmlFor="consentToVerification" className="font-medium">
+                            Consent to Verification <span className="text-red-500">*</span>
+                          </Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I authorize P.I.L.L.A.R. Initiative to verify information provided in this application, which may include contacting landlords, employers, or other agencies.
+                          </p>
+                          {form.formState.errors.consentToVerification && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.consentToVerification.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="agreeToTerms"
+                          checked={form.watch("agreeToTerms")}
+                          onCheckedChange={(checked) => {
+                            form.setValue("agreeToTerms", checked as boolean, { shouldValidate: true });
+                          }}
+                          className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross mt-1"
+                        />
+                        <div>
+                          <Label htmlFor="agreeToTerms" className="font-medium">
+                            Terms and Conditions <span className="text-red-500">*</span>
+                          </Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I have read and agree to the P.I.L.L.A.R. Initiative's terms and conditions for assistance programs.
+                          </p>
+                          {form.formState.errors.agreeToTerms && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToTerms.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="certifyTruthfulness"
+                          checked={form.watch("certifyTruthfulness")}
+                          onCheckedChange={(checked) => {
+                            form.setValue("certifyTruthfulness", checked as boolean, { shouldValidate: true });
+                          }}
+                          className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross mt-1"
+                        />
+                        <div>
+                          <Label htmlFor="certifyTruthfulness" className="font-medium">
+                            Certification <span className="text-red-500">*</span>
+                          </Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I certify that all information provided is true and correct to the best of my knowledge. I understand that providing false information may result in denial of assistance.
+                          </p>
+                          {form.formState.errors.certifyTruthfulness && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.certifyTruthfulness.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Submit Button */}
+                  <div className="flex justify-center">
+                    <Button 
+                      type="submit" 
+                      className="bg-redcross hover:bg-red-700 text-white font-medium py-2 px-8 rounded-md shadow-md w-full md:w-auto"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Processing...
+                        </span>
+                      ) : (
+                        'Submit Application'
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </ApplicationWrapper>
+          )}
+        </div>
+      </div>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default AssistanceApplication;
