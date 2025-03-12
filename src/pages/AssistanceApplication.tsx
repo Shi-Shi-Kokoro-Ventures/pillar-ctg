@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   // Personal Information
@@ -99,6 +99,9 @@ const formSchema = z.object({
   }),
 });
 
+// Update this constant with your n8n webhook URL
+const WEBHOOK_URL = "https://your-n8n-instance/webhook/housing-applicant";
+
 const AssistanceApplication = () => {
   const [uploadedFiles, setUploadedFiles] = useState<{
     identificationFront: File[] | null,
@@ -161,30 +164,41 @@ const AssistanceApplication = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     
-    // Create a FormData object to handle file uploads
-    const formData = new FormData();
-    
-    // Append all form values to FormData
-    Object.entries(values).forEach(([key, value]) => {
-      if (value instanceof FileList) {
-        for (let i = 0; i < value.length; i++) {
-          formData.append(key, value[i]);
+    try {
+      // Create a FormData object to handle file uploads
+      const formData = new FormData();
+      
+      // Append all form values to FormData
+      Object.entries(values).forEach(([key, value]) => {
+        if (value instanceof FileList) {
+          for (let i = 0; i < value.length; i++) {
+            formData.append(key, value[i]);
+          }
+        } else {
+          formData.append(key, value.toString());
         }
-      } else {
-        formData.append(key, value.toString());
-      }
-    });
-    
-    // Log FormData (for debugging)
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+      });
+
+      // Call the Supabase edge function to handle the submission
+      const { error } = await supabase.functions.invoke('resume-notification', {
+        body: {
+          ...values,
+          submissionType: 'housing-assistance',
+          webhookUrl: WEBHOOK_URL,
+        },
+      });
+
+      if (error) throw error;
+      
+      toast.success("Application submitted successfully! We'll contact you within 3-5 business days.");
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast.error("There was an error submitting your application. Please try again.");
     }
-    
-    toast.success("Application submitted successfully! We'll contact you within 3-5 business days.");
-  }
+  };
 
   // Helper function to display filenames
   const renderFileNames = (files: FileList | null) => {
@@ -878,422 +892,4 @@ const AssistanceApplication = () => {
                             <FormLabel>
                               Disability Status <span className="text-red-500">*</span>
                             </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Required Documents */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <Upload className="mr-2 h-5 w-5" />
-                      Required Documents
-                    </h2>
-                    <div className="bg-amber-50 p-4 rounded mb-6 border border-amber-200">
-                      <p className="text-sm text-amber-600 flex items-start">
-                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                        <span>
-                          <strong>IMPORTANT:</strong> Please upload the following documents to complete your application. 
-                          You must provide clear images of the front AND back of your government-issued ID or passport.
-                          Accepted file formats: PDF, JPG, PNG. Maximum file size: 10MB per file.
-                        </span>
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="identificationFrontDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Government ID - Front <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        identificationFront: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                  />
-                                </div>
-                                {renderFileNames(value as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="identificationBackDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Government ID - Back <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        identificationBack: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                  />
-                                </div>
-                                {renderFileNames(value as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="proofOfIncomeDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Proof of Income <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        income: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                  />
-                                </div>
-                                {renderFileNames(value as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription className="text-xs">
-                              Pay stubs, tax returns, or benefit statements from the last 60 days
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="housingDoc"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Housing Document <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        housing: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                  />
-                                </div>
-                                {renderFileNames(value as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormDescription className="text-xs">
-                              Lease agreement, rent receipts, eviction notice, or utility bills
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="additionalDocs"
-                        render={({ field: { onChange, value, ...rest } }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Additional Documents (Optional)
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    multiple
-                                    onChange={(e) => {
-                                      onChange(e.target.files);
-                                      setUploadedFiles({
-                                        ...uploadedFiles,
-                                        additional: e.target.files ? Array.from(e.target.files) : null
-                                      });
-                                    }}
-                                    className="flex-1"
-                                  />
-                                </div>
-                                {renderFileNames(value as FileList)}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Signature Section */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <Pen className="mr-2 h-5 w-5" />
-                      Electronic Signature
-                    </h2>
-                    <div className="bg-gray-50 p-4 rounded mb-6">
-                      <div className="flex items-center mb-2">
-                        <Clock className="h-5 w-5 text-gray-500 mr-2" />
-                        <span className="text-sm text-gray-500">Current date and time: {currentDateTime}</span>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        By typing your full name below, you are signing this application electronically. 
-                        You agree that your electronic signature is the legal equivalent of your manual signature.
-                      </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="signature"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Full Name Signature <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Type your full legal name" 
-                                className="min-h-[60px]" 
-                                ref={signatureRef}
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="signatureDate"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Date <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Certification and Agreements */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <CheckSquare className="mr-2 h-5 w-5" />
-                      Certification and Agreements
-                    </h2>
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="certifyTrue"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Certification of Truth <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I certify that all information provided in this application is true, correct, and complete to the best of my knowledge.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="consentToShare"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Consent to Share Information <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I authorize P.I.L.L.A.R. Initiative to share my information with partner agencies for the purpose of providing housing assistance.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="dataPrivacyConsent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Data Privacy Policy Consent <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I acknowledge that I have read and understand the P.I.L.L.A.R. Initiative's Data Privacy Policy.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="backgroundCheckConsent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Background Check Consent <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I consent to a background check as part of the housing assistance application process.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="fraudWarningAcknowledge"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-yellow-50">
-                            <FormControl>
-                              <input
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                className="h-4 w-4 mt-1"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Fraud Warning Acknowledgment <span className="text-red-500">*</span>
-                              </FormLabel>
-                              <FormDescription>
-                                I acknowledge that providing false, incomplete, or misleading information on this application is a federal offense and may result in denial of assistance and possible legal prosecution.
-                              </FormDescription>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-center pt-6">
-                    <Button type="submit" size="lg" className="w-full md:w-auto">
-                      Submit Application
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default AssistanceApplication;
+                            <Select onValueChange={field.onChange} defaultValue={field.value
