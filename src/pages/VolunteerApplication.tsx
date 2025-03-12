@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,7 +9,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Check, ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, Check, ArrowRight, RotateCcw, Shield, AlertTriangle, FileCheck, User, Mail, AtSign, Phone, Map, Building, Home, Calendar, Briefcase, Heart, Clock, GraduationCap, Languages, Network, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -275,9 +274,9 @@ const VolunteerApplication = () => {
   
   // Animation variants
   const pageVariants = {
-    initial: { opacity: 0, x: 50 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -50 }
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 }
   };
   
   const renderFormStep = () => {
@@ -290,103 +289,117 @@ const VolunteerApplication = () => {
             animate="animate"
             exit="exit"
             variants={pageVariants}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="space-y-6"
           >
-            <h2 className="text-xl font-semibold border-b pb-2">Personal Information</h2>
+            <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+              <User className="text-redcross h-5 w-5" />
+              Personal Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">
-                  First Name <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="firstName" className="flex items-center gap-1">
+                  <span>First Name</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="firstName"
                   {...form.register("firstName")}
-                  className={form.formState.errors.firstName ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.firstName ? 'border-red-500' : ''}`}
                 />
                 {form.formState.errors.firstName && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.firstName.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.firstName.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="lastName">
-                  Last Name <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="lastName" className="flex items-center gap-1">
+                  <span>Last Name</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="lastName"
                   {...form.register("lastName")}
-                  className={form.formState.errors.lastName ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.lastName ? 'border-red-500' : ''}`}
                 />
                 {form.formState.errors.lastName && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.lastName.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.lastName.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="email">
-                  Email <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="email" className="flex items-center gap-1">
+                  <Mail className="h-4 w-4" />
+                  <span>Email</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   {...form.register("email")}
-                  className={form.formState.errors.email ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.email ? 'border-red-500' : ''}`}
                 />
                 {form.formState.errors.email && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.email.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.email.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="phone">
-                  Phone Number <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="phone" className="flex items-center gap-1">
+                  <Phone className="h-4 w-4" />
+                  <span>Phone Number</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
                   {...form.register("phone")}
-                  className={form.formState.errors.phone ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.phone ? 'border-red-500' : ''}`}
                   placeholder="(123) 456-7890"
                 />
                 {form.formState.errors.phone && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.phone.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.phone.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="address">
-                Address <span className="text-red-500">*</span>
+            <div className="space-y-2 relative group">
+              <Label htmlFor="address" className="flex items-center gap-1">
+                <Map className="h-4 w-4" />
+                <span>Address</span> <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="address"
                 {...form.register("address")}
-                className={form.formState.errors.address ? "border-red-500" : ""}
+                className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.address ? 'border-red-500' : ''}`}
               />
               {form.formState.errors.address && (
-                <p className="text-red-500 text-sm">{form.formState.errors.address.message}</p>
+                <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.address.message}</p>
               )}
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="city">
-                  City <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="city" className="flex items-center gap-1">
+                  <Building className="h-4 w-4" />
+                  <span>City</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="city"
                   {...form.register("city")}
-                  className={form.formState.errors.city ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.city ? 'border-red-500' : ''}`}
                 />
                 {form.formState.errors.city && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.city.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.city.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="state">
-                  State <span className="text-red-500">*</span>
+                <Label htmlFor="state" className="flex items-center gap-1">
+                  <Home className="h-4 w-4" />
+                  <span>State</span> <span className="text-red-500">*</span>
                 </Label>
                 <Select
                   onValueChange={(value) => form.setValue("state", value, { shouldValidate: true })}
@@ -394,35 +407,37 @@ const VolunteerApplication = () => {
                 >
                   <SelectTrigger 
                     id="state"
-                    className={form.formState.errors.state ? "border-red-500" : ""}
+                    className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.state ? 'border-red-500' : ''}`}
                   >
                     <SelectValue placeholder="Select state" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-[200px]">
+                  <SelectContent className="max-h-[200px] bg-white/5 backdrop-blur-sm border border-white/20">
                     {stateOptions.map((state) => (
-                      <SelectItem key={state} value={state}>
+                      <SelectItem key={state} value={state} className="hover:bg-white/10">
                         {state}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {form.formState.errors.state && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.state.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.state.message}</p>
                 )}
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="zipCode">
-                  ZIP Code <span className="text-red-500">*</span>
+              <div className="space-y-2 relative group">
+                <Label htmlFor="zipCode" className="flex items-center gap-1">
+                  <AtSign className="h-4 w-4" />
+                  <span>ZIP Code</span> <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="zipCode"
                   {...form.register("zipCode")}
-                  className={form.formState.errors.zipCode ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.zipCode ? 'border-red-500' : ''}`}
                 />
                 {form.formState.errors.zipCode && (
-                  <p className="text-red-500 text-sm">{form.formState.errors.zipCode.message}</p>
+                  <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.zipCode.message}</p>
                 )}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
             </div>
           </motion.div>
@@ -435,18 +450,22 @@ const VolunteerApplication = () => {
             animate="animate"
             exit="exit"
             variants={pageVariants}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="space-y-6"
           >
-            <h2 className="text-xl font-semibold border-b pb-2">Volunteer Information</h2>
+            <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+              <Heart className="text-redcross h-5 w-5" />
+              Volunteer Information
+            </h2>
             
-            <div className="space-y-3">
-              <Label className="block mb-2">
-                Areas of Interest <span className="text-red-500">*</span>
+            <div className="space-y-3 neo-glass p-6 rounded-lg">
+              <Label className="block mb-2 flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-redcross" />
+                <span>Areas of Interest</span> <span className="text-red-500">*</span>
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {volunteerInterestOptions.map((option) => (
-                  <div key={option.id} className="flex items-center space-x-2">
+                  <div key={option.id} className="flex items-center space-x-2 hover:bg-white/5 p-2 rounded-md transition-colors">
                     <Checkbox
                       id={`interest-${option.id}`}
                       checked={form.watch("volunteerInterests").includes(option.id)}
@@ -458,6 +477,7 @@ const VolunteerApplication = () => {
                           form.setValue("volunteerInterests", current.filter(value => value !== option.id), { shouldValidate: true });
                         }
                       }}
+                      className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
                     />
                     <Label htmlFor={`interest-${option.id}`} className="font-normal">
                       {option.label}
@@ -470,13 +490,14 @@ const VolunteerApplication = () => {
               )}
             </div>
             
-            <div className="space-y-3">
-              <Label className="block mb-2">
-                Availability <span className="text-red-500">*</span>
+            <div className="space-y-3 neo-glass p-6 rounded-lg">
+              <Label className="block mb-2 flex items-center gap-2">
+                <Clock className="h-4 w-4 text-redcross" />
+                <span>Availability</span> <span className="text-red-500">*</span>
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {availabilityOptions.map((option) => (
-                  <div key={option.id} className="flex items-center space-x-2">
+                  <div key={option.id} className="flex items-center space-x-2 hover:bg-white/5 p-2 rounded-md transition-colors">
                     <Checkbox
                       id={`availability-${option.id}`}
                       checked={form.watch("availability").includes(option.id)}
@@ -488,6 +509,7 @@ const VolunteerApplication = () => {
                           form.setValue("availability", current.filter(value => value !== option.id), { shouldValidate: true });
                         }
                       }}
+                      className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
                     />
                     <Label htmlFor={`availability-${option.id}`} className="font-normal">
                       {option.label}
@@ -500,13 +522,14 @@ const VolunteerApplication = () => {
               )}
             </div>
             
-            <div className="space-y-3">
-              <Label className="block mb-2">
-                Languages Spoken
+            <div className="space-y-3 neo-glass p-6 rounded-lg">
+              <Label className="block mb-2 flex items-center gap-2">
+                <Languages className="h-4 w-4 text-redcross" />
+                <span>Languages Spoken</span>
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {languageOptions.map((option) => (
-                  <div key={option.id} className="flex items-center space-x-2">
+                  <div key={option.id} className="flex items-center space-x-2 hover:bg-white/5 p-2 rounded-md transition-colors">
                     <Checkbox
                       id={`language-${option.id}`}
                       checked={form.watch("languages")?.includes(option.id)}
@@ -518,6 +541,7 @@ const VolunteerApplication = () => {
                           form.setValue("languages", current.filter(value => value !== option.id));
                         }
                       }}
+                      className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
                     />
                     <Label htmlFor={`language-${option.id}`} className="font-normal">
                       {option.label}
@@ -527,9 +551,10 @@ const VolunteerApplication = () => {
               </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="hoursPerWeek">
-                Time Commitment <span className="text-red-500">*</span>
+            <div className="space-y-2 neo-glass p-6 rounded-lg">
+              <Label htmlFor="hoursPerWeek" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-redcross" />
+                <span>Time Commitment</span> <span className="text-red-500">*</span>
               </Label>
               <Select
                 onValueChange={(value) => form.setValue("hoursPerWeek", value, { shouldValidate: true })}
@@ -537,13 +562,13 @@ const VolunteerApplication = () => {
               >
                 <SelectTrigger 
                   id="hoursPerWeek"
-                  className={form.formState.errors.hoursPerWeek ? "border-red-500" : ""}
+                  className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.hoursPerWeek ? "border-red-500" : ""}`}
                 >
                   <SelectValue placeholder="Select commitment level" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white/5 backdrop-blur-sm border border-white/20">
                   {hourCommitmentOptions.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
+                    <SelectItem key={option.id} value={option.id} className="hover:bg-white/10">
                       {option.label}
                     </SelectItem>
                   ))}
@@ -554,555 +579,69 @@ const VolunteerApplication = () => {
               )}
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="motivationForVolunteering">
-                Why do you want to volunteer with us? <span className="text-red-500">*</span>
+            <div className="space-y-2 neo-glass p-6 rounded-lg">
+              <Label htmlFor="motivationForVolunteering" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-redcross" />
+                <span>Why do you want to volunteer with us?</span> <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="motivationForVolunteering"
                 {...form.register("motivationForVolunteering")}
                 rows={4}
-                className={`w-full ${form.formState.errors.motivationForVolunteering ? "border-red-500" : ""}`}
+                className={`w-full bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.motivationForVolunteering ? "border-red-500" : ""}`}
               />
               {form.formState.errors.motivationForVolunteering && (
                 <p className="text-red-500 text-sm">{form.formState.errors.motivationForVolunteering.message}</p>
               )}
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="experience">
-                Relevant Experience or Skills
+            <div className="space-y-2 neo-glass p-6 rounded-lg">
+              <Label htmlFor="experience" className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-redcross" />
+                <span>Relevant Experience or Skills</span>
               </Label>
               <Textarea
                 id="experience"
                 {...form.register("experience")}
                 rows={4}
-                className="w-full"
+                className="w-full bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300"
               />
             </div>
             
-            <div className="p-4 bg-blue-50 rounded-md border border-blue-100">
-              <h3 className="font-semibold mb-2">Emergency Contact Information</h3>
+            <div className="p-5 bg-blue-50/20 rounded-md border border-blue-100 neo-glass">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Shield className="h-4 w-4 text-blue-500" />
+                Emergency Contact Information
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="emergencyContactName">
-                    Name <span className="text-red-500">*</span>
+                <div className="space-y-2 relative group">
+                  <Label htmlFor="emergencyContactName" className="flex items-center gap-1">
+                    <span>Name</span> <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="emergencyContactName"
                     {...form.register("emergencyContactName")}
-                    className={form.formState.errors.emergencyContactName ? "border-red-500" : ""}
+                    className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactName ? "border-red-500" : ""}`}
                   />
                   {form.formState.errors.emergencyContactName && (
                     <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactName.message}</p>
                   )}
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="emergencyContactPhone">
-                    Phone <span className="text-red-500">*</span>
+                <div className="space-y-2 relative group">
+                  <Label htmlFor="emergencyContactPhone" className="flex items-center gap-1">
+                    <span>Phone</span> <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="emergencyContactPhone"
                     {...form.register("emergencyContactPhone")}
-                    className={form.formState.errors.emergencyContactPhone ? "border-red-500" : ""}
+                    className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactPhone ? "border-red-500" : ""}`}
                   />
                   {form.formState.errors.emergencyContactPhone && (
                     <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactPhone.message}</p>
                   )}
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="emergencyContactRelationship">
-                    Relationship <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="emergencyContactRelationship"
-                    {...form.register("emergencyContactRelationship")}
-                    className={form.formState.errors.emergencyContactRelationship ? "border-red-500" : ""}
-                  />
-                  {form.formState.errors.emergencyContactRelationship && (
-                    <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactRelationship.message}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="previousVolunteer"
-                  checked={form.watch("previousVolunteer")}
-                  onCheckedChange={(checked) => 
-                    form.setValue("previousVolunteer", checked as boolean)
-                  }
-                />
-                <div>
-                  <Label htmlFor="previousVolunteer" className="font-medium">
-                    Have you volunteered with us before?
-                  </Label>
-                </div>
-              </div>
-              
-              {form.watch("previousVolunteer") && (
-                <div className="ml-7 space-y-2">
-                  <Label htmlFor="previousVolunteerDetails">
-                    Please describe your previous volunteer work with us
-                  </Label>
-                  <Textarea
-                    id="previousVolunteerDetails"
-                    {...form.register("previousVolunteerDetails")}
-                    rows={3}
-                    className="w-full"
-                  />
-                </div>
-              )}
-            </div>
-          </motion.div>
-        );
-      case 2:
-        return (
-          <motion.div
-            key="step3"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            <h2 className="text-xl font-semibold border-b pb-2">References</h2>
-            <p className="text-gray-600 mb-4">
-              Please provide at least one reference who can speak to your character or work ethic. 
-              This should not be a family member.
-            </p>
-            
-            <div className="bg-gray-50 p-4 rounded-md border mb-6">
-              <h3 className="font-semibold mb-3">Reference 1</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reference1Name">
-                    Name <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="reference1Name"
-                    {...form.register("reference1Name")}
-                    className={form.formState.errors.reference1Name ? "border-red-500" : ""}
-                  />
-                  {form.formState.errors.reference1Name && (
-                    <p className="text-red-500 text-sm">{form.formState.errors.reference1Name.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reference1Phone">
-                    Phone <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="reference1Phone"
-                    {...form.register("reference1Phone")}
-                    className={form.formState.errors.reference1Phone ? "border-red-500" : ""}
-                  />
-                  {form.formState.errors.reference1Phone && (
-                    <p className="text-red-500 text-sm">{form.formState.errors.reference1Phone.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="reference1Relation">
-                    Relationship <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="reference1Relation"
-                    {...form.register("reference1Relation")}
-                    className={form.formState.errors.reference1Relation ? "border-red-500" : ""}
-                    placeholder="e.g., Former Employer, Teacher, Colleague"
-                  />
-                  {form.formState.errors.reference1Relation && (
-                    <p className="text-red-500 text-sm">{form.formState.errors.reference1Relation.message}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-md border">
-              <h3 className="font-semibold mb-3">Reference 2 (Optional)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reference2Name">
-                    Name
-                  </Label>
-                  <Input
-                    id="reference2Name"
-                    {...form.register("reference2Name")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reference2Phone">
-                    Phone
-                  </Label>
-                  <Input
-                    id="reference2Phone"
-                    {...form.register("reference2Phone")}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="reference2Relation">
-                    Relationship
-                  </Label>
-                  <Input
-                    id="reference2Relation"
-                    {...form.register("reference2Relation")}
-                    placeholder="e.g., Former Employer, Teacher, Colleague"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 bg-blue-50 rounded-md space-y-2 border border-blue-100">
-              <h3 className="font-semibold">Reference Information</h3>
-              <p className="text-sm text-gray-600">
-                References will be contacted to verify your application information.
-                By providing these references, you consent to P.I.L.L.A.R. Initiative contacting these individuals.
-              </p>
-            </div>
-          </motion.div>
-        );
-      case 3:
-        return (
-          <motion.div
-            key="step4"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            <h2 className="text-xl font-semibold border-b pb-2">Agreements</h2>
-            <p className="text-gray-600 mb-4">
-              Please review and agree to the following terms to complete your application.
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3 p-4 rounded-md border bg-white shadow-sm">
-                <Checkbox
-                  id="agreeToTerms"
-                  checked={form.watch("agreeToTerms")}
-                  onCheckedChange={(checked) => 
-                    form.setValue("agreeToTerms", checked as boolean, { shouldValidate: true })
-                  }
-                />
-                <div className="space-y-1">
-                  <Label htmlFor="agreeToTerms" className="font-medium">
-                    Terms and Conditions <span className="text-red-500">*</span>
-                  </Label>
-                  <p className="text-sm text-gray-600">
-                    I agree to abide by the P.I.L.L.A.R. Initiative's volunteer terms and conditions, which include adherence to organizational policies.
-                    This includes maintaining confidentiality and professional conduct at all times.
-                  </p>
-                </div>
-              </div>
-              {form.formState.errors.agreeToTerms && (
-                <p className="text-red-500 text-sm">{form.formState.errors.agreeToTerms.message}</p>
-              )}
-              
-              <div className="flex items-start space-x-3 p-4 rounded-md border bg-white shadow-sm">
-                <Checkbox
-                  id="agreeToCodeOfConduct"
-                  checked={form.watch("agreeToCodeOfConduct")}
-                  onCheckedChange={(checked) => 
-                    form.setValue("agreeToCodeOfConduct", checked as boolean, { shouldValidate: true })
-                  }
-                />
-                <div className="space-y-1">
-                  <Label htmlFor="agreeToCodeOfConduct" className="font-medium">
-                    Code of Conduct <span className="text-red-500">*</span>
-                  </Label>
-                  <p className="text-sm text-gray-600">
-                    I agree to follow the P.I.L.L.A.R. Initiative's code of conduct, which includes maintaining professionalism and respecting confidentiality.
-                    I understand that I represent the organization in all my volunteer activities.
-                  </p>
-                </div>
-              </div>
-              {form.formState.errors.agreeToCodeOfConduct && (
-                <p className="text-red-500 text-sm">{form.formState.errors.agreeToCodeOfConduct.message}</p>
-              )}
-              
-              <div className="flex items-start space-x-3 p-4 rounded-md border bg-white shadow-sm">
-                <Checkbox
-                  id="agreeToRelease"
-                  checked={form.watch("agreeToRelease")}
-                  onCheckedChange={(checked) => 
-                    form.setValue("agreeToRelease", checked as boolean, { shouldValidate: true })
-                  }
-                />
-                <div className="space-y-1">
-                  <Label htmlFor="agreeToRelease" className="font-medium">
-                    Liability Release <span className="text-red-500">*</span>
-                  </Label>
-                  <p className="text-sm text-gray-600">
-                    I release the P.I.L.L.A.R. Initiative from any liability related to my volunteer activities, except in cases of gross negligence or intentional misconduct.
-                    I understand the inherent risks associated with volunteer activities.
-                  </p>
-                </div>
-              </div>
-              {form.formState.errors.agreeToRelease && (
-                <p className="text-red-500 text-sm">{form.formState.errors.agreeToRelease.message}</p>
-              )}
-              
-              <div className="flex items-start space-x-3 p-4 rounded-md border bg-white shadow-sm">
-                <Checkbox
-                  id="agreeToBackground"
-                  checked={form.watch("agreeToBackground")}
-                  onCheckedChange={(checked) => 
-                    form.setValue("agreeToBackground", checked as boolean, { shouldValidate: true })
-                  }
-                />
-                <div className="space-y-1">
-                  <Label htmlFor="agreeToBackground" className="font-medium">
-                    Background Check Consent <span className="text-red-500">*</span>
-                  </Label>
-                  <p className="text-sm text-gray-600">
-                    I understand that a background check may be required depending on the volunteer position, and I consent to such a check.
-                    This is to ensure the safety of all individuals involved in P.I.L.L.A.R. Initiative programs.
-                  </p>
-                </div>
-              </div>
-              {form.formState.errors.agreeToBackground && (
-                <p className="text-red-500 text-sm">{form.formState.errors.agreeToBackground.message}</p>
-              )}
-            </div>
-          </motion.div>
-        );
-      case 4:
-        return (
-          <motion.div
-            key="step5"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            <h2 className="text-xl font-semibold border-b pb-2">Review Your Application</h2>
-            <p className="text-gray-600 mb-4">
-              Please review your application information before submitting. If you need to make changes, 
-              you can go back to previous sections.
-            </p>
-            
-            <div className="space-y-6">
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h3 className="font-semibold mb-2">Personal Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                  <div><span className="font-medium">Name:</span> {form.watch("firstName")} {form.watch("lastName")}</div>
-                  <div><span className="font-medium">Email:</span> {form.watch("email")}</div>
-                  <div><span className="font-medium">Phone:</span> {form.watch("phone")}</div>
-                  <div><span className="font-medium">Address:</span> {form.watch("address")}</div>
-                  <div><span className="font-medium">City:</span> {form.watch("city")}</div>
-                  <div><span className="font-medium">State:</span> {form.watch("state")}</div>
-                  <div><span className="font-medium">ZIP:</span> {form.watch("zipCode")}</div>
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h3 className="font-semibold mb-2">Volunteer Information</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <span className="font-medium">Areas of Interest:</span> 
-                    <div className="mt-1">
-                      {form.watch("volunteerInterests").map(id => {
-                        const option = volunteerInterestOptions.find(opt => opt.id === id);
-                        return option ? <span key={id} className="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">{option.label}</span> : null;
-                      })}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <span className="font-medium">Availability:</span>
-                    <div className="mt-1">
-                      {form.watch("availability").map(id => {
-                        const option = availabilityOptions.find(opt => opt.id === id);
-                        return option ? <span key={id} className="inline-block bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">{option.label}</span> : null;
-                      })}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <span className="font-medium">Time Commitment:</span> 
-                    {hourCommitmentOptions.find(opt => opt.id === form.watch("hoursPerWeek"))?.label}
-                  </div>
-                  
-                  {form.watch("languages")?.length > 0 && (
-                    <div>
-                      <span className="font-medium">Languages:</span>
-                      <div className="mt-1">
-                        {form.watch("languages").map(id => {
-                          const option = languageOptions.find(opt => opt.id === id);
-                          return option ? <span key={id} className="inline-block bg-purple-100 text-purple-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">{option.label}</span> : null;
-                        })}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <span className="font-medium">Motivation:</span> 
-                    <p className="mt-1">{form.watch("motivationForVolunteering")}</p>
-                  </div>
-                  
-                  {form.watch("experience") && (
-                    <div>
-                      <span className="font-medium">Experience:</span> 
-                      <p className="mt-1">{form.watch("experience")}</p>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <span className="font-medium">Emergency Contact:</span> 
-                    <p className="mt-1">{form.watch("emergencyContactName")} ({form.watch("emergencyContactRelationship")}) - {form.watch("emergencyContactPhone")}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h3 className="font-semibold mb-2">References</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <span className="font-medium">Reference 1:</span> 
-                    <p className="mt-1">{form.watch("reference1Name")} ({form.watch("reference1Relation")}) - {form.watch("reference1Phone")}</p>
-                  </div>
-                  
-                  {form.watch("reference2Name") && (
-                    <div>
-                      <span className="font-medium">Reference 2:</span> 
-                      <p className="mt-1">{form.watch("reference2Name")} ({form.watch("reference2Relation") || "Not specified"}) - {form.watch("reference2Phone") || "Not provided"}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="font-semibold">Security Verification</h3>
-                <VolunteerCaptcha onVerify={setIsCaptchaVerified} />
-              </div>
-            </div>
-          </motion.div>
-        );
-      default:
-        return null;
-    }
-  };
-  
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-grow bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <Button
-              onClick={() => navigate(-1)}
-              variant="outline"
-              className="gap-2 hover:scale-105 transition-transform"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Go Back
-            </Button>
-          </div>
-          
-          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 border border-gray-100">
-            {isSubmitted ? (
-              <div className="text-center py-12 px-4">
-                <div className="mb-6 w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <Check className="h-10 w-10 text-green-600" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Application Submitted!</h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  Thank you for your interest in volunteering with the P.I.L.L.A.R. Initiative. We will review your application and contact you soon.
-                </p>
-                <div className="bg-blue-50 rounded-lg p-6 max-w-lg mx-auto mb-8 text-left">
-                  <h3 className="font-semibold text-gray-800 mb-2">What happens next?</h3>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                    <li>Our volunteer coordinator will review your application within 3-5 business days</li>
-                    <li>We'll contact your references for verification</li>
-                    <li>You'll receive an email to schedule an orientation session</li>
-                    <li>After orientation, we'll match you with volunteer opportunities based on your interests</li>
-                  </ol>
-                </div>
-                <Button 
-                  onClick={() => navigate("/volunteer")} 
-                  className="bg-redcross hover:bg-redcross/90"
-                >
-                  Return to Volunteer Page
-                </Button>
-              </div>
-            ) : (
-              <>
-                <div className="text-center mb-8">
-                  <h1 className="text-3xl font-bold mb-2 text-redcross">Volunteer Application</h1>
-                  <p className="text-gray-600">
-                    Thank you for your interest in volunteering with the P.I.L.L.A.R. Initiative. Please complete the form below to get started.
-                  </p>
-                </div>
-                
-                <VolunteerStepper steps={formSteps} currentStep={currentStep} />
-                
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    {renderFormStep()}
-                    
-                    <div className="pt-4 border-t flex items-center justify-between">
-                      {currentStep > 0 ? (
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={goToPreviousStep}
-                          className="flex items-center gap-2"
-                        >
-                          <ArrowLeft className="h-4 w-4" /> Previous
-                        </Button>
-                      ) : (
-                        <div></div>
-                      )}
-                      
-                      {currentStep < formSteps.length - 1 ? (
-                        <Button 
-                          type="button" 
-                          onClick={goToNextStep}
-                          className="flex items-center gap-2"
-                        >
-                          Next <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      ) : (
-                        <Button 
-                          type="submit" 
-                          className="bg-redcross hover:bg-redcross/90 flex items-center gap-2"
-                          disabled={isSubmitting || !isCaptchaVerified}
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <RotateCcw className="h-4 w-4 animate-spin" /> Processing...
-                            </>
-                          ) : (
-                            <>
-                              Submit Application
-                            </>
-                          )}
-                        </Button>
-                      )}
-                    </div>
-                    
-                    {!isCaptchaVerified && currentStep === formSteps.length - 1 && (
-                      <p className="text-center text-amber-600 text-sm">Please complete the security verification above to submit your application.</p>
-                    )}
-                  </form>
-                </Form>
-              </>
-            )}
-          </div>
-        </div>
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default VolunteerApplication;
+                <div className="space-y-2 md:col-span-2 relative group">
+                  <Label htmlFor="emergencyContactRelationship" className="flex items-center gap-1">
+                    <span>
