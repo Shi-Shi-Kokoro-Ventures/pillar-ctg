@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -772,48 +773,17 @@ const AssistanceApplication = () => {
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name="housingStatus"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Housing Status <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select housing status" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="renting">Renting</SelectItem>
-                                <SelectItem value="owning">Owning</SelectItem>
-                                <SelectItem value="living-with-family">Living with Family</SelectItem>
-                                <SelectItem value="homeless">Homeless</SelectItem>
-                                <SelectItem value="shelter">Emergency Shelter</SelectItem>
-                                <SelectItem value="transitional">Transitional Housing</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="monthlyRent"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Monthly Rent <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input type="number" placeholder="1000" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.
+                    </div>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default AssistanceApplication;
