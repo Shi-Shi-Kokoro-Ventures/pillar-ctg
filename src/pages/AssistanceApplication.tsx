@@ -631,4 +631,85 @@ const AssistanceApplication = () => {
                   
                   {/* Income Information Section */}
                   <div className="p-6 bg-white rounded-xl shadow-md border border-gray-100 neo-glass-card">
-                    <h2
+                    <h2 className="text-xl font-semibold mb-6 pb-2 border-b flex items-center gap-2 text-gradient-primary">
+                      <DollarSign className="h-5 w-5 text-redcross" />
+                      Income Information
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="incomeSource" className="text-form-label flex items-center gap-1">
+                          Primary Income Source <span className="text-red-500">*</span>
+                        </Label>
+                        <Select
+                          onValueChange={(value) => form.setValue("incomeSource", value, { shouldValidate: true })}
+                          defaultValue={form.watch("incomeSource")}
+                        >
+                          <SelectTrigger 
+                            id="incomeSource"
+                            className={`bg-form-bg border-form-border focus:border-form-focus ${form.formState.errors.incomeSource ? 'border-red-300' : ''}`}
+                          >
+                            <SelectValue placeholder="Select income source" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {incomeSourceOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {form.formState.errors.incomeSource && (
+                          <p className="text-red-500 text-sm">{form.formState.errors.incomeSource.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="monthlyIncome" className="text-form-label flex items-center gap-1">
+                          Monthly Income <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                          <Input
+                            id="monthlyIncome"
+                            {...form.register("monthlyIncome")}
+                            className={`pl-7 bg-form-bg border-form-border focus:border-form-focus ${form.formState.errors.monthlyIncome ? 'border-red-300' : ''}`}
+                          />
+                        </div>
+                        {form.formState.errors.monthlyIncome && (
+                          <p className="text-red-500 text-sm">{form.formState.errors.monthlyIncome.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-form-label">Other Income?</Label>
+                        <div className="flex items-center space-x-2 h-10 px-3">
+                          <Checkbox
+                            id="hasOtherIncome"
+                            checked={form.watch("hasOtherIncome")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("hasOtherIncome", checked as boolean);
+                            }}
+                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <Label htmlFor="hasOtherIncome" className="font-normal">
+                            Yes
+                          </Label>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-form-label">Unemployed?</Label>
+                        <div className="flex items-center space-x-2 h-10 px-3">
+                          <Checkbox
+                            id="isUnemployed"
+                            checked={form.watch("isUnemployed")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("isUnemployed", checked as boolean);
+                            }}
+                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <Label htmlFor="isUnemployed" className="font-normal">
+                            Yes
+                          </Label>
+                        </div>
