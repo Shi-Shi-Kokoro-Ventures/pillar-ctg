@@ -15,47 +15,63 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, resumeFileName, resumeSize, webhookUrl } = await req.json();
+    const requestData = await req.json();
+    const { webhookUrl, submissionType } = requestData;
     
-    // Log the resume submission
-    console.log(`Resume submission received from ${name} (${email})`);
-    console.log(`Resume file: ${resumeFileName} (${resumeSize} KB)`);
-    
-    // Prepare data for the webhook
-    const payload = {
-      name,
-      email,
-      resumeFileName,
-      resumeSize,
-      submissionDate: new Date().toISOString(),
-    };
-    
-    // Send to the provided webhook URL (n8n, Zapier, etc.)
-    if (webhookUrl) {
-      console.log(`Triggering webhook at URL: ${webhookUrl}`);
+    // Process based on submission type
+    if (submissionType === 'housing-assistance') {
+      console.log(`Housing assistance application received from ${requestData.firstName} ${requestData.lastName} (${requestData.email})`);
       
-      try {
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
-        
-        console.log(`Webhook response status: ${response.status}`);
-      } catch (error) {
-        console.error(`Error triggering webhook: ${error.message}`);
+      // Prepare data for the webhook
+      const payload = {
+        submissionType: 'housing-assistance',
+        applicantName: `${requestData.firstName} ${requestData.middleInitial ? requestData.middleInitial + '. ' : ''}${requestData.lastName}`,
+        email: requestData.email,
+        phone: requestData.phone,
+        address: `${requestData.currentAddress}, ${requestData.city}, ${requestData.state} ${requestData.zip}`,
+        housingStatus: requestData.housingStatus,
+        householdSize: requestData.householdSize,
+        householdIncome: `${requestData.householdIncome} ${requestData.incomePeriod}`,
+        evictionNotice: requestData.evictionNotice,
+        receivingAssistance: requestData.receivingAssistance,
+        assistanceTypes: requestData.assistanceTypes || 'None',
+        submissionDate: new Date().toISOString(),
+        // Including all data for comprehensive record
+        fullApplication: requestData
+      };
+      
+      // Send to webhook (n8n, Zapier, etc.)
+      if (webhookUrl) {
+        await sendToWebhook(webhookUrl, payload);
       }
     } else {
-      console.log("No webhook URL provided, skipping webhook trigger");
+      // Resume submission (original functionality)
+      const { name, email, resumeFileName, resumeSize } = requestData;
+      
+      // Log the resume submission
+      console.log(`Resume submission received from ${name} (${email})`);
+      console.log(`Resume file: ${resumeFileName} (${resumeSize} KB)`);
+      
+      // Prepare data for the webhook
+      const payload = {
+        name,
+        email,
+        resumeFileName,
+        resumeSize,
+        submissionDate: new Date().toISOString(),
+      };
+      
+      // Send to webhook (n8n, Zapier, etc.)
+      if (webhookUrl) {
+        await sendToWebhook(webhookUrl, payload);
+      }
     }
     
     // Return success response
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Resume submission processed successfully" 
+        message: "Submission processed successfully" 
       }),
       { 
         status: 200, 
@@ -63,11 +79,11 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error processing resume submission:', error);
+    console.error('Error processing submission:', error);
     
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to process resume submission', 
+        error: 'Failed to process submission', 
         message: error.message 
       }),
       { 
@@ -77,3 +93,24 @@ serve(async (req) => {
     );
   }
 });
+
+// Helper function to send data to webhook
+async function sendToWebhook(webhookUrl: string, payload: any) {
+  console.log(`Triggering webhook at URL: ${webhookUrl}`);
+  
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    
+    console.log(`Webhook response status: ${response.status}`);
+    return response;
+  } catch (error) {
+    console.error(`Error triggering webhook: ${error.message}`);
+    throw error;
+  }
+}

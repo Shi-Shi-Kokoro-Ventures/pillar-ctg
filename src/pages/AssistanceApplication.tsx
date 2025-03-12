@@ -5,7 +5,7 @@ import * as z from "zod";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckSquare, HelpCircle, Calendar, Info, Upload, Shield, AlertTriangle, Pen, Clock } from "lucide-react";
+import { FileText, CheckSquare, HelpCircle, Calendar, Info, Upload, Shield, AlertTriangle, Pen, Clock, Printer } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Form,
@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   // Personal Information
@@ -122,6 +123,10 @@ const AssistanceApplication = () => {
     const now = new Date();
     return now.toLocaleString();
   });
+  
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedValues, setSubmittedValues] = useState<z.infer<typeof formSchema> | null>(null);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -193,6 +198,11 @@ const AssistanceApplication = () => {
 
       if (error) throw error;
       
+      // Save the submitted values for PDF/print view
+      setSubmittedValues(values);
+      setIsSubmitted(true);
+      setShowPrintDialog(true);
+      
       toast.success("Application submitted successfully! We'll contact you within 3-5 business days.");
     } catch (error) {
       console.error('Error submitting application:', error);
@@ -240,6 +250,185 @@ const AssistanceApplication = () => {
     
     return () => clearInterval(timerId);
   }, []);
+  
+  // Handle print action
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow || !submittedValues) return;
+    
+    const content = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Housing Assistance Application - ${submittedValues.firstName} ${submittedValues.lastName}</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .header img { max-width: 150px; }
+          h1 { color: #2563eb; font-size: 24px; margin-bottom: 20px; }
+          h2 { color: #2563eb; font-size: 18px; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+          .section { margin-bottom: 25px; }
+          .field { display: flex; margin-bottom: 8px; }
+          .field-label { font-weight: bold; width: 200px; flex-shrink: 0; }
+          .field-value { flex-grow: 1; }
+          .signature-section { margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; }
+          .footer { margin-top: 40px; font-size: 12px; text-align: center; color: #666; }
+          @media print {
+            body { padding: 0; }
+            .print-button { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="print-button" style="text-align: right;">
+          <button onclick="window.print();" style="padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Print / Save as PDF
+          </button>
+        </div>
+        
+        <div class="header">
+          <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="P.I.L.L.A.R. Initiative Logo">
+          <h1>Housing Assistance Application</h1>
+          <p>Application ID: APP-${Date.now().toString().slice(-8)}</p>
+          <p>Submitted: ${new Date().toLocaleString()}</p>
+        </div>
+        
+        <div class="section">
+          <h2>Personal Information</h2>
+          <div class="field">
+            <div class="field-label">Full Name:</div>
+            <div class="field-value">${submittedValues.firstName} ${submittedValues.middleInitial ? submittedValues.middleInitial + '. ' : ''}${submittedValues.lastName}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Date of Birth:</div>
+            <div class="field-value">${submittedValues.dob}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Phone:</div>
+            <div class="field-value">${submittedValues.phone}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Email:</div>
+            <div class="field-value">${submittedValues.email}</div>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h2>Household Information</h2>
+          <div class="field">
+            <div class="field-label">Household Size:</div>
+            <div class="field-value">${submittedValues.householdSize}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Household Income:</div>
+            <div class="field-value">$${submittedValues.householdIncome} ${submittedValues.incomePeriod}</div>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h2>Current Housing</h2>
+          <div class="field">
+            <div class="field-label">Current Address:</div>
+            <div class="field-value">${submittedValues.currentAddress}, ${submittedValues.city}, ${submittedValues.state} ${submittedValues.zip}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Housing Status:</div>
+            <div class="field-value">${submittedValues.housingStatus}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Monthly Rent:</div>
+            <div class="field-value">$${submittedValues.monthlyRent}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Rent Due Date:</div>
+            <div class="field-value">${submittedValues.rentDue || 'Not specified'}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Eviction Notice:</div>
+            <div class="field-value">${submittedValues.evictionNotice}</div>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h2>Government Assistance</h2>
+          <div class="field">
+            <div class="field-label">Receiving Assistance:</div>
+            <div class="field-value">${submittedValues.receivingAssistance}</div>
+          </div>
+          ${submittedValues.assistanceTypes ? `
+          <div class="field">
+            <div class="field-label">Types of Assistance:</div>
+            <div class="field-value">${submittedValues.assistanceTypes}</div>
+          </div>` : ''}
+        </div>
+        
+        <div class="section">
+          <h2>Emergency Contact</h2>
+          <div class="field">
+            <div class="field-label">Name:</div>
+            <div class="field-value">${submittedValues.emergencyName}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Phone:</div>
+            <div class="field-value">${submittedValues.emergencyPhone}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Relationship:</div>
+            <div class="field-value">${submittedValues.emergencyRelation}</div>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h2>Demographic Information</h2>
+          <div class="field">
+            <div class="field-label">Gender:</div>
+            <div class="field-value">${submittedValues.gender}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Ethnicity:</div>
+            <div class="field-value">${submittedValues.ethnicity}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Race:</div>
+            <div class="field-value">${submittedValues.race}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Veteran Status:</div>
+            <div class="field-value">${submittedValues.veteran}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Disability Status:</div>
+            <div class="field-value">${submittedValues.disability}</div>
+          </div>
+        </div>
+        
+        <div class="signature-section">
+          <h2>Certification and Signature</h2>
+          <div class="field">
+            <div class="field-label">Applicant Signature:</div>
+            <div class="field-value">${submittedValues.signature}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Date:</div>
+            <div class="field-value">${submittedValues.signatureDate}</div>
+          </div>
+          <p style="margin-top: 20px;">By signing above, I certify that the information provided is true and accurate to the best of my knowledge.</p>
+        </div>
+        
+        <div class="footer">
+          <p>P.I.L.L.A.R. Initiative Housing Assistance Program</p>
+          <p>This document contains confidential information and is intended solely for the use of the P.I.L.L.A.R. Initiative and the applicant.</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.open();
+    printWindow.document.write(content);
+    printWindow.document.close();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -634,262 +823,3 @@ const AssistanceApplication = () => {
                             <FormLabel>
                               Rent Due
                             </FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="evictionNotice"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Eviction Notice <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Government Assistance */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <HelpCircle className="mr-2 h-5 w-5" />
-                      Government Assistance
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="receivingAssistance"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Receiving Assistance? <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="assistanceTypes"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Types of Assistance
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="SNAP, TANF, SSI, etc." {...field} />
-                            </FormControl>
-                            <FormDescription className="text-xs">
-                              List all government assistance programs you currently receive
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Emergency Contact */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <HelpCircle className="mr-2 h-5 w-5" />
-                      Emergency Contact
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="emergencyName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Emergency Contact Name <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Jane Doe" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="emergencyPhone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Emergency Contact Phone <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input type="tel" placeholder="555-555-5555" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="emergencyRelation"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Relationship <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Friend" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Demographic Information */}
-                  <div className="border-b pb-6">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                      <HelpCircle className="mr-2 h-5 w-5" />
-                      Demographic Information
-                    </h2>
-                    <div className="bg-gray-50 p-3 rounded mb-4 text-sm text-gray-600">
-                      The following information is required by federal regulations for statistical and anti-discrimination monitoring purposes.
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Gender <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="non-binary">Non-binary</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="ethnicity"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Ethnicity <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select ethnicity" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="hispanic">Hispanic or Latino</SelectItem>
-                                <SelectItem value="non-hispanic">Not Hispanic or Latino</SelectItem>
-                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="race"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Race <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select race" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="white">White</SelectItem>
-                                <SelectItem value="black">Black or African American</SelectItem>
-                                <SelectItem value="asian">Asian</SelectItem>
-                                <SelectItem value="native">American Indian or Alaska Native</SelectItem>
-                                <SelectItem value="pacific-islander">Native Hawaiian or Pacific Islander</SelectItem>
-                                <SelectItem value="multi-racial">Multi-Racial</SelectItem>
-                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="veteran"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Veteran Status <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="no">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="disability"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Disability Status <span className="text-red-500">*</span>
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value
