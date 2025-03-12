@@ -1,5 +1,5 @@
-
 import React, { useState } from "react";
+import ApplicationWrapper from "@/components/ApplicationWrapper";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Form } from "@/components/ui/form";
@@ -208,7 +208,29 @@ const VolunteerApplication = () => {
       <Navbar />
       
       <div className="container mx-auto py-8 px-4 md:px-6">
-        <div className="max-w-4xl mx-auto">
+        <ApplicationWrapper 
+          title="Volunteer Application"
+          subtitle="Thank you for your interest in volunteering! Please complete the form below to apply. Fields marked with * are required."
+        >
+          <div className="space-y-6 mb-8">
+            <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-blue-500" />
+                Important Information
+              </h3>
+              <div className="text-sm text-gray-600 space-y-2">
+                <p>By submitting this application, you acknowledge and agree that:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>All information provided is true and accurate to the best of your knowledge.</li>
+                  <li>You understand that volunteering is a serious commitment that requires dedication and reliability.</li>
+                  <li>You consent to a background check if required for the volunteer position.</li>
+                  <li>You will comply with all organizational policies and procedures.</li>
+                  <li>You understand that submission of this application does not guarantee placement.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           {isSubmitted ? (
             <div className="text-center p-8 bg-white rounded-xl shadow-xl border border-green-100 animate-fade-in neo-glass">
               <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -240,17 +262,8 @@ const VolunteerApplication = () => {
               </div>
             </div>
           ) : (
-            <>
-              <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-redcross to-redcross-dark">Volunteer Application</h1>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Thank you for your interest in volunteering! Please complete the form below to apply.
-                  Fields marked with <span className="text-red-500">*</span> are required.
-                </p>
-              </div>
-              
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 neo-glass p-8 rounded-xl shadow-lg border border-white/20 backdrop-blur-md">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 neo-glass p-8 rounded-xl shadow-lg border border-white/20 backdrop-blur-md">
                   
                   {/* Personal Information Section */}
                   <div className="space-y-6">
@@ -604,241 +617,4 @@ const VolunteerApplication = () => {
                             {...form.register("emergencyContactRelationship")}
                             className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactRelationship ? "border-red-500" : ""}`}
                           />
-                          {form.formState.errors.emergencyContactRelationship && (
-                            <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactRelationship.message}</p>
-                          )}
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* References Section */}
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
-                      <Network className="text-redcross h-5 w-5" />
-                      References
-                    </h2>
-                    
-                    <div className="p-6 rounded-lg neo-glass">
-                      <h3 className="font-medium mb-4">Reference #1</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference1Name" className="flex items-center gap-1">
-                            <span>Name</span> <span className="text-red-500">*</span>
-                          </Label>
-                          <Input
-                            id="reference1Name"
-                            {...form.register("reference1Name")}
-                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Name ? "border-red-500" : ""}`}
-                          />
-                          {form.formState.errors.reference1Name && (
-                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Name.message}</p>
-                          )}
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference1Phone" className="flex items-center gap-1">
-                            <span>Phone</span> <span className="text-red-500">*</span>
-                          </Label>
-                          <Input
-                            id="reference1Phone"
-                            {...form.register("reference1Phone")}
-                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Phone ? "border-red-500" : ""}`}
-                          />
-                          {form.formState.errors.reference1Phone && (
-                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Phone.message}</p>
-                          )}
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference1Relation" className="flex items-center gap-1">
-                            <span>Relationship</span> <span className="text-red-500">*</span>
-                          </Label>
-                          <Input
-                            id="reference1Relation"
-                            {...form.register("reference1Relation")}
-                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Relation ? "border-red-500" : ""}`}
-                          />
-                          {form.formState.errors.reference1Relation && (
-                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Relation.message}</p>
-                          )}
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="p-6 rounded-lg neo-glass">
-                      <h3 className="font-medium mb-4">Reference #2 (Optional)</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference2Name">Name</Label>
-                          <Input
-                            id="reference2Name"
-                            {...form.register("reference2Name")}
-                            className="bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300"
-                          />
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference2Phone">Phone</Label>
-                          <Input
-                            id="reference2Phone"
-                            {...form.register("reference2Phone")}
-                            className="bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300"
-                          />
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                        <div className="space-y-2 relative group">
-                          <Label htmlFor="reference2Relation">Relationship</Label>
-                          <Input
-                            id="reference2Relation"
-                            {...form.register("reference2Relation")}
-                            className="bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300"
-                          />
-                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Agreements Section */}
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
-                      <FileCheck className="text-redcross h-5 w-5" />
-                      Agreements
-                    </h2>
-                    
-                    <div className="space-y-4 p-6 neo-glass rounded-lg">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="agreeToTerms"
-                            checked={form.watch("agreeToTerms")}
-                            onCheckedChange={(checked) => {
-                              form.setValue("agreeToTerms", checked as boolean, { shouldValidate: true });
-                            }}
-                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
-                          />
-                          <Label htmlFor="agreeToTerms" className="font-normal flex items-center gap-1">
-                            I agree to the <span className="underline hover:text-redcross transition-colors">terms and conditions</span> <span className="text-red-500">*</span>
-                          </Label>
-                        </div>
-                        {form.formState.errors.agreeToTerms && (
-                          <p className="text-red-500 text-sm">{form.formState.errors.agreeToTerms.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="agreeToCodeOfConduct"
-                            checked={form.watch("agreeToCodeOfConduct")}
-                            onCheckedChange={(checked) => {
-                              form.setValue("agreeToCodeOfConduct", checked as boolean, { shouldValidate: true });
-                            }}
-                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
-                          />
-                          <Label htmlFor="agreeToCodeOfConduct" className="font-normal flex items-center gap-1">
-                            I agree to follow the <span className="underline hover:text-redcross transition-colors">code of conduct</span> <span className="text-red-500">*</span>
-                          </Label>
-                        </div>
-                        {form.formState.errors.agreeToCodeOfConduct && (
-                          <p className="text-red-500 text-sm">{form.formState.errors.agreeToCodeOfConduct.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="agreeToRelease"
-                            checked={form.watch("agreeToRelease")}
-                            onCheckedChange={(checked) => {
-                              form.setValue("agreeToRelease", checked as boolean, { shouldValidate: true });
-                            }}
-                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
-                          />
-                          <Label htmlFor="agreeToRelease" className="font-normal flex items-center gap-1">
-                            I agree to the <span className="underline hover:text-redcross transition-colors">liability release</span> <span className="text-red-500">*</span>
-                          </Label>
-                        </div>
-                        {form.formState.errors.agreeToRelease && (
-                          <p className="text-red-500 text-sm">{form.formState.errors.agreeToRelease.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="agreeToBackground"
-                            checked={form.watch("agreeToBackground")}
-                            onCheckedChange={(checked) => {
-                              form.setValue("agreeToBackground", checked as boolean, { shouldValidate: true });
-                            }}
-                            className="data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
-                          />
-                          <Label htmlFor="agreeToBackground" className="font-normal flex items-center gap-1">
-                            I agree to a <span className="underline hover:text-redcross transition-colors">background check</span> <span className="text-red-500">*</span>
-                          </Label>
-                        </div>
-                        {form.formState.errors.agreeToBackground && (
-                          <p className="text-red-500 text-sm">{form.formState.errors.agreeToBackground.message}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Security Verification */}
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
-                      <Shield className="text-redcross h-5 w-5" />
-                      Security Verification
-                    </h2>
-                    
-                    <VolunteerCaptcha onVerify={setIsCaptchaVerified} />
-                  </div>
-                  
-                  {/* Submit Button */}
-                  <div className="flex justify-end space-x-4 pt-6">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => navigate(-1)}
-                      className="flex items-center gap-2"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      className="bg-gradient-to-r from-redcross to-redcross-dark text-white px-8 py-2 hover:opacity-90 transition-opacity font-medium flex items-center gap-2 relative overflow-hidden"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="opacity-0">Submit Application</span>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="h-5 w-5 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          Submit Application
-                          <ArrowRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </>
-          )}
-        </div>
-      </div>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default VolunteerApplication;
+                          {form
