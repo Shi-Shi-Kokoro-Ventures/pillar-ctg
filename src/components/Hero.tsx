@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -125,17 +124,14 @@ const Hero = () => {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div variants={fadeInUp} className="mb-6">
-            <span className="inline-flex items-center py-1.5 px-4 mb-5 bg-gradient-to-r from-redcross/90 to-redcross-light/90 backdrop-blur-lg text-white rounded-full text-sm font-medium shadow-lg">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Housing Crisis Alert
-            </span>
-          </motion.div>
-          
           <motion.h1 
             variants={fadeInUp} 
             className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
           >
+            <span className="inline-flex items-center py-1.5 px-4 mb-5 bg-gradient-to-r from-redcross/90 to-redcross-light/90 backdrop-blur-lg text-white rounded-full text-sm font-medium shadow-lg">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Housing Crisis Alert
+            </span><br />
             <span style={glowingTextStyle} className="drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">Changing The Game,</span><br />
             <span style={textGradientStyle}>One Good Deed At A Time</span>
           </motion.h1>
