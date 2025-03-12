@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 import Navbar from "@/components/Navbar";
@@ -617,4 +618,195 @@ const VolunteerApplication = () => {
                             {...form.register("emergencyContactRelationship")}
                             className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactRelationship ? "border-red-500" : ""}`}
                           />
-                          {form
+                          {form.formState.errors.emergencyContactRelationship && (
+                            <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactRelationship.message}</p>
+                          )}
+                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* References Section */}
+                    <div className="space-y-4 p-6 bg-gray-50/20 neo-glass rounded-lg border border-gray-100">
+                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <Network className="h-4 w-4 text-gray-700" />
+                        References
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 relative group">
+                          <Label htmlFor="reference1Name" className="flex items-center gap-1">
+                            <span>Name</span> <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="reference1Name"
+                            {...form.register("reference1Name")}
+                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Name ? "border-red-500" : ""}`}
+                          />
+                          {form.formState.errors.reference1Name && (
+                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Name.message}</p>
+                          )}
+                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                        <div className="space-y-2 relative group">
+                          <Label htmlFor="reference1Phone" className="flex items-center gap-1">
+                            <span>Phone</span> <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="reference1Phone"
+                            {...form.register("reference1Phone")}
+                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Phone ? "border-red-500" : ""}`}
+                          />
+                          {form.formState.errors.reference1Phone && (
+                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Phone.message}</p>
+                          )}
+                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                        <div className="space-y-2 relative group">
+                          <Label htmlFor="reference1Relation" className="flex items-center gap-1">
+                            <span>Relationship</span> <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="reference1Relation"
+                            {...form.register("reference1Relation")}
+                            className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.reference1Relation ? "border-red-500" : ""}`}
+                          />
+                          {form.formState.errors.reference1Relation && (
+                            <p className="text-red-500 text-sm">{form.formState.errors.reference1Relation.message}</p>
+                          )}
+                          <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Terms and Agreements */}
+                    <div className="space-y-4 p-6 bg-red-50/20 rounded-lg border border-red-100 neo-glass">
+                      <h3 className="font-semibold mb-3">Terms and Agreements</h3>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-start space-x-3 p-3 hover:bg-white/10 rounded-md transition-colors">
+                          <Checkbox
+                            id="agreeToTerms"
+                            checked={form.watch("agreeToTerms")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("agreeToTerms", checked === true, { shouldValidate: true });
+                            }}
+                            className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <div>
+                            <Label htmlFor="agreeToTerms" className="font-medium">Terms and Conditions</Label>
+                            <p className="text-sm text-gray-600 mt-1">
+                              I agree to the terms and conditions of volunteering with the organization.
+                            </p>
+                            {form.formState.errors.agreeToTerms && (
+                              <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToTerms.message}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 hover:bg-white/10 rounded-md transition-colors">
+                          <Checkbox
+                            id="agreeToCodeOfConduct"
+                            checked={form.watch("agreeToCodeOfConduct")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("agreeToCodeOfConduct", checked === true, { shouldValidate: true });
+                            }}
+                            className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <div>
+                            <Label htmlFor="agreeToCodeOfConduct" className="font-medium">Code of Conduct</Label>
+                            <p className="text-sm text-gray-600 mt-1">
+                              I agree to adhere to the organization's code of conduct and ethical guidelines.
+                            </p>
+                            {form.formState.errors.agreeToCodeOfConduct && (
+                              <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToCodeOfConduct.message}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 hover:bg-white/10 rounded-md transition-colors">
+                          <Checkbox
+                            id="agreeToRelease"
+                            checked={form.watch("agreeToRelease")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("agreeToRelease", checked === true, { shouldValidate: true });
+                            }}
+                            className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <div>
+                            <Label htmlFor="agreeToRelease" className="font-medium">Liability Release</Label>
+                            <p className="text-sm text-gray-600 mt-1">
+                              I release the organization from any liability related to my volunteer activities.
+                            </p>
+                            {form.formState.errors.agreeToRelease && (
+                              <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToRelease.message}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 hover:bg-white/10 rounded-md transition-colors">
+                          <Checkbox
+                            id="agreeToBackground"
+                            checked={form.watch("agreeToBackground")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("agreeToBackground", checked === true, { shouldValidate: true });
+                            }}
+                            className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                          />
+                          <div>
+                            <Label htmlFor="agreeToBackground" className="font-medium">Background Check</Label>
+                            <p className="text-sm text-gray-600 mt-1">
+                              I consent to a background check if required for the volunteer position.
+                            </p>
+                            {form.formState.errors.agreeToBackground && (
+                              <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToBackground.message}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Security Verification Section */}
+                    <div className="p-6 bg-gray-50/20 rounded-lg border border-gray-100 neo-glass">
+                      <h3 className="font-semibold mb-4 flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-gray-700" />
+                        Security Verification
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Please complete the security verification below to submit your application.
+                      </p>
+                      <VolunteerCaptcha onVerify={() => setIsCaptchaVerified(true)} />
+                      {!isCaptchaVerified && form.formState.isSubmitted && (
+                        <p className="text-red-500 text-sm mt-2">Please complete the security verification</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between pt-6 border-t border-gray-200">
+                    <Button 
+                      type="button"
+                      onClick={() => navigate("/")}
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitting}
+                      className="flex items-center gap-2"
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit Application"}
+                      {!isSubmitting && <ArrowRight className="h-4 w-4" />}
+                    </Button>
+                  </div>
+              </form>
+            </Form>
+          )}
+        </ApplicationWrapper>
+      </div>
+    </div>
+  );
+};
+
+export default VolunteerApplication;
