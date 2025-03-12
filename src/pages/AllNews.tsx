@@ -6,60 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const newsItems = [
-  {
-    id: 1,
-    title: "Federal Housing Initiative Expands with $500M Investment in Urban Development",
-    excerpt: "The Department of Housing and Urban Development announces major expansion of affordable housing programs across metropolitan areas, focusing on sustainable and technology-integrated communities.",
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-    date: "March 15, 2025",
-    category: "Housing Projects"
-  },
-  {
-    id: 2,
-    title: "AI-Powered Housing Assistance Platform Launches Nationwide",
-    excerpt: "Revolutionary platform uses artificial intelligence to match individuals with housing resources and support services, showing promising results in early adoption cities.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2072&q=80",
-    date: "March 10, 2025",
-    category: "Technology"
-  },
-  {
-    id: 3,
-    title: "Innovative Housing First Program Shows 85% Success Rate",
-    excerpt: "Latest data reveals remarkable success of Housing First initiatives in multiple states, with significant improvements in long-term stability and quality of life for participants.",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-    date: "March 5, 2025",
-    category: "Programs"
-  },
-  {
-    id: 4,
-    title: "Green Building Standards Revolutionize Affordable Housing",
-    excerpt: "New sustainable building practices are making affordable housing more energy-efficient and environmentally friendly, reducing costs for residents while fighting climate change.",
-    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2065&q=80",
-    date: "March 1, 2025",
-    category: "Sustainability"
-  },
-  {
-    id: 5,
-    title: "Community-Led Housing Solutions Transform Urban Neighborhoods",
-    excerpt: "Innovative partnership between local governments and community organizations creates new model for affordable housing development with resident input at its core.",
-    image: "https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80",
-    date: "February 28, 2025",
-    category: "Partnerships"
-  }
-];
+const newsItems = [];
 
-// Update categories array to include new categories
+// Update categories array to include basic categories
 const categories = [
   "All Categories",
   "Housing Projects",
-  "Technology",
   "Programs",
-  "Sustainability",
-  "Partnerships"
+  "Updates"
 ];
 
-const NewsCard = ({ item, index }: { item: typeof newsItems[0]; index: number }) => {
+const NewsCard = ({ item, index }: { item: any; index: number }) => {
   return (
     <motion.div 
       className="group bg-gradient-to-br from-white to-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 backdrop-blur-sm neo-glass-card"
@@ -241,7 +198,7 @@ const AllNews = () => {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Filter className="text-gray-400 h-6 w-6" />
                 </div>
-                <p className="text-xl text-gray-600 mb-4">No news articles found matching your criteria.</p>
+                <p className="text-xl text-gray-600 mb-4">News articles coming soon.</p>
                 <Button 
                   onClick={() => {
                     setActiveCategory("All Categories");

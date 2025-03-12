@@ -4,31 +4,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-const newsItems = [
-  {
-    id: 1,
-    title: "Federal Housing Initiative Expands with $500M Investment in Urban Development",
-    excerpt: "The Department of Housing and Urban Development announces major expansion of affordable housing programs across metropolitan areas, focusing on sustainable and technology-integrated communities.",
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-    date: "March 15, 2025"
-  },
-  {
-    id: 2,
-    title: "AI-Powered Housing Assistance Platform Launches Nationwide",
-    excerpt: "Revolutionary platform uses artificial intelligence to match individuals with housing resources and support services, showing promising results in early adoption cities.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2072&q=80",
-    date: "March 10, 2025"
-  },
-  {
-    id: 3,
-    title: "Innovative Housing First Program Shows 85% Success Rate",
-    excerpt: "Latest data reveals remarkable success of Housing First initiatives in multiple states, with significant improvements in long-term stability and quality of life for participants.",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-    date: "March 5, 2025"
-  }
-];
+const newsItems = [];
 
-const NewsCard = ({ item, index }: { item: typeof newsItems[0]; index: number }) => {
+const NewsCard = ({ item, index }: { item: any; index: number }) => {
   return (
     <motion.div 
       className="group bg-gradient-to-br from-white to-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 backdrop-blur-sm neo-glass-card"
@@ -149,11 +127,22 @@ const NewsUpdates = () => {
           </Link>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {newsItems.map((item, index) => (
-            <NewsCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
+        {newsItems.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {newsItems.map((item, index) => (
+              <NewsCard key={item.id} item={item} index={index} />
+            ))}
+          </div>
+        ) : (
+          <motion.div 
+            className="text-center py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xl text-gray-600 mb-4">News articles coming soon.</p>
+          </motion.div>
+        )}
         
         <motion.div 
           className="mt-16 neo-glass-card backdrop-blur-md bg-white/50 rounded-xl p-8 md:p-10 border border-white/30 shadow-lg"
