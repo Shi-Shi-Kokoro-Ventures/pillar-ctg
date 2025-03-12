@@ -30,6 +30,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   // Personal Information
@@ -432,12 +433,12 @@ const AssistanceApplication = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
       <Navbar />
       
       <main className="flex-grow pt-20">
         {/* Hero Section */}
-        <section className="bg-blue-50 py-12 md:py-16">
+        <section className="bg-gradient-to-r from-blue-100 to-blue-50 py-12 md:py-16 shadow-sm">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               {/* Updated logo size */}
@@ -445,16 +446,16 @@ const AssistanceApplication = () => {
                 <img 
                   src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" 
                   alt="P.I.L.L.A.R. Initiative Logo" 
-                  className="h-32 md:h-40" 
+                  className="h-32 md:h-40 animate-pulse" 
                 />
               </div>
               
-              <h1 className="text-3xl md:text-4xl font-bold mb-6">Housing Assistance Application</h1>
-              <p className="text-lg text-gray-600 mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 text-blue-800">Housing Assistance Application</h1>
+              <p className="text-lg text-gray-700 mb-4">
                 Complete this form to apply for housing assistance. All information provided is kept confidential 
                 and is required to meet government funding requirements.
               </p>
-              <div className="flex items-center justify-center text-amber-600 bg-amber-50 p-3 rounded-lg">
+              <div className="flex items-center justify-center text-amber-700 bg-amber-50 p-4 rounded-lg border border-amber-200 shadow-inner">
                 <Info className="h-5 w-5 mr-2 flex-shrink-0" />
                 <p className="text-sm">Please have your identification, proof of income, and housing documents ready. You will need to upload front and back of your government-issued ID or passport.</p>
               </div>
@@ -463,14 +464,14 @@ const AssistanceApplication = () => {
         </section>
 
         {/* Legal Information Banner */}
-        <section className="bg-blue-700 text-white py-4">
+        <section className="bg-gradient-to-r from-blue-800 to-blue-700 text-white py-4 shadow-md">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1 text-blue-300" />
                   <div>
-                    <h3 className="font-bold mb-1">Privacy Act Statement</h3>
+                    <h3 className="font-bold mb-1 text-blue-200">Privacy Act Statement</h3>
                     <p className="text-sm">
                       The information collected on this form is protected under the Privacy Act of 1974. The P.I.L.L.A.R. Initiative is authorized to collect this information pursuant to the Housing and Community Development Act of 1987, as amended. The information provided herein will be used exclusively to determine eligibility for housing assistance and will be maintained in strict accordance with all applicable federal and state privacy laws.
                     </p>
@@ -478,9 +479,9 @@ const AssistanceApplication = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1 text-blue-300" />
                   <div>
-                    <h3 className="font-bold mb-1">Equal Opportunity Statement</h3>
+                    <h3 className="font-bold mb-1 text-blue-200">Equal Opportunity Statement</h3>
                     <p className="text-sm">
                       The P.I.L.L.A.R. Initiative is committed to ensuring equal access to housing and related services. In compliance with federal, state, and local anti-discrimination laws, we do not discriminate on the basis of race, color, religion, sex, national origin, ancestry, age, disability, familial status, or any other characteristic protected by law. All qualified applicants are welcome to apply for housing assistance without fear of discrimination or retaliation.
                     </p>
@@ -488,9 +489,9 @@ const AssistanceApplication = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1" />
+                  <Shield className="h-6 w-6 mr-3 flex-shrink-0 mt-1 text-blue-300" />
                   <div>
-                    <h3 className="font-bold mb-1">Background Check Notice</h3>
+                    <h3 className="font-bold mb-1 text-blue-200">Background Check Notice</h3>
                     <p className="text-sm">
                       As a condition of the housing assistance application process, the P.I.L.L.A.R. Initiative will conduct comprehensive background checks on all applicants. These checks may include, but are not limited to, the review of criminal history, credit records, eviction history, and the verification of the information provided in this application. Applicants should be aware that the results of these background checks will be used to assess eligibility for housing assistance and that any inaccuracies or intentional misrepresentations may result in disqualification from the program.
                     </p>
@@ -504,13 +505,52 @@ const AssistanceApplication = () => {
         {/* Application Form */}
         <section className="py-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md">
+            <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
               <Alert className="mb-6 bg-yellow-50 border-yellow-200 text-yellow-800">
                 <AlertTriangle className="h-4 w-4 mr-2" />
                 <AlertDescription>
                   <span className="font-bold">IMPORTANT:</span> Providing false information on this application is a federal offense punishable by law, and may result in denial of assistance, termination of benefits, and possible prosecution.
                 </AlertDescription>
               </Alert>
+              
+              {/* Dialog for Print View */}
+              <Dialog open={showPrintDialog} onOpenChange={setShowPrintDialog}>
+                <DialogContent className="sm:max-w-md">
+                  <DialogTitle className="flex items-center gap-2">
+                    <CheckSquare className="h-5 w-5 text-green-600" />
+                    Application Submitted Successfully
+                  </DialogTitle>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Thank you for submitting your housing assistance application. Your information has been received and will be reviewed by our team.
+                    </p>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-sm font-semibold mb-2">What Happens Next?</h3>
+                      <ol className="text-sm space-y-2 list-decimal list-inside text-gray-600">
+                        <li>Our team will review your application within 3-5 business days</li>
+                        <li>You'll receive an email confirmation at {submittedValues?.email}</li>
+                        <li>A case manager will contact you to schedule an interview</li>
+                        <li>You may be asked to provide additional documentation</li>
+                      </ol>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowPrintDialog(false)}
+                      >
+                        Close
+                      </Button>
+                      <Button
+                        onClick={handlePrint}
+                        className="gap-2"
+                      >
+                        <Printer className="h-4 w-4" />
+                        Print Application
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -530,7 +570,7 @@ const AssistanceApplication = () => {
                               First Name <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="John" {...field} />
+                              <Input placeholder="John" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -545,7 +585,7 @@ const AssistanceApplication = () => {
                               Middle Initial
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="M" maxLength={1} {...field} />
+                              <Input placeholder="M" maxLength={1} {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -560,7 +600,7 @@ const AssistanceApplication = () => {
                               Last Name <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="Doe" {...field} />
+                              <Input placeholder="Doe" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -575,7 +615,7 @@ const AssistanceApplication = () => {
                               Date of Birth <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} />
+                              <Input type="date" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -599,6 +639,7 @@ const AssistanceApplication = () => {
                                   e.target.value = formatted;
                                 }}
                                 maxLength={11}
+                                className="bg-blue-50/50 focus:bg-white transition-colors"
                               />
                             </FormControl>
                             <FormDescription className="text-xs">
@@ -617,7 +658,7 @@ const AssistanceApplication = () => {
                               Phone Number <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="tel" placeholder="555-555-5555" {...field} />
+                              <Input type="tel" placeholder="555-555-5555" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -632,7 +673,7 @@ const AssistanceApplication = () => {
                               Email Address <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="john.doe@example.com" {...field} />
+                              <Input type="email" placeholder="john.doe@example.com" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -657,7 +698,7 @@ const AssistanceApplication = () => {
                               Household Size <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="number" placeholder="1" {...field} />
+                              <Input type="number" placeholder="1" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -672,7 +713,7 @@ const AssistanceApplication = () => {
                               Household Income <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input type="number" placeholder="50000" {...field} />
+                              <Input type="number" placeholder="50000" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -688,7 +729,7 @@ const AssistanceApplication = () => {
                             </FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
                                   <SelectValue placeholder="Select income period" />
                                 </SelectTrigger>
                               </FormControl>
@@ -722,7 +763,7 @@ const AssistanceApplication = () => {
                               Current Address <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="123 Main St" {...field} />
+                              <Input placeholder="123 Main St" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -737,7 +778,7 @@ const AssistanceApplication = () => {
                               City <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="Anytown" {...field} />
+                              <Input placeholder="Anytown" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -752,7 +793,7 @@ const AssistanceApplication = () => {
                               State <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="CA" {...field} />
+                              <Input placeholder="CA" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -767,13 +808,686 @@ const AssistanceApplication = () => {
                               ZIP Code <span className="text-red-500">*</span>
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="12345" {...field} />
+                              <Input placeholder="12345" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="housingStatus"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Housing Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select housing status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="renting">Renting</SelectItem>
+                                <SelectItem value="owning">Owning</SelectItem>
+                                <SelectItem value="living-with-family">Living with Family</SelectItem>
+                                <SelectItem value="homeless">Homeless</SelectItem>
+                                <SelectItem value="shelter">Emergency Shelter</SelectItem>
+                                <SelectItem value="transitional">Transitional Housing</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="monthlyRent"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Monthly Rent <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="1000" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="rentDue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Rent Due Date
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="evictionNotice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Have you received an eviction notice? <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select yes or no" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Government Assistance */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Government Assistance
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="receivingAssistance"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Are you currently receiving government assistance? <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select yes or no" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="no">No</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="assistanceTypes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              If yes, what types of assistance?
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="SNAP, TANF, etc." {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
+                  </div>
+
+                  {/* Emergency Contact */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Emergency Contact
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="emergencyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Emergency Contact Name <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Jane Doe" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="emergencyPhone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Emergency Contact Phone <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input type="tel" placeholder="555-555-5555" {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="emergencyRelation"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Relationship to You <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Friend, Family, etc." {...field} className="bg-blue-50/50 focus:bg-white transition-colors" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Demographic Information */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Demographic Information
+                    </h2>
+                    <p className="text-sm text-gray-500 mb-4">
+                      The following information is requested for statistical and reporting purposes only. 
+                      This data is required by federal funding sources.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Gender <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="male">Male</SelectItem>
+                                <SelectItem value="female">Female</SelectItem>
+                                <SelectItem value="non-binary">Non-binary</SelectItem>
+                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="ethnicity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Ethnicity <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select ethnicity" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="hispanic-latino">Hispanic or Latino</SelectItem>
+                                <SelectItem value="not-hispanic-latino">Not Hispanic or Latino</SelectItem>
+                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="race"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Race <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select race" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="american-indian-alaska-native">American Indian or Alaska Native</SelectItem>
+                                <SelectItem value="asian">Asian</SelectItem>
+                                <SelectItem value="black-african-american">Black or African American</SelectItem>
+                                <SelectItem value="native-hawaiian-pacific-islander">Native Hawaiian or Other Pacific Islander</SelectItem>
+                                <SelectItem value="white">White</SelectItem>
+                                <SelectItem value="multiple">Multiple Races</SelectItem>
+                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="veteran"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Veteran Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select veteran status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="veteran">Veteran</SelectItem>
+                                <SelectItem value="non-veteran">Non-veteran</SelectItem>
+                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="disability"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Disability Status <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-blue-50/50 focus:bg-white transition-colors">
+                                  <SelectValue placeholder="Select disability status" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="has-disability">Person with Disability</SelectItem>
+                                <SelectItem value="no-disability">No Disability</SelectItem>
+                                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Required Documents */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Upload className="mr-2 h-5 w-5" />
+                      Required Documents
+                    </h2>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Please upload the following documents to complete your application. All documents must be clear and readable.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="identificationFrontDoc"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Front of ID/Passport <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                                onChange={(e) => {
+                                  onChange(e.target.files);
+                                  setUploadedFiles({
+                                    ...uploadedFiles,
+                                    identificationFront: e.target.files ? Array.from(e.target.files) : null
+                                  });
+                                }}
+                                {...field}
+                              />
+                            </FormControl>
+                            {renderFileNames(value as FileList)}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="identificationBackDoc"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Back of ID <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                                onChange={(e) => {
+                                  onChange(e.target.files);
+                                  setUploadedFiles({
+                                    ...uploadedFiles,
+                                    identificationBack: e.target.files ? Array.from(e.target.files) : null
+                                  });
+                                }}
+                                {...field}
+                              />
+                            </FormControl>
+                            {renderFileNames(value as FileList)}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="proofOfIncomeDoc"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Proof of Income <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                                onChange={(e) => {
+                                  onChange(e.target.files);
+                                  setUploadedFiles({
+                                    ...uploadedFiles,
+                                    income: e.target.files ? Array.from(e.target.files) : null
+                                  });
+                                }}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Pay stubs, tax returns, benefits statement, etc.
+                            </FormDescription>
+                            {renderFileNames(value as FileList)}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="housingDoc"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Housing Documentation <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                                onChange={(e) => {
+                                  onChange(e.target.files);
+                                  setUploadedFiles({
+                                    ...uploadedFiles,
+                                    housing: e.target.files ? Array.from(e.target.files) : null
+                                  });
+                                }}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Lease agreement, mortgage statement, eviction notice, etc.
+                            </FormDescription>
+                            {renderFileNames(value as FileList)}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="additionalDocs"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem className="col-span-1 md:col-span-2">
+                            <FormLabel>
+                              Additional Supporting Documents (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                multiple
+                                className="cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                                onChange={(e) => {
+                                  onChange(e.target.files);
+                                  setUploadedFiles({
+                                    ...uploadedFiles,
+                                    additional: e.target.files ? Array.from(e.target.files) : null
+                                  });
+                                }}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Utility bills, medical expenses, court documents, etc.
+                            </FormDescription>
+                            {renderFileNames(value as FileList)}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Certification */}
+                  <div className="border-b pb-6">
+                    <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
+                      <Pen className="mr-2 h-5 w-5" />
+                      Certification
+                    </h2>
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="signature"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Signature <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Type your full name as signature"
+                                className="min-h-24 bg-blue-50/50 focus:bg-white transition-colors"
+                                ref={signatureRef}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              By typing your full name above, you are electronically signing this document.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="signatureDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Date <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                {...field}
+                                className="max-w-xs bg-blue-50/50 focus:bg-white transition-colors"
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              Current system date: {currentDateTime}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <div className="space-y-2 mt-4 bg-gray-50 p-4 rounded-lg">
+                        <FormField
+                          control={form.control}
+                          name="certifyTrue"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  I certify that all information provided in this application is true and accurate to the best of my knowledge. <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormMessage />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="consentToShare"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  I consent to the sharing of my information with other agencies for the purpose of determining eligibility and providing services. <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormMessage />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="dataPrivacyConsent"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  I have read and understand the Privacy Act Statement regarding how my information will be used. <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormMessage />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="backgroundCheckConsent"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  I consent to a background check as part of the application process. <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormMessage />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="fraudWarningAcknowledge"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  I acknowledge that providing false information may result in denial of assistance, termination of benefits, and possible legal prosecution. <span className="text-red-500">*</span>
+                                </FormLabel>
+                                <FormMessage />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Form Submission */}
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="text-sm text-gray-500 flex items-center">
+                      <Clock className="h-4 w-4 mr-1 text-blue-600" />
+                      Estimated completion time: 15-20 minutes
+                    </div>
+                    <div className="flex gap-4">
+                      <Button type="reset" variant="outline">Reset Form</Button>
+                      <Button type="submit" className="bg-blue-700 hover:bg-blue-800">
+                        Submit Application
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center text-xs text-gray-500 mt-6">
+                    <p>If you need assistance completing this form, please contact our Housing Support Team at (555) 123-4567.</p>
+                    <p className="mt-1">
+                      <Link to="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</Link> • 
+                      <Link to="/terms-of-service" className="text-blue-600 hover:underline ml-2">Terms of Service</Link> •
+                      <Link to="/accessibility" className="text-blue-600 hover:underline ml-2">Accessibility</Link>
+                    </p>
                   </div>
                 </form>
               </Form>
