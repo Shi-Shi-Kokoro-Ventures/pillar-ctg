@@ -8,6 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "@/integrations/supabase/client";
+
+// Define environment variables - in production, these would be set in your environment
+const WEBHOOK_URL = "https://your-n8n-or-zapier-webhook-url.com";
 
 const resumeSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -43,16 +47,37 @@ const ResumeUpload = ({ onClose }: ResumeUploadProps) => {
   };
 
   const onSubmit = async (data: ResumeFormValues) => {
+    if (!selectedFile) {
+      toast.error("Please select a resume file to upload.");
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // In a real implementation, this would upload to a server/storage
-      // For now, we'll simulate a successful upload
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // 1. Upload the file to a temporary location 
+      // In production, you would upload this to a storage service like S3, Cloudinary, etc.
+      // For this example, we're simulating a successful upload
       
-      toast.success("Resume submitted successfully! We'll contact you about future opportunities.");
+      // 2. Call our edge function to notify about the submission
+      const { error } = await supabase.functions.invoke('resume-notification', {
+        body: {
+          name: data.name,
+          email: data.email,
+          resumeFileName: selectedFile.name,
+          resumeSize: Math.round(selectedFile.size / 1024),
+          webhookUrl: WEBHOOK_URL,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      toast.success("Resume submitted successfully! The team will contact you about future opportunities.");
       onClose();
     } catch (error) {
+      console.error("Error submitting resume:", error);
       toast.error("Failed to submit resume. Please try again.");
     } finally {
       setIsSubmitting(false);
