@@ -16,7 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import VolunteerStepper from "@/components/VolunteerStepper";
 import VolunteerCaptcha from "@/components/VolunteerCaptcha";
-import { motion } from "framer-motion";
 
 // Define form schema
 const volunteerFormSchema = z.object({
@@ -272,7 +271,7 @@ const VolunteerApplication = () => {
     }, 1500);
   }
   
-  // Animation variants
+  // Animation variants for transitions
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -283,14 +282,9 @@ const VolunteerApplication = () => {
     switch(currentStep) {
       case 0:
         return (
-          <motion.div
+          <div
             key="step1"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="space-y-6 animate-fade-in"
           >
             <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
               <User className="text-redcross h-5 w-5" />
@@ -440,18 +434,13 @@ const VolunteerApplication = () => {
                 <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-redcross group-hover:w-full transition-all duration-300"></div>
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       case 1:
         return (
-          <motion.div
+          <div
             key="step2"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="space-y-6 animate-fade-in"
           >
             <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
               <Heart className="text-redcross h-5 w-5" />
@@ -644,4 +633,9 @@ const VolunteerApplication = () => {
                 </div>
                 <div className="space-y-2 md:col-span-2 relative group">
                   <Label htmlFor="emergencyContactRelationship" className="flex items-center gap-1">
-                    <span>
+                    <span>Relationship</span> <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="emergencyContactRelationship"
+                    {...form.register("emergencyContactRelationship")}
+                    className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-
