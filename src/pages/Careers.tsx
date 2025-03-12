@@ -4,9 +4,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Heart, Users, GraduationCap } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Careers = () => {
+  const navigate = useNavigate();
+  
   const jobOpenings = [
     {
       title: "Housing Case Manager",
@@ -34,6 +37,12 @@ const Careers = () => {
     }
   ];
 
+  const handleResumeSubmit = () => {
+    // In a real implementation, this would open a file picker or form
+    // For now, we'll just show a toast notification
+    toast.success("Resume submission feature coming soon! We'll notify you when it's available.");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -47,7 +56,10 @@ const Careers = () => {
               <p className="text-xl text-gray-600 mb-8">
                 Be part of a mission-driven team dedicated to creating housing stability and building stronger communities.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full"
+                onClick={() => navigate("/coming-soon")}
+              >
                 View Current Openings
               </Button>
             </div>
@@ -130,7 +142,10 @@ const Careers = () => {
                             {job.department} | {job.location} | {job.type}
                           </div>
                         </div>
-                        <Button className="mt-3 md:mt-0 bg-blue-600 hover:bg-blue-700">
+                        <Button 
+                          className="mt-3 md:mt-0 bg-blue-600 hover:bg-blue-700"
+                          onClick={() => navigate("/apply-for-employment")}
+                        >
                           Apply Now
                         </Button>
                       </div>
@@ -141,9 +156,13 @@ const Careers = () => {
               
               <div className="mt-8 text-center text-gray-600">
                 <p>Don't see a position that matches your skills?</p>
-                <Link to="/contact-us" className="text-blue-600 hover:underline">
+                <Button 
+                  variant="link" 
+                  className="text-blue-600 hover:underline"
+                  onClick={handleResumeSubmit}
+                >
                   Submit your resume for future opportunities
-                </Link>
+                </Button>
               </div>
             </div>
           </div>
