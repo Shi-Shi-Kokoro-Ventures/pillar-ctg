@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-redcross underline-offset-4 hover:underline focus:text-redcross/80 focus:underline relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-redcross hover:after:w-full after:transition-all after:duration-300",
         whiteButton: "bg-white text-redcross-dark shadow-[0_4px_10px_rgba(255,255,255,0.3)] hover:shadow-[0_6px_15px_rgba(255,255,255,0.4)] hover:translate-y-[-2px] hover:bg-gray-50 font-semibold focus:ring-2 focus:ring-redcross focus:ring-offset-2 transition-all shimmer",
         neoGlass: "backdrop-blur-md bg-white/20 border border-white/30 shadow-xl text-white hover:bg-white/30 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] hover:translate-y-[-2px] transition-all",
+        rounded: "bg-gradient-to-r from-redcross to-redcross-light text-white rounded-full shadow-[0_4px_10px_rgba(30,174,219,0.3)] hover:shadow-[0_6px_15px_rgba(30,174,219,0.5)] hover:translate-y-[-2px] hover:from-redcross-dark hover:to-redcross after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-white/20 after:opacity-0 hover:after:opacity-100 after:transition-opacity shimmer",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -30,7 +31,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "rounded", // Updated default to use rounded buttons
       size: "default",
     },
   }

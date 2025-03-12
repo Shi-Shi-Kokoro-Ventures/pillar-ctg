@@ -1,3 +1,4 @@
+
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -94,7 +95,7 @@ const App = () => (
       <AccessibilityControls />
       <BrowserRouter>
         <Suspense fallback={<LoadingSpinner />}>
-          <main id="main-content" tabIndex={-1}>
+          <main id="main-content" tabIndex={-1} className="use-rounded-corners">
             <Helmet>
               {/* Enhanced global security headers */}
               <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
