@@ -240,11 +240,6 @@ const AssistanceApplication = () => {
               title="Housing Assistance Application"
               subtitle="Complete this form to apply for housing assistance. All information provided will be kept confidential."
             >
-              <ApplicationHeader 
-                title="Housing Assistance Application"
-                description="Complete this form to apply for housing assistance. All information provided will be kept confidential."
-              />
-              
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   {/* Personal Information Section */}
@@ -714,3 +709,8 @@ const AssistanceApplication = () => {
                           </Label>
                         </div>
                       </div>
+                    </div>
+                    
+                    {form.watch("hasOtherIncome") && (
+                      <div className="mt-4 space-y-2">
+                        <Label htmlFor="
