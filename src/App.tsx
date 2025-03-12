@@ -1,4 +1,3 @@
-
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -67,6 +66,7 @@ const N8nIntegration = lazy(() => import("./pages/N8nIntegration"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 const Time = lazy(() => import("./pages/Time"));
+const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
@@ -167,8 +167,10 @@ const App = () => (
               {/* Integration Routes */}
               <Route path="/n8n-integration" element={<N8nIntegration />} />
               
+              {/* Application Routes */}
+              <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
+              
               {/* Redirect routes for referenced but unimplemented pages */}
-              <Route path="/apply-for-assistance" element={<Navigate to="/coming-soon" />} />
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
               <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
               
