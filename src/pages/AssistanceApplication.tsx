@@ -100,8 +100,8 @@ const formSchema = z.object({
   }),
 });
 
-// Update this constant with your n8n webhook URL
-const WEBHOOK_URL = "https://your-n8n-instance/webhook/housing-applicant";
+// Update webhook URL to the provided n8n URL
+const WEBHOOK_URL = "https://shishikokoro.app.n8n.cloud/webhook-test/8239f851-72d4-4ec4-84f9-f509e947a8b0";
 
 const AssistanceApplication = () => {
   const [uploadedFiles, setUploadedFiles] = useState<{
@@ -817,9 +817,3 @@ const AssistanceApplication = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="rentDue"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Rent Due
-                            </FormLabel>
