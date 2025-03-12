@@ -1,14 +1,16 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Heart, Users, GraduationCap } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import ResumeModal from "@/components/ResumeModal";
 
 const Careers = () => {
   const navigate = useNavigate();
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   
   const jobOpenings = [
     {
@@ -38,9 +40,7 @@ const Careers = () => {
   ];
 
   const handleResumeSubmit = () => {
-    // In a real implementation, this would open a file picker or form
-    // For now, we'll just show a toast notification
-    toast.success("Resume submission feature coming soon! We'll notify you when it's available.");
+    setIsResumeModalOpen(true);
   };
 
   return (
@@ -170,6 +170,12 @@ const Careers = () => {
       </main>
       
       <Footer />
+      
+      {/* Resume Upload Modal */}
+      <ResumeModal 
+        isOpen={isResumeModalOpen} 
+        onClose={() => setIsResumeModalOpen(false)} 
+      />
     </div>
   );
 };
