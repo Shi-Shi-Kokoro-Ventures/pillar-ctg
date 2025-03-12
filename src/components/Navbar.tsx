@@ -139,7 +139,7 @@ export const Navbar = () => {
           <Link to="/" className="flex items-center group">
             <div className="text-blue-600 font-bold text-2xl flex items-center">
               <img
-                src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png"
+                src="/lovable-uploads/c2725c89-9993-4cd8-a5c8-3178f1204dc0.png"
                 alt="Pillar Logo"
                 className="h-12 mr-2 transition-transform duration-300 hover:scale-105"
               />

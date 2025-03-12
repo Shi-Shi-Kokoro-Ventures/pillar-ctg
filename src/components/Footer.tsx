@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,7 +11,7 @@ const Footer = () => {
           {/* Column 1: About */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-8">
-              <img src="/lovable-uploads/fb949545-3500-4403-9a6b-3532aa878cef.png" alt="Pillar Logo" className="h-12 mr-3" />
+              <img src="/lovable-uploads/c2725c89-9993-4cd8-a5c8-3178f1204dc0.png" alt="Pillar Logo" className="h-12 mr-3" />
               <span className="text-2xl font-bold text-white">Pillar</span>
             </div>
             <p className="text-gray-300 mb-8 leading-relaxed">
