@@ -7,24 +7,24 @@ import { toast } from "sonner";
 const newsItems = [
   {
     id: 1,
-    title: "HUD Awards $136 Million to Support Housing & Services for People Experiencing Homelessness",
-    excerpt: "The U.S. Department of Housing and Urban Development (HUD) awarded $136 million to 43 communities to provide housing assistance and supportive services for people experiencing homelessness.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    date: "May 8, 2024"
+    title: "Federal Housing Initiative Expands with $500M Investment in Urban Development",
+    excerpt: "The Department of Housing and Urban Development announces major expansion of affordable housing programs across metropolitan areas, focusing on sustainable and technology-integrated communities.",
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+    date: "March 15, 2025"
   },
   {
     id: 2,
-    title: "Financial Literacy Programs Show Success in Preventing Homelessness",
-    excerpt: "Recent studies show that comprehensive financial education programs are helping vulnerable households develop budgeting skills, repair credit, and maintain stable housing situations.",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-    date: "April 17, 2024"
+    title: "AI-Powered Housing Assistance Platform Launches Nationwide",
+    excerpt: "Revolutionary platform uses artificial intelligence to match individuals with housing resources and support services, showing promising results in early adoption cities.",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2072&q=80",
+    date: "March 10, 2025"
   },
   {
     id: 3,
-    title: "New Public-Private Partnership Aims to Create 20,000 Affordable Housing Units",
-    excerpt: "A collaborative effort between government agencies, employers, and nonprofit organizations launches initiative to develop affordable housing and provide job opportunities in high-cost urban areas.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "March 21, 2024"
+    title: "Innovative Housing First Program Shows 85% Success Rate",
+    excerpt: "Latest data reveals remarkable success of Housing First initiatives in multiple states, with significant improvements in long-term stability and quality of life for participants.",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+    date: "March 5, 2025"
   }
 ];
 

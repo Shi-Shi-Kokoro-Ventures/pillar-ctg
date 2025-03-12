@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,88 +9,54 @@ import { motion } from "framer-motion";
 const newsItems = [
   {
     id: 1,
-    title: "HUD Awards $136 Million to Support Housing & Services for People Experiencing Homelessness",
-    excerpt: "The U.S. Department of Housing and Urban Development (HUD) awarded $136 million to 43 communities to provide housing assistance and supportive services for people experiencing homelessness.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    date: "May 8, 2024",
+    title: "Federal Housing Initiative Expands with $500M Investment in Urban Development",
+    excerpt: "The Department of Housing and Urban Development announces major expansion of affordable housing programs across metropolitan areas, focusing on sustainable and technology-integrated communities.",
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+    date: "March 15, 2025",
     category: "Housing Projects"
   },
   {
     id: 2,
-    title: "Financial Literacy Programs Show Success in Preventing Homelessness",
-    excerpt: "Recent studies show that comprehensive financial education programs are helping vulnerable households develop budgeting skills, repair credit, and maintain stable housing situations.",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-    date: "April 17, 2024",
-    category: "Programs"
+    title: "AI-Powered Housing Assistance Platform Launches Nationwide",
+    excerpt: "Revolutionary platform uses artificial intelligence to match individuals with housing resources and support services, showing promising results in early adoption cities.",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2072&q=80",
+    date: "March 10, 2025",
+    category: "Technology"
   },
   {
     id: 3,
-    title: "New Public-Private Partnership Aims to Create 20,000 Affordable Housing Units",
-    excerpt: "A collaborative effort between government agencies, employers, and nonprofit organizations launches initiative to develop affordable housing and provide job opportunities in high-cost urban areas.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "March 21, 2024",
-    category: "Partnerships"
-  },
-  {
-    id: 4,
-    title: "Annual Housing Conference Raises Record Funds for Homelessness Prevention",
-    excerpt: "The annual Building Futures conference raised over $3 million for housing assistance programs, emergency shelter operations, and homelessness prevention initiatives nationwide.",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    date: "March 1, 2024",
-    category: "Events"
-  },
-  {
-    id: 5,
-    title: "Study Shows Trauma-Informed Care Essential for Successful Housing Programs",
-    excerpt: "Research confirms that housing programs incorporating mental health services and trauma-informed approaches achieve significantly higher long-term stability rates for participants.",
-    image: "https://images.unsplash.com/photo-1527689368864-3a821dbccc34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "February 22, 2024",
+    title: "Innovative Housing First Program Shows 85% Success Rate",
+    excerpt: "Latest data reveals remarkable success of Housing First initiatives in multiple states, with significant improvements in long-term stability and quality of life for participants.",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+    date: "March 5, 2025",
     category: "Programs"
   },
   {
-    id: 6,
-    title: "$9 Billion in Grants Announced for Affordable Housing Development",
-    excerpt: "The federal government has announced $9 billion in grants to develop and preserve affordable housing units in high-need communities across the country.",
-    image: "https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2064&q=80",
-    date: "February 5, 2024",
-    category: "Grants"
+    id: 4,
+    title: "Green Building Standards Revolutionize Affordable Housing",
+    excerpt: "New sustainable building practices are making affordable housing more energy-efficient and environmentally friendly, reducing costs for residents while fighting climate change.",
+    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2065&q=80",
+    date: "March 1, 2025",
+    category: "Sustainability"
   },
   {
-    id: 7,
-    title: "From Shelter to Stable Housing: The Johnson Family's Journey",
-    excerpt: "After participating in a comprehensive housing and employment program, the Johnson family has successfully transitioned from shelter living to permanent affordable housing and financial stability.",
-    image: "https://images.unsplash.com/photo-1574282893982-ff1675ba4900?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "January 18, 2024",
-    category: "Success Stories"
-  },
-  {
-    id: 8,
-    title: "Corporate Volunteer Initiative Renovates 50 Housing Units for Veterans",
-    excerpt: "A coordinated volunteer effort involving five major companies completed renovations on 50 housing units specifically designated for veterans experiencing homelessness.",
-    image: "https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2031&q=80",
-    date: "January 5, 2024",
-    category: "Volunteers"
-  },
-  {
-    id: 9,
-    title: "Housing Legislation Advances with Bipartisan Support",
-    excerpt: "New legislation expanding housing voucher programs and providing incentives for affordable housing development has advanced with strong bipartisan support in Congress.",
-    image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    date: "December 12, 2023",
-    category: "Advocacy"
+    id: 5,
+    title: "Community-Led Housing Solutions Transform Urban Neighborhoods",
+    excerpt: "Innovative partnership between local governments and community organizations creates new model for affordable housing development with resident input at its core.",
+    image: "https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80",
+    date: "February 28, 2025",
+    category: "Partnerships"
   }
 ];
 
+// Update categories array to include new categories
 const categories = [
   "All Categories",
   "Housing Projects",
+  "Technology",
   "Programs",
-  "Partnerships",
-  "Events",
-  "Grants",
-  "Success Stories",
-  "Volunteers",
-  "Advocacy"
+  "Sustainability",
+  "Partnerships"
 ];
 
 const NewsCard = ({ item, index }: { item: typeof newsItems[0]; index: number }) => {
