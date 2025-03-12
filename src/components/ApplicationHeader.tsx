@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom';
 interface ApplicationHeaderProps {
   title: string;
   subtitle?: string;
+  description?: string;  // Added description as an optional prop
 }
 
-const ApplicationHeader: React.FC<ApplicationHeaderProps> = ({ title, subtitle }) => {
+const ApplicationHeader: React.FC<ApplicationHeaderProps> = ({ title, subtitle, description }) => {
   return (
     <div className="w-full flex flex-col items-center justify-center mb-8">
       <Link to="/" className="mb-4">
@@ -18,7 +19,9 @@ const ApplicationHeader: React.FC<ApplicationHeaderProps> = ({ title, subtitle }
         />
       </Link>
       <h1 className="text-3xl font-bold text-center text-gray-900">{title}</h1>
-      {subtitle && <p className="text-gray-600 mt-2 text-center">{subtitle}</p>}
+      {(subtitle || description) && (
+        <p className="text-gray-600 mt-2 text-center">{subtitle || description}</p>
+      )}
     </div>
   );
 };
