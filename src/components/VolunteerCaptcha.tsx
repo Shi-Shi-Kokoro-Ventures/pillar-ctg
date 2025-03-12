@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CaptchaProps {
@@ -50,7 +50,7 @@ const VolunteerCaptcha: React.FC<CaptchaProps> = ({ onVerify }) => {
 
       {verified ? (
         <div className="flex items-center justify-center text-green-500 py-4">
-          <CircleCheck className="w-6 h-6 mr-2" />
+          <CheckCircle className="w-6 h-6 mr-2" />
           <span className="font-medium">Verification successful</span>
         </div>
       ) : (
