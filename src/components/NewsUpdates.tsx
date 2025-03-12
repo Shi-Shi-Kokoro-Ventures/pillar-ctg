@@ -3,6 +3,7 @@ import React from "react";
 import { Calendar, ArrowRight, Newspaper, BookOpen, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const newsItems = [
   {
@@ -74,6 +75,45 @@ const NewsCard = ({ item, index }: { item: typeof newsItems[0]; index: number })
 };
 
 const NewsUpdates = () => {
+  const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Get the email value from the form
+    const form = e.currentTarget;
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement;
+    
+    if (emailInput && emailInput.value) {
+      // Show success toast
+      toast.success("Successfully subscribed to the newsletter!", {
+        position: "top-center",
+        duration: 4000,
+        className: "z-50 max-w-md bg-white text-gray-900 shadow-lg", 
+        style: {
+          padding: '16px',
+          borderRadius: '8px',
+          fontSize: '16px',
+          fontWeight: '500'
+        },
+      });
+      
+      // Reset the form
+      emailInput.value = '';
+    } else {
+      // Show error toast if email is empty
+      toast.error("Please enter a valid email address", {
+        position: "top-center",
+        duration: 4000,
+        className: "z-50 max-w-md bg-white text-gray-900 shadow-lg",
+        style: {
+          padding: '16px',
+          borderRadius: '8px',
+          fontSize: '16px',
+          fontWeight: '500'
+        },
+      });
+    }
+  };
+
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
       {/* Background grid pattern */}
@@ -132,9 +172,10 @@ const NewsUpdates = () => {
               <p className="text-gray-600 mb-4">
                 Subscribe to our newsletter to receive updates on new housing projects, success stories, volunteer opportunities, and community events.
               </p>
-              <form className="flex flex-col sm:flex-row gap-3 max-w-md relative z-10">
+              <form className="flex flex-col sm:flex-row gap-3 max-w-md relative z-10" onSubmit={handleSubscribe}>
                 <input 
                   type="email" 
+                  name="email"
                   placeholder="Your email address" 
                   className="flex-grow px-4 py-3 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all bg-white/80 backdrop-blur-sm"
                   required

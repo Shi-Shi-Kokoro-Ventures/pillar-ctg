@@ -1,0 +1,47 @@
+
+/* Custom Sonner Toast Styles */
+:root {
+  --toast-bg: white;
+  --toast-text: #333;
+  --toast-border: rgba(0, 0, 0, 0.1);
+  --toast-success-bg: #ebfbf4;
+  --toast-success-border: #10b981;
+  --toast-error-bg: #fef2f2;
+  --toast-error-border: #ef4444;
+}
+
+/* Fix toast positioning to ensure it's always visible */
+[data-sonner-toaster] {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  width: auto !important;
+  max-width: 420px;
+}
+
+/* Base toast styling */
+[data-sonner-toast] {
+  background-color: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+  border: 1px solid var(--toast-border) !important;
+  padding: 1rem !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  font-size: 1rem !important;
+  margin-bottom: 0.75rem !important;
+  max-width: 100% !important;
+  z-index: 9999 !important;
+}
+
+/* Success toast styling */
+[data-sonner-toast][data-type="success"] {
+  background-color: var(--toast-success-bg) !important;
+  border-left: 4px solid var(--toast-success-border) !important;
+}
+
+/* Error toast styling */
+[data-sonner-toast][data-type="error"] {
+  background-color: var(--toast-error-bg) !important;
+  border-left: 4px solid var(--toast-error-border) !important;
+}

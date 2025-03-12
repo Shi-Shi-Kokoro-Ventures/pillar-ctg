@@ -1,24 +1,13 @@
 
-import React from 'react';
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { initPerformanceTracking } from './lib/performance'
+import './App.css'
+import './styles/toastStyles.css' // Import our custom toast styles
 
-// Initialize performance tracking
-initPerformanceTracking();
-
-// Add performance mark for initial load
-performance.mark('app-start');
-
-const root = createRoot(document.getElementById("root")!);
-
-// Use automatic batching for all updates
-root.render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
-);
-
-// Measure initial render time
-performance.measure('initial-render', 'app-start');
+  </React.StrictMode>,
+)
