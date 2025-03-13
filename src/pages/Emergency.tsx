@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -73,6 +74,7 @@ const delawareResources: ResourceLocation[] = [{
   state: "DE",
   website: "https://www.delawareshelters.org"
 }];
+
 const Emergency = () => {
   const [isFullMapVisible, setIsFullMapVisible] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -135,7 +137,8 @@ const Emergency = () => {
 
   // If full map is visible, show only that
   if (isFullMapVisible) {
-    return <div className="min-h-screen flex flex-col bg-black text-white">
+    return (
+      <div className="min-h-screen flex flex-col bg-black text-white">
         <Navbar />
         <main className="flex-grow pt-16">
           <div className="p-4">
@@ -151,9 +154,12 @@ const Emergency = () => {
           </div>
         </main>
         <Footer />
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen flex flex-col bg-black text-white overflow-hidden">
+  
+  return (
+    <div className="min-h-screen flex flex-col bg-black text-white overflow-hidden">
       <Navbar />
       
       <main className="flex-grow pt-16">
@@ -161,13 +167,15 @@ const Emergency = () => {
         <div className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.1)_0%,_transparent_70%)]"></div>
           <div className="absolute inset-0">
-            {[...Array(3)].map((_, i) => <div key={i} className="absolute h-px bg-red-400/30" style={{
-            left: 0,
-            right: 0,
-            top: `${i * 33}%`,
-            animation: `scanline ${3 + i}s linear infinite`,
-            opacity: 0.6 - i * 0.15
-          }} />)}
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="absolute h-px bg-red-400/30" style={{
+                left: 0,
+                right: 0,
+                top: `${i * 33}%`,
+                animation: `scanline ${3 + i}s linear infinite`,
+                opacity: 0.6 - i * 0.15
+              }} />
+            ))}
           </div>
           <div className="container mx-auto px-4 py-4 flex items-center justify-center relative z-10">
             <Siren className="h-6 w-6 mr-3 animate-pulse text-white" />
@@ -183,14 +191,14 @@ const Emergency = () => {
           {/* Dynamic background with animated grid */}
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.9),rgba(20,0,0,0.95))]">
             <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
-          }}></div>
+              backgroundImage: 'radial-gradient(circle at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
+            }}></div>
             
             {/* Cyberpunk grid lines */}
             <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent)`,
-            backgroundSize: '50px 50px'
-          }}></div>
+              backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 0, 0, .3) 25%, rgba(255, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .3) 75%, rgba(255, 0, 0, .3) 76%, transparent 77%, transparent)`,
+              backgroundSize: '50px 50px'
+            }}></div>
           </div>
           
           <div className="container mx-auto px-4 relative z-10">
@@ -207,9 +215,9 @@ const Emergency = () => {
               <div className="bg-black/70 backdrop-blur-xl p-8 rounded-lg shadow-[0_0_30px_rgba(255,0,0,0.2)] border border-red-500/40 mb-8 animate-scale-in relative overflow-hidden">
                 {/* Circuit board pattern overlay */}
                 <div className="absolute inset-0 opacity-5" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ff0000' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-                backgroundSize: '100px 100px'
-              }}></div>
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ff0000' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                  backgroundSize: '100px 100px'
+                }}></div>
                 
                 {/* Animated accent line */}
                 <div className="absolute h-0.5 w-full left-0 top-0 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
@@ -240,8 +248,8 @@ const Emergency = () => {
         <section className="py-16 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
           <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
-        }}></div>
+            backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 50%)'
+          }}></div>
           <div className="container mx-auto px-4 relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 relative inline-block mx-auto">
               <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Emergency Services We Provide</span>
@@ -280,10 +288,10 @@ const Emergency = () => {
                 <Link to="/housing" className="w-full group">
                   <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
                     <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
-                    background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
-                    backgroundSize: '250% 250%',
-                    animation: 'shimmer 3s linear infinite'
-                  }}></span>
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <Home className="mr-2" /> Find Shelter
                   </Button>
                 </Link>
@@ -320,10 +328,10 @@ const Emergency = () => {
                 <Link to="/apply-for-assistance" className="w-full group">
                   <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
                     <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
-                    background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
-                    backgroundSize: '250% 250%',
-                    animation: 'shimmer 3s linear infinite'
-                  }}></span>
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <FileText className="mr-2" /> Apply for Assistance
                   </Button>
                 </Link>
@@ -360,10 +368,10 @@ const Emergency = () => {
                 <Link to="/housing-crisis-hotline" className="w-full group">
                   <Button className="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white border border-red-500/30 group-hover:border-red-500/60 transition-all duration-300 relative overflow-hidden">
                     <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
-                    background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
-                    backgroundSize: '250% 250%',
-                    animation: 'shimmer 3s linear infinite'
-                  }}></span>
+                      background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
+                      backgroundSize: '250% 250%',
+                      animation: 'shimmer 3s linear infinite'
+                    }}></span>
                     <LifeBuoy className="mr-2" /> Get Support
                   </Button>
                 </Link>
@@ -383,4 +391,46 @@ const Emergency = () => {
             
             <div className="bg-black/60 backdrop-blur-md rounded-lg p-8 border border-red-500/20 shadow-[0_10px_20px_rgba(255,0,0,0.07)] max-w-4xl mx-auto">
               <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4 text-red-300">Map Loading... Buffering at 8
+                <h3 className="text-2xl font-bold mb-4 text-red-300">
+                  Interactive Map & Resource Finder
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Our advanced mapping feature is currently undergoing a cybernetic overhaul. 
+                  While our developers are busy equipping it with enhanced capabilities, 
+                  you can still search for emergency resources by ZIP code below. 
+                  <span className="block mt-2 text-red-400 font-semibold">
+                    The digital cartography upgrade is loading... Level up your patience stats!
+                  </span>
+                </p>
+                
+                <div className="mb-8">
+                  <ZipCodeSearch onSearch={handleZipCodeSearch} />
+                </div>
+                
+                <Button 
+                  onClick={handleViewFullMap} 
+                  className="mb-6 bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white"
+                  disabled={true}
+                >
+                  <AlertCircle className="mr-2" /> View Full Resource Map (Coming Soon)
+                </Button>
+                
+                <Link to="/community-resources" className="w-full max-w-md mx-auto mt-4 block">
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    <ExternalLink className="mr-2" /> Browse All Community Resources
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Emergency;
