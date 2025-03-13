@@ -1,17 +1,15 @@
 import React from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const Footer = () => {
-  return (
-    <footer className="bg-gray-900 text-white">
+  return <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Column 1: About */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-8">
-              <img src="/lovable-uploads/c2725c89-9993-4cd8-a5c8-3178f1204dc0.png" alt="Pillar Logo" className="h-12 mr-3" />
+              <img alt="Pillar Logo" src="/lovable-uploads/59f06ce4-9233-4601-a6b4-3f158c46293b.png" className="h-12 mr-3 object-cover" />
               <span className="text-2xl font-bold text-white">Pillar</span>
             </div>
             <p className="text-gray-300 mb-8 leading-relaxed">
@@ -30,16 +28,25 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white border-b border-gray-700 pb-2">Quick Links</h3>
             <ul className="space-y-3">
-              {[
-                { name: "About Us", link: "/our-mission" },
-                { name: "Find Your Local Office", link: "/find-local-office" },
-                { name: "Housing Programs", link: "/housing" },
-                { name: "Ways to Donate", link: "/donate" },
-                { name: "Volunteer", link: "/volunteer" },
-                { name: "Careers", link: "/careers" }
-              ].map((item) => (
-                <FooterLink key={item.name} name={item.name} link={item.link} />
-              ))}
+              {[{
+              name: "About Us",
+              link: "/our-mission"
+            }, {
+              name: "Find Your Local Office",
+              link: "/find-local-office"
+            }, {
+              name: "Housing Programs",
+              link: "/housing"
+            }, {
+              name: "Ways to Donate",
+              link: "/donate"
+            }, {
+              name: "Volunteer",
+              link: "/volunteer"
+            }, {
+              name: "Careers",
+              link: "/careers"
+            }].map(item => <FooterLink key={item.name} name={item.name} link={item.link} />)}
             </ul>
           </div>
           
@@ -47,16 +54,25 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-6 text-white border-b border-gray-700 pb-2">Services</h3>
             <ul className="space-y-3">
-              {[
-                { name: "Transitional Housing", link: "/affordable-housing" },
-                { name: "Financial Education", link: "/financial-literacy" },
-                { name: "Job Training", link: "/job-training" },
-                { name: "Mental Health Services", link: "/mental-health" },
-                { name: "Community Programs", link: "/community-events" },
-                { name: "Advocacy", link: "/advocate" }
-              ].map((item) => (
-                <FooterLink key={item.name} name={item.name} link={item.link} />
-              ))}
+              {[{
+              name: "Transitional Housing",
+              link: "/affordable-housing"
+            }, {
+              name: "Financial Education",
+              link: "/financial-literacy"
+            }, {
+              name: "Job Training",
+              link: "/job-training"
+            }, {
+              name: "Mental Health Services",
+              link: "/mental-health"
+            }, {
+              name: "Community Programs",
+              link: "/community-events"
+            }, {
+              name: "Advocacy",
+              link: "/advocate"
+            }].map(item => <FooterLink key={item.name} name={item.name} link={item.link} />)}
             </ul>
           </div>
           
@@ -116,24 +132,23 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
 
 // Helper components to reduce repetition and improve maintainability
-const SocialLink = ({ Icon, href }) => (
-  <Link to={href} className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
+const SocialLink = ({
+  Icon,
+  href
+}) => <Link to={href} className="bg-gray-800 p-2 rounded-full hover:bg-redcross transition-colors duration-300">
     <Icon className="h-5 w-5" />
-  </Link>
-);
-
-const FooterLink = ({ name, link }) => (
-  <li>
+  </Link>;
+const FooterLink = ({
+  name,
+  link
+}) => <li>
     <Link to={link} className="text-gray-300 hover:text-white flex items-center transition-colors">
       <ChevronRight className="h-4 w-4 mr-2 text-redcross" />
       {name}
     </Link>
-  </li>
-);
-
+  </li>;
 export default Footer;
