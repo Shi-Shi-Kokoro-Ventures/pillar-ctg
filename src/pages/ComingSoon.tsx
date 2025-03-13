@@ -3,7 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Rocket, Clock, CalendarClock, Bell } from "lucide-react";
+import { ArrowLeft, Rocket, Clock, CalendarClock, Bell, Gamepad } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ZipCodeSearch from "@/components/ZipCodeSearch";
 
@@ -12,12 +12,14 @@ interface ComingSoonProps {
   title?: string;
   description?: string;
   showSearch?: boolean;
+  showGamepad?: boolean;
 }
 
 const ComingSoon: React.FC<ComingSoonProps> = ({
   title = "Coming Soon",
   description = "We're working hard to bring you more resources. Please check back later!",
   showSearch = false,
+  showGamepad = false,
 }) => {
   const navigate = useNavigate();
 
@@ -51,7 +53,11 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
           <div className="glass bg-white/80 backdrop-blur-lg border border-white/30 rounded-2xl shadow-lg p-8 md:p-12 text-center animate-fade-in">
             <div className="relative mb-8">
               <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-28 h-28 rounded-full bg-gradient-to-br from-blue-400 to-redcross flex items-center justify-center shadow-lg animate-slow-pulse">
-                <Rocket className="h-12 w-12 text-white" />
+                {showGamepad ? (
+                  <Gamepad className="h-12 w-12 text-white" />
+                ) : (
+                  <Rocket className="h-12 w-12 text-white" />
+                )}
               </div>
               <div className="pt-16">
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 text-shadow">{title}</h1>

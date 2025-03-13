@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Phone, MapPin, Clock, ExternalLink, Home, FileText, LifeBuoy, Siren, Shield, AlertCircle } from "lucide-react";
+import { AlertTriangle, Phone, MapPin, Clock, ExternalLink, Home, FileText, LifeBuoy, Siren, Shield, AlertCircle, Gamepad } from "lucide-react";
 import InteractiveMap from "@/components/InteractiveMap";
 import ZipCodeSearch from "@/components/ZipCodeSearch";
 import { toast } from "sonner";
@@ -381,85 +381,6 @@ const Emergency = () => {
               <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
             </h2>
             
-            
-          </div>
-        </section>
-        
-        {/* Community Resources with high-tech listing */}
-        <section className="py-16 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-black to-gray-900"></div>
-          <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 relative inline-block mx-auto">
-              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Community Resources</span>
-              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
-            </h2>
-            
-            {searchedZipCode && <p className="text-center text-gray-300 mb-8 animate-fade-in">
-                {filteredResources.length > 0 ? `Showing resources near zip code ${searchedZipCode}` : `No resources found for zip code ${searchedZipCode}. Showing all Delaware resources.`}
-              </p>}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {filteredResources.map(resource => {})}
-            </div>
-          </div>
-        </section>
-        
-        {/* Emergency Preparation with high-tech CTA */}
-        <section className="py-16 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black"></div>
-          
-          {/* Animated particles */}
-          <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => <div key={i} className="absolute w-1 h-1 bg-red-500/30 rounded-full" style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animation: `float ${Math.random() * 5 + 5}s linear infinite`
-          }}></div>)}
-          </div>
-          
-          <div className="container mx-auto px-4 text-center relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 relative inline-block">
-              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200">Know Before You Need Help</span>
-              <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Take steps now to prepare for potential housing emergencies. Download our emergency housing guide 
-              and keep important resources handy.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              
-              
-            </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
-      
-      {/* Add keyframe animations as inline style */}
-      <style>
-        {`
-          @keyframes scan {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-          }
-          
-          @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-          }
-          
-          @keyframes mapScan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-          }
-          
-          @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-          }
-        `}
-      </style>
-    </div>;
-};
-export default Emergency;
+            <div className="bg-black/60 backdrop-blur-md rounded-lg p-8 border border-red-500/20 shadow-[0_10px_20px_rgba(255,0,0,0.07)] max-w-4xl mx-auto">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold mb-4 text-red-300">Map Loading... Buffering at 8
