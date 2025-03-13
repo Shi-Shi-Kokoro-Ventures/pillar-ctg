@@ -195,7 +195,7 @@ const Emergency = () => {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200 animate-pulse-subtle">
+              <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200 animate-pulse-subtle md:text-6xl px-[10px]">
                 Emergency Housing Assistance
               </h1>
               <p className="text-xl text-gray-300 mb-8 animate-fade-in leading-relaxed">
@@ -381,39 +381,7 @@ const Emergency = () => {
               <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500 to-transparent"></span>
             </h2>
             
-            <div className="bg-black/70 backdrop-blur-xl p-8 rounded-lg shadow-[0_0_30px_rgba(255,0,0,0.1)] border border-red-500/30 max-w-4xl mx-auto relative overflow-hidden">
-              {/* Animated corner details */}
-              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-red-500/50"></div>
-              <div className="absolute top-0 right-0 w-6 h-6 border-t border-r border-red-500/50"></div>
-              <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l border-red-500/50"></div>
-              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-red-500/50"></div>
-              
-              <div className="mb-6">
-                <ZipCodeSearch onSearch={handleZipCodeSearch} isLoading={isSearching} />
-              </div>
-              <div className="border border-red-500/30 rounded-lg overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
-                {/* Map scan line effect */}
-                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden opacity-30">
-                  <div className="absolute h-[50%] w-full bg-gradient-to-b from-red-500/5 to-transparent top-0 animate-[mapScan_4s_ease-in-out_infinite_alternate]"></div>
-                </div>
-                <InteractiveMap onViewFullMap={handleViewFullMap} />
-              </div>
-              <p className="text-gray-300 mt-6 mb-6">
-                Use our advanced interactive map to find emergency housing resources in your area, 
-                including shelters, food banks, healthcare facilities, and other support services.
-              </p>
-              <Button onClick={handleViewFullMap} variant="outline" className="mx-auto block mt-4 border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 group">
-                <span className="mr-2">View Full Screen Map</span> 
-                <span className="inline-block transition-transform group-hover:scale-110">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <polyline points="9 21 3 21 3 15"></polyline>
-                    <line x1="21" y1="3" x2="14" y2="10"></line>
-                    <line x1="3" y1="21" x2="10" y2="14"></line>
-                  </svg>
-                </span>
-              </Button>
-            </div>
+            
           </div>
         </section>
         
@@ -431,35 +399,7 @@ const Emergency = () => {
               </p>}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {filteredResources.map(resource => <div key={resource.id} className="bg-black/60 backdrop-blur-xl p-6 rounded-lg shadow-[0_4px_20px_rgba(255,0,0,0.07)] border border-red-500/20 hover:border-red-500/40 transition-all duration-500 group animate-slide-in relative overflow-hidden">
-                  {/* Tech details */}
-                  <div className="absolute top-0 right-0 h-8 w-16 overflow-hidden">
-                    <div className="absolute top-0 right-0 h-8 w-16 bg-red-500/20 rotate-45 translate-y-[-50%] translate-x-[50%]"></div>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-3 flex items-center text-white group-hover:text-red-300 transition-colors">
-                    <MapPin className="h-5 w-5 text-red-500 mr-2" />
-                    {resource.name}
-                  </h3>
-                  <p className="text-gray-300 mb-2">{resource.address}</p>
-                  <p className="text-gray-300 mb-4">{resource.city}, {resource.state} {resource.zipCode}</p>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <Phone className="h-4 w-4 text-red-500 mr-2" />
-                      <a href={`tel:${resource.phone.replace(/[^0-9]/g, '')}`} className="group relative inline-block">
-                        <span className="font-medium text-gray-200 group-hover:text-red-300 transition-colors">{resource.phone}</span>
-                        <span className="absolute bottom-0 left-0 w-full h-px bg-red-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
-                      </a>
-                    </div>
-                    <div className="flex items-center">
-                      <ExternalLink className="h-4 w-4 text-red-500 mr-2" />
-                      <a href={resource.website} className="text-red-400 hover:text-red-300 relative inline-block group" target="_blank" rel="noreferrer">
-                        <span>{resource.website.replace(/^https?:\/\/(www\.)?/i, '')}</span>
-                        <span className="absolute bottom-0 left-0 w-full h-px bg-red-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
-                      </a>
-                    </div>
-                  </div>
-                </div>)}
+              {filteredResources.map(resource => {})}
             </div>
           </div>
         </section>
@@ -487,19 +427,8 @@ const Emergency = () => {
               and keep important resources handy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white relative overflow-hidden group shadow-[0_0_15px_rgba(255,0,0,0.2)] hover:shadow-[0_0_25px_rgba(255,0,0,0.4)] transition-all duration-300">
-                <span className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-30" style={{
-                background: 'linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%)',
-                backgroundSize: '250% 250%',
-                animation: 'shimmer 3s linear infinite'
-              }}></span>
-                Download Emergency Guide
-              </Button>
-              <Button variant="outline" className="border-red-500/50 text-red-400 hover:bg-red-500/10 relative overflow-hidden">
-                <span className="relative z-10">Sign Up for Alert Notifications</span>
-                <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700"></span>
-                <span className="absolute top-0 right-0 h-[1px] w-0 bg-red-500/50 group-hover:w-full transition-all duration-700"></span>
-              </Button>
+              
+              
             </div>
           </div>
         </section>
