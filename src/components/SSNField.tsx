@@ -93,11 +93,16 @@ const SSNField: React.FC<SSNFieldProps> = ({
       
       {error && <p className="text-red-500 text-sm">{error}</p>}
       
-      <div className="flex items-start bg-gray-50 p-3 rounded-md border border-gray-200 shadow-sm">
-        <Shield className="h-4 w-4 mt-0.5 text-gray-500 flex-shrink-0" />
-        <p id="ssn-description" className="text-xs text-gray-600 ml-2">
-          Your SSN is securely encrypted and will only be used for verification purposes and as required by our funding sources.
-        </p>
+      <div className="flex items-start bg-gradient-to-br from-blue-50 to-gray-50 p-4 rounded-lg border border-blue-100 shadow-sm">
+        <Shield className="h-5 w-5 mt-0.5 text-blue-500 flex-shrink-0" />
+        <div className="ml-3">
+          <h4 className="text-sm font-medium text-blue-700 mb-1">Security Notice</h4>
+          <p id="ssn-description" className="text-xs leading-relaxed text-gray-600">
+            Your Social Security Number is securely encrypted using industry-standard protocols. 
+            It will only be used for verification purposes and as required by our funding sources.
+            Your information is protected by our privacy policy and federal law.
+          </p>
+        </div>
       </div>
     </div>
   );
