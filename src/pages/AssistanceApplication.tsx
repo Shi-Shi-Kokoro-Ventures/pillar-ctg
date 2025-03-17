@@ -43,10 +43,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import VolunteerCaptcha from "@/components/VolunteerCaptcha";
 import { EmergencyContactInfo, HouseholdMember } from "@/types/application";
+import SSNField from "@/components/SSNField";
 
 // Define form schema
 const volunteerFormSchema = z.object({
-  // Personal Information
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -492,6 +492,19 @@ const VolunteerApplication = () => {
                     </div>
                   </div>
                   
+                  {/* SSN Field */}
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+                      <Shield className="text-redcross h-5 w-5" />
+                      Security Information
+                    </h2>
+                    <SSNField 
+                      value=""
+                      onChange={() => {}}
+                      className="w-full"
+                    />
+                  </div>
+                  
                   {/* Volunteer Information Section */}
                   <div className="space-y-6">
                     <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
@@ -632,14 +645,4 @@ const VolunteerApplication = () => {
                         className={`w-full bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.motivationForVolunteering ? "border-red-500" : ""}`}
                       />
                       {form.formState.errors.motivationForVolunteering && (
-                        <p className="text-red-500 text-sm">{form.formState.errors.motivationForVolunteering.message}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2 neo-glass p-6 rounded-lg">
-                      <Label htmlFor="experience" className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4 text-redcross" />
-                        <span>Relevant Experience or Skills</span>
-                      </Label>
-                      <Textarea
-                        id="
+                        <p className="text-red
