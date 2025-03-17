@@ -27,7 +27,8 @@ import {
   AlertTriangle,
   Clipboard,
   Clock,
-  CalendarDays
+  CalendarDays,
+  CreditCard
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
@@ -36,13 +37,20 @@ import Footer from "@/components/Footer";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 import MultiSelectAssistance from "@/components/MultiSelectAssistance";
 import DigitalSignature from "@/components/DigitalSignature";
+import SSNField from "@/components/SSNField";
+import EmergencyContact from "@/components/EmergencyContact";
+import DocumentUpload from "@/components/DocumentUpload";
+import HouseholdMembersList from "@/components/HouseholdMembersList";
+import DemographicInformation from "@/components/DemographicInformation";
 
 // Schema definition for form validation
 const assistanceFormSchema = z.object({
   // Personal Information
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
+  middleName: z.string().optional(),
   dateOfBirth: z.string().min(1, { message: "Date of birth is required" }),
+  ssn: z.string().min(9, { message: "Valid SSN is required" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().min(10, { message: "Please enter a valid phone number" }),
   address: z.string().min(1, { message: "Address is required" }),
@@ -50,10 +58,40 @@ const assistanceFormSchema = z.object({
   state: z.string().min(1, { message: "State is required" }),
   zipCode: z.string().min(5, { message: "Please enter a valid ZIP code" }),
 
+  // Emergency Contact
+  emergencyContact: z.object({
+    firstName: z.string().min(1, { message: "First name is required" }),
+    lastName: z.string().min(1, { message: "Last name is required" }),
+    relationship: z.string().min(1, { message: "Relationship is required" }),
+    phone: z.string().min(10, { message: "Valid phone number is required" }),
+    address: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+  }),
+
   // Household Information
+  householdMembers: z.array(z.object({
+    id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    relationship: z.string(),
+    age: z.string(),
+    isDependent: z.boolean(),
+  })),
   householdSize: z.string().min(1, { message: "Household size is required" }),
   householdIncome: z.string().min(1, { message: "Household income is required" }),
   housingStatus: z.string().min(1, { message: "Housing status is required" }),
+  
+  // Demographic Information (optional)
+  demographics: z.object({
+    race: z.string().optional(),
+    ethnicity: z.string().optional(),
+    gender: z.string().optional(),
+    disability: z.boolean().optional(),
+    veteran: z.boolean().optional(),
+    citizenship: z.string().optional(),
+  }),
   
   // Assistance Needed
   assistanceTypes: z.array(z.string()).min(1, { message: "Please select at least one type of assistance" }),
@@ -68,6 +106,13 @@ const assistanceFormSchema = z.object({
   needsInterpreter: z.boolean().optional(),
   preferredLanguage: z.string().optional(),
   additionalNotes: z.string().optional(),
+
+  // Documentation
+  idDocuments: z.array(z.any()).min(2, { message: "Please upload front and back of your ID" }),
+  incomeDocuments: z.array(z.any()).optional(),
+  housingDocuments: z.array(z.any()).optional(),
+  crisisDocuments: z.array(z.any()).optional(),
+  otherDocuments: z.array(z.any()).optional(),
 
   // Certifications and agreements
   documentationAgreement: z.boolean().refine(val => val === true, { message: "You must agree to provide required documentation" }),
@@ -164,7 +209,6 @@ const AssistanceApplication = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [step, setStep] = useState(1);
   const today = new Date().toISOString().split('T')[0];
 
   const form = useForm<AssistanceFormValues>({
@@ -172,16 +216,37 @@ const AssistanceApplication = () => {
     defaultValues: {
       firstName: "",
       lastName: "",
+      middleName: "",
       dateOfBirth: "",
+      ssn: "",
       email: "",
       phone: "",
       address: "",
       city: "",
       state: "",
       zipCode: "",
+      emergencyContact: {
+        firstName: "",
+        lastName: "",
+        relationship: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+      householdMembers: [],
       householdSize: "",
       householdIncome: "",
       housingStatus: "",
+      demographics: {
+        race: "",
+        ethnicity: "",
+        gender: "",
+        disability: false,
+        veteran: false,
+        citizenship: "",
+      },
       assistanceTypes: [],
       urgencyLevel: "",
       assistanceReason: "",
@@ -192,6 +257,11 @@ const AssistanceApplication = () => {
       needsInterpreter: false,
       preferredLanguage: "",
       additionalNotes: "",
+      idDocuments: [],
+      incomeDocuments: [],
+      housingDocuments: [],
+      crisisDocuments: [],
+      otherDocuments: [],
       documentationAgreement: false,
       verificationAgreement: false,
       truthfulnessAgreement: false,
@@ -280,7 +350,7 @@ const AssistanceApplication = () => {
                     Personal Information
                   </h2>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2 relative group">
                       <Label htmlFor="firstName" className="flex items-center gap-1">
                         <span>First Name</span> <span className="text-red-500">*</span>
@@ -293,6 +363,17 @@ const AssistanceApplication = () => {
                       {form.formState.errors.firstName && (
                         <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.firstName.message}</p>
                       )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="middleName" className="flex items-center gap-1">
+                        <span>Middle Name</span> <span className="text-gray-400 text-xs ml-1">(optional)</span>
+                      </Label>
+                      <Input
+                        id="middleName"
+                        {...form.register("middleName")}
+                        className="bg-white border border-gray-300 focus:border-redcross focus:ring-redcross transition-all duration-300"
+                      />
                     </div>
                     
                     <div className="space-y-2 relative group">
@@ -323,6 +404,14 @@ const AssistanceApplication = () => {
                       {form.formState.errors.dateOfBirth && (
                         <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.dateOfBirth.message}</p>
                       )}
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <SSNField 
+                        value={form.watch("ssn")}
+                        onChange={(value) => form.setValue("ssn", value, { shouldValidate: true })}
+                        error={form.formState.errors.ssn?.message}
+                      />
                     </div>
                     
                     <div className="space-y-2 relative group">
@@ -358,7 +447,7 @@ const AssistanceApplication = () => {
                       )}
                     </div>
                     
-                    <div className="md:col-span-2 space-y-2 relative group">
+                    <div className="md:col-span-3 space-y-2 relative group">
                       <Label htmlFor="address" className="flex items-center gap-1">
                         <Home className="h-4 w-4" />
                         <span>Address</span> <span className="text-red-500">*</span>
@@ -431,6 +520,20 @@ const AssistanceApplication = () => {
                   </div>
                 </div>
                 
+                {/* Emergency Contact Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <EmergencyContact 
+                    value={form.watch("emergencyContact")}
+                    onChange={(contact) => form.setValue("emergencyContact", contact, { shouldValidate: true })}
+                    showAddressFields={true}
+                  />
+                  {form.formState.errors.emergencyContact && (
+                    <div className="text-red-500 text-sm mt-1 animate-fade-in">
+                      Please complete all required emergency contact fields
+                    </div>
+                  )}
+                </div>
+                
                 {/* Household Information Section */}
                 <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                   <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
@@ -438,7 +541,12 @@ const AssistanceApplication = () => {
                     Household Information
                   </h2>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <HouseholdMembersList 
+                    value={form.watch("householdMembers")}
+                    onChange={(members) => form.setValue("householdMembers", members)}
+                  />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                     <div className="space-y-2">
                       <Label htmlFor="householdSize" className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
@@ -523,6 +631,14 @@ const AssistanceApplication = () => {
                       )}
                     </div>
                   </div>
+                </div>
+                
+                {/* Demographic Information Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <DemographicInformation 
+                    value={form.watch("demographics")}
+                    onChange={(demographics) => form.setValue("demographics", demographics)}
+                  />
                 </div>
                 
                 {/* Assistance Information Section */}
@@ -626,6 +742,54 @@ const AssistanceApplication = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+                </div>
+                
+                {/* Documentation Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <FileText className="text-redcross h-5 w-5" />
+                    Required Documentation
+                  </h2>
+                  
+                  <div className="space-y-8">
+                    <DocumentUpload
+                      type="id"
+                      value={form.watch("idDocuments")}
+                      onChange={(files) => form.setValue("idDocuments", files, { shouldValidate: true })}
+                      id="id-documents"
+                    />
+                    {form.formState.errors.idDocuments && (
+                      <p className="text-red-500 text-sm animate-fade-in">{form.formState.errors.idDocuments.message}</p>
+                    )}
+                    
+                    <DocumentUpload
+                      type="income"
+                      value={form.watch("incomeDocuments")}
+                      onChange={(files) => form.setValue("incomeDocuments", files)}
+                      id="income-documents"
+                    />
+                    
+                    <DocumentUpload
+                      type="housing"
+                      value={form.watch("housingDocuments")}
+                      onChange={(files) => form.setValue("housingDocuments", files)}
+                      id="housing-documents"
+                    />
+                    
+                    <DocumentUpload
+                      type="crisis"
+                      value={form.watch("crisisDocuments")}
+                      onChange={(files) => form.setValue("crisisDocuments", files)}
+                      id="crisis-documents"
+                    />
+                    
+                    <DocumentUpload
+                      type="other"
+                      value={form.watch("otherDocuments")}
+                      onChange={(files) => form.setValue("otherDocuments", files)}
+                      id="other-documents"
+                    />
                   </div>
                 </div>
                 
