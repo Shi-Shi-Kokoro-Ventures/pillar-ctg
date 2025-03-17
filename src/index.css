@@ -723,3 +723,47 @@ body[data-accessibility-enabled="true"] :focus-visible {
     top: 100%;
   }
 }
+
+/* Typography - improved spacing */
+h1 {
+  @apply text-4xl font-extrabold tracking-tight text-gray-900;
+  margin: 0.5em 0;
+  padding: 0.1em 0;
+}
+
+h2 {
+  @apply text-3xl font-bold tracking-tight text-gray-900;
+  margin: 0.4em 0;
+  padding: 0.1em 0;
+}
+
+h3 {
+  @apply text-2xl font-semibold tracking-tight text-gray-900;
+  margin: 0.3em 0;
+  padding: 0.1em 0;
+}
+
+/* Enhanced text container styles */
+.text-container {
+  padding: 0.5em 0;
+  overflow: visible;
+}
+
+/* Ensure text is properly visible in gradient backgrounds */
+.gradient-text, 
+.text-gradient, 
+.text-gradient-primary {
+  @apply bg-clip-text text-transparent;
+  padding: 0.05em 0;
+  margin: 0.05em 0;
+  display: inline-block;
+}
+
+/* Ensure buttons have proper text spacing */
+button, 
+.btn, 
+.button-neo, 
+.button-cyberpunk {
+  padding: 0.5em 1em;
+  line-height: 1.5;
+}

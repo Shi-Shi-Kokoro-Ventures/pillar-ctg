@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +40,40 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Fix for text spacing issues */
+h1, h2, h3, h4, h5, h6, p, span, a, button {
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  padding: 0.1em 0;
+}
+
+/* Ensure text containers have proper padding */
+.text-container {
+  padding: 0.5em 0;
+}
+
+/* Fix for button text that might get cut off */
+button {
+  padding: 0.5em 1em;
+}
+
+/* Add bottom margin to text elements to prevent cutoff */
+p, h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5em;
+}
+
+/* Ensure any text in a gradient has proper padding */
+.text-gradient, 
+.text-gradient-primary,
+.bg-clip-text {
+  padding: 0.05em 0;
+}
+
+/* Fix for text in Index page hero section */
+.hero-text h1,
+.hero-text p {
+  padding: 0.25em 0;
+  margin-bottom: 0.75em;
 }

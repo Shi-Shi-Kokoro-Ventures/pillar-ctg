@@ -47,7 +47,7 @@ const Index = () => {
       
       <Navbar />
       
-      <main>
+      <main className="text-container">
         {/* Hero Section */}
         <Hero />
         
