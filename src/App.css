@@ -92,6 +92,8 @@ p, h1, h2, h3, h4, h5, h6 {
 [data-radix-select-content] {
   border-color: rgba(0, 0, 0, 0.1) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
 }
 
 .radix-select-content {
@@ -113,4 +115,92 @@ p, h1, h2, h3, h4, h5, h6 {
 [data-radix-select-item][data-highlighted] {
   background-color: #e0f2fe !important;
   color: #0284c7 !important;
+}
+
+/* Styles for multi-select items */
+.multi-select-container {
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.multi-select-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.multi-select-item:hover {
+  background-color: #f0f9ff;
+}
+
+.multi-select-trigger {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.multi-select-trigger:hover,
+.multi-select-trigger:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.assistance-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  margin: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.assistance-tag-remove {
+  margin-left: 0.25rem;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.assistance-tag-remove:hover {
+  opacity: 1;
+}
+
+.multi-select-items-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+/* Fix for checkboxes in multi-select */
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.checkbox-wrapper:hover {
+  background-color: #f0f9ff;
+}
+
+/* Better contrast for selected items */
+.checkbox-selected {
+  background-color: #e0f2fe !important;
 }

@@ -145,6 +145,31 @@ const SelectSeparator = React.forwardRef<
 ))
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 
+// Create a new MultiSelect component for checkboxes
+const MultiSelectItem = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    checked?: boolean;
+    onCheckedChange?: (checked: boolean) => void;
+  }
+>(({ className, children, checked, onCheckedChange, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-pointer select-none items-center rounded-sm py-2 pl-8 pr-2 text-sm outline-none hover:bg-blue-50/50",
+      className
+    )}
+    onClick={() => onCheckedChange?.(!checked)}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      {checked && <Check className="h-4 w-4 text-blue-600" />}
+    </span>
+    <span className="text-gray-800">{children}</span>
+  </div>
+))
+MultiSelectItem.displayName = "MultiSelectItem"
+
 export {
   Select,
   SelectGroup,
@@ -156,4 +181,5 @@ export {
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,
+  MultiSelectItem,
 }
