@@ -58,8 +58,9 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
       ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
     
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.strokeStyle = "#0284c7";
   };
 
@@ -109,7 +110,7 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
   return (
     <div className={`flex flex-col space-y-3 ${className}`}>
       <div className="flex items-center justify-between mb-2">
-        <Label className="flex items-center text-base font-medium">
+        <Label className="flex items-center text-base font-medium text-form-label">
           <Signature className="h-4 w-4 mr-2 text-redcross" />
           Digital Signature
         </Label>
@@ -119,7 +120,7 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
             variant="outline"
             size="sm"
             onClick={clearSignature}
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 text-sm border-redcross/30 hover:bg-redcross/5 hover:text-redcross transition-colors"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Clear
@@ -127,22 +128,26 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
         </div>
       </div>
       
-      <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+      <div className="border border-form-border rounded-md overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="bg-gray-50 border-b border-form-border/50 px-3 py-1.5 text-xs text-gray-500">
+          Draw your signature below
+        </div>
         <canvas
           ref={canvasRef}
           width={580}
           height={150}
-          className="w-full h-full touch-none cursor-crosshair"
+          className="w-full h-full touch-none cursor-crosshair bg-[linear-gradient(to_bottom,transparent_0%,transparent_97%,#e0e0e0_97%,#e0e0e0_100%)] bg-[length:100%_30px]"
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={endDrawing}
           onMouseLeave={endDrawing}
           onTouchStart={startDrawing}
-          onTouchMove={draw}
+          onTouchMove={(e) => {
+            draw(e);
+            preventScroll(e);
+          }}
           onTouchEnd={endDrawing}
           onTouchCancel={endDrawing}
-          onTouchMove={preventScroll}
-          style={{ backgroundColor: "white" }}
         />
       </div>
       
