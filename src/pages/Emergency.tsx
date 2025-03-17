@@ -203,10 +203,10 @@ const Emergency = () => {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200 animate-pulse-subtle md:text-6xl px-[10px]">
+              <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-red-100 to-red-200 animate-pulse-subtle md:text-6xl px-4 py-2 leading-relaxed">
                 Emergency Housing Assistance
               </h1>
-              <p className="text-xl text-gray-300 mb-8 animate-fade-in leading-relaxed">
+              <p className="text-xl text-gray-300 mb-8 animate-fade-in leading-relaxed py-1">
                 If you or someone you know is experiencing a housing emergency or homelessness, 
                 the <span className="text-red-400 font-semibold">P.I.L.L.A.R. Initiative CTG</span> can help connect you with immediate resources and support.
               </p>
