@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { RefreshCw, Save, Signature } from "lucide-react";
+import { RefreshCw, Save, Signature, Info } from "lucide-react";
 
 interface DigitalSignatureProps {
   onChange: (signatureData: string | null) => void;
@@ -58,10 +58,10 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
       ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
     
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3; // Increased line width for better visibility
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.strokeStyle = "#0284c7";
+    ctx.strokeStyle = "#1EAEDB"; // Updated to match the redcross color theme
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -102,6 +102,13 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
     onChange(null);
   };
 
+  const saveSignature = () => {
+    if (isEmpty || !canvasRef.current) return;
+    
+    const signatureData = canvasRef.current.toDataURL("image/png");
+    onChange(signatureData);
+  };
+
   // Prevent scrolling when drawing on mobile
   const preventScroll = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
@@ -125,12 +132,30 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
             <RefreshCw className="h-3.5 w-3.5" />
             Clear
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={saveSignature}
+            disabled={isEmpty}
+            className="flex items-center gap-1 text-sm border-redcross/30 hover:bg-redcross/5 hover:text-redcross transition-colors disabled:opacity-50"
+          >
+            <Save className="h-3.5 w-3.5" />
+            Save
+          </Button>
         </div>
       </div>
       
       <div className="border border-form-border rounded-md overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
-        <div className="bg-gray-50 border-b border-form-border/50 px-3 py-1.5 text-xs text-gray-500">
-          Draw your signature below
+        <div className="bg-gray-50 border-b border-form-border/50 px-3 py-1.5 text-xs text-gray-500 flex items-center justify-between">
+          <span>Draw your signature below</span>
+          <button 
+            type="button" 
+            className="text-redcross hover:text-redcross-dark flex items-center gap-1 text-xs"
+            onClick={() => alert("Your signature confirms that you understand and agree to the terms of this application. This electronic signature has the same legal validity as a handwritten signature.")}
+          >
+            <Info className="h-3 w-3" /> Signature Information
+          </button>
         </div>
         <canvas
           ref={canvasRef}
@@ -151,9 +176,21 @@ const DigitalSignature: React.FC<DigitalSignatureProps> = ({
         />
       </div>
       
-      {isEmpty && (
-        <p className="text-gray-500 text-sm italic">Please sign above by clicking and dragging</p>
-      )}
+      <div className="space-y-2">
+        {isEmpty && (
+          <p className="text-gray-500 text-sm italic">Please sign above by clicking and dragging</p>
+        )}
+        
+        <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded-md border border-gray-200">
+          <p className="mb-1.5 font-medium text-gray-700">By signing, you confirm that:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>All information provided in this application is true and complete to the best of your knowledge.</li>
+            <li>You authorize verification of all information provided, including contacting employers, landlords, or other parties as needed.</li>
+            <li>You understand that providing false information may result in denial of assistance and possible legal action.</li>
+            <li>You agree to provide all necessary documentation to verify your eligibility upon request.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
