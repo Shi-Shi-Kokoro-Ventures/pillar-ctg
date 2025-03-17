@@ -52,7 +52,7 @@ const SSNField: React.FC<SSNFieldProps> = ({
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center justify-between">
-        <Label htmlFor="ssn" className="flex items-center text-form-label">
+        <Label htmlFor="ssn" className="flex items-center text-sm font-medium text-gray-700">
           <Shield className="h-4 w-4 mr-2 text-redcross" />
           Social Security Number <span className="text-red-500 ml-1">*</span>
         </Label>
@@ -75,6 +75,7 @@ const SSNField: React.FC<SSNFieldProps> = ({
           placeholder="XXX-XX-XXXX"
           className={`pr-10 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
           maxLength={11}
+          aria-describedby="ssn-description"
         />
         <Button
           type="button"
@@ -82,6 +83,7 @@ const SSNField: React.FC<SSNFieldProps> = ({
           size="sm"
           className="absolute right-0 top-0 h-full px-3 py-0 text-gray-400 hover:text-gray-700"
           onClick={toggleVisibility}
+          aria-label={visible ? "Hide SSN" : "Show SSN"}
         >
           {visible ? <EyeOff size={16} /> : <Eye size={16} />}
         </Button>
@@ -91,7 +93,7 @@ const SSNField: React.FC<SSNFieldProps> = ({
       
       <div className="flex items-start space-x-2 text-xs text-gray-500 mt-1">
         <Shield className="h-3 w-3 mt-0.5 text-gray-400" />
-        <p>Your SSN is securely encrypted and will only be used for verification purposes and as required by our funding sources.</p>
+        <p id="ssn-description">Your SSN is securely encrypted and will only be used for verification purposes and as required by our funding sources.</p>
       </div>
     </div>
   );
