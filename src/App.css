@@ -77,3 +77,40 @@ p, h1, h2, h3, h4, h5, h6 {
   padding: 0.25em 0;
   margin-bottom: 0.75em;
 }
+
+/* Enhanced dropdown styling */
+[data-radix-select-viewport] {
+  padding: 4px !important;
+  background-color: white !important;
+}
+
+[data-radix-select-item] {
+  border-radius: 4px !important;
+  margin: 2px 0 !important;
+}
+
+[data-radix-select-content] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.radix-select-content {
+  background-color: white !important;
+  color: #333 !important;
+}
+
+.radix-select-item {
+  color: #333 !important;
+}
+
+.radix-select-item:hover,
+.radix-select-item:focus {
+  background-color: #f0f9ff !important;
+  color: #0369a1 !important;
+}
+
+/* Fix dropdown text contrast issues */
+[data-radix-select-item][data-highlighted] {
+  background-color: #e0f2fe !important;
+  color: #0284c7 !important;
+}
