@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Shield, Info } from "lucide-react";
+import { Eye, EyeOff, Shield, Info, LucideShieldCheck } from "lucide-react";
 
 interface SSNFieldProps {
   value: string;
@@ -93,11 +93,15 @@ const SSNField: React.FC<SSNFieldProps> = ({
       
       {error && <p className="text-red-500 text-sm">{error}</p>}
       
-      <div className="flex items-start bg-gradient-to-br from-blue-50 to-gray-50 p-4 rounded-lg border border-blue-100 shadow-sm">
-        <Shield className="h-5 w-5 mt-0.5 text-blue-500 flex-shrink-0" />
-        <div className="ml-3">
-          <h4 className="text-sm font-medium text-blue-700 mb-1">Security Notice</h4>
-          <p id="ssn-description" className="text-xs leading-relaxed text-gray-600">
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="bg-gradient-to-r from-redcross-dark to-redcross px-4 py-3">
+          <div className="flex items-center gap-2">
+            <LucideShieldCheck className="h-5 w-5 text-white" />
+            <h4 className="font-medium text-white">Security Notice</h4>
+          </div>
+        </div>
+        <div className="p-4 bg-gray-50">
+          <p id="ssn-description" className="text-sm leading-relaxed text-gray-700">
             Your Social Security Number is securely encrypted using industry-standard protocols. 
             It will only be used for verification purposes and as required by our funding sources.
             Your information is protected by our privacy policy and federal law.
