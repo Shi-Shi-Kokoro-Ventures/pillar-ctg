@@ -1,214 +1,178 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { 
-  ArrowLeft, 
-  Check, 
-  Info, 
-  User, 
-  Home, 
-  FileText, 
-  Heart, 
-  HelpCircle,
-  Phone, 
-  Mail, 
-  Calendar, 
-  AlertTriangle,
-  UserCheck,
-  Users,
-  BarChart4,
-  DollarSign,
-  FileCheck
-} from "lucide-react";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  Home, 
+  MapPin, 
+  Calendar, 
+  DollarSign, 
+  Users, 
+  Shield, 
+  Info, 
+  CheckCircle2, 
+  FileText, 
+  ArrowRight, 
+  AlertTriangle,
+  Clipboard,
+  Clock,
+  CalendarDays
+} from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useNavigate } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ApplicationWrapper from "@/components/ApplicationWrapper";
 import MultiSelectAssistance from "@/components/MultiSelectAssistance";
+import DigitalSignature from "@/components/DigitalSignature";
 
-// Form validation schema
-const assistanceSchema = z.object({
+// Schema definition for form validation
+const assistanceFormSchema = z.object({
   // Personal Information
-  firstName: z.string().min(1, "First name is required"),
-  middleName: z.string().optional(),
-  lastName: z.string().min(1, "Last name is required"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  ssn: z.string().min(1, "Social Security Number is required"),
-  idNumber: z.string().min(1, "ID number is required"),
-  idIssueDate: z.string().min(1, "ID issue date is required"),
-  idExpirationDate: z.string().min(1, "ID expiration date is required"),
-  email: z.string().email("Invalid email address").optional(),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  address: z.string().min(1, "Current address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(5, "ZIP code must be at least 5 digits"),
-  
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  dateOfBirth: z.string().min(1, { message: "Date of birth is required" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  phone: z.string().min(10, { message: "Please enter a valid phone number" }),
+  address: z.string().min(1, { message: "Address is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  state: z.string().min(1, { message: "State is required" }),
+  zipCode: z.string().min(5, { message: "Please enter a valid ZIP code" }),
+
   // Household Information
-  householdSize: z.string().min(1, "Household size is required"),
-  householdMembers: z.array(z.object({
-    name: z.string().min(1, "Name is required"),
-    relationship: z.string().min(1, "Relationship is required"),
-    age: z.string().min(1, "Age is required"),
-    isDependent: z.boolean().optional(),
-  })).optional(),
-  
-  // Demographics (optional)
-  race: z.string().optional(),
-  ethnicity: z.string().optional(),
-  gender: z.string().optional(),
-  disabilityStatus: z.string().optional(),
-  veteranStatus: z.boolean().optional(),
-  
-  // Income and Financial Information
-  employmentStatus: z.string().min(1, "Employment status is required"),
-  monthlyIncome: z.string().min(1, "Monthly income is required"),
-  incomeSource: z.string().optional(),
-  noIncomeReason: z.string().optional(),
-  
-  // Housing Status
-  housingStatus: z.string().min(1, "Housing status is required"),
-  evictionNotice: z.boolean().optional(),
-  evictionDate: z.string().optional(),
-  landlordName: z.string().optional(),
-  landlordPhone: z.string().optional(),
-  landlordEmail: z.string().optional(),
+  householdSize: z.string().min(1, { message: "Household size is required" }),
+  householdIncome: z.string().min(1, { message: "Household income is required" }),
+  housingStatus: z.string().min(1, { message: "Housing status is required" }),
   
   // Assistance Needed
-  assistanceTypes: z.array(z.string()).min(1, "Please select at least one type of assistance needed"),
-  crisisDescription: z.string().min(1, "Please describe your current situation and needs"),
+  assistanceTypes: z.array(z.string()).min(1, { message: "Please select at least one type of assistance" }),
+  urgencyLevel: z.string().min(1, { message: "Please select an urgency level" }),
+  assistanceReason: z.string().min(1, { message: "Please provide a reason for seeking assistance" }),
+  previousAssistance: z.boolean().optional(),
+  previousAssistanceDetails: z.string().optional(),
+
+  // Additional Information
+  isVeteran: z.boolean().optional(),
+  hasDisability: z.boolean().optional(),
+  needsInterpreter: z.boolean().optional(),
+  preferredLanguage: z.string().optional(),
+  additionalNotes: z.string().optional(),
+
+  // Certifications and agreements
+  documentationAgreement: z.boolean().refine(val => val === true, { message: "You must agree to provide required documentation" }),
+  verificationAgreement: z.boolean().refine(val => val === true, { message: "You must agree to verification of your information" }),
+  truthfulnessAgreement: z.boolean().refine(val => val === true, { message: "You must certify that all information provided is true" }),
   
-  // Emergency Contact
-  emergencyContactName: z.string().min(1, "Emergency contact name is required"),
-  emergencyContactPhone: z.string().min(10, "Emergency contact phone must be at least 10 digits"),
-  emergencyContactRelationship: z.string().min(1, "Emergency contact relationship is required"),
-  
-  // Health Information
-  hasHealthConcerns: z.boolean().optional(),
-  healthConcerns: z.string().optional(),
-  medications: z.string().optional(),
-  
-  // Agreements and Consents
-  informationRelease: z.boolean().refine(value => value === true, {
-    message: "You must consent to release of information",
-  }),
-  accuracyAcknowledgment: z.boolean().refine(value => value === true, {
-    message: "You must acknowledge that all information is accurate",
-  }),
-  privacyConsent: z.boolean().refine(value => value === true, {
-    message: "You must consent to our privacy policy",
-  }),
+  // Signature field
+  signature: z.string().nullable().refine(val => val !== null, { message: "Please sign the form" }),
+  signatureDate: z.string().min(1, { message: "Please enter the date" }),
 });
 
-type AssistanceFormValues = z.infer<typeof assistanceSchema>;
+type AssistanceFormValues = z.infer<typeof assistanceFormSchema>;
 
-// Options for selectable fields
-const stateOptions = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", 
-  "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", 
-  "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", 
-  "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", 
-  "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", 
-  "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", 
-  "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "District of Columbia"
+const householdSizeOptions = [
+  { id: "1", label: "1 person" },
+  { id: "2", label: "2 people" },
+  { id: "3", label: "3 people" },
+  { id: "4", label: "4 people" },
+  { id: "5", label: "5 people" },
+  { id: "6", label: "6 people" },
+  { id: "7", label: "7 people" },
+  { id: "8+", label: "8+ people" },
 ];
 
-const raceOptions = [
-  "American Indian or Alaska Native",
-  "Asian",
-  "Black or African American",
-  "Native Hawaiian or Other Pacific Islander",
-  "White",
-  "Multiple Races",
-  "Prefer not to say"
-];
-
-const ethnicityOptions = [
-  "Hispanic or Latino",
-  "Not Hispanic or Latino",
-  "Prefer not to say"
-];
-
-const genderOptions = [
-  "Male",
-  "Female",
-  "Non-binary/third gender",
-  "Prefer to self-describe",
-  "Prefer not to say"
-];
-
-const employmentStatusOptions = [
-  "Full-time employed",
-  "Part-time employed",
-  "Self-employed",
-  "Unemployed",
-  "Retired",
-  "Student",
-  "Unable to work due to disability",
-  "Other"
+const householdIncomeOptions = [
+  { id: "under15k", label: "Under $15,000" },
+  { id: "15k-25k", label: "$15,000 - $24,999" },
+  { id: "25k-35k", label: "$25,000 - $34,999" },
+  { id: "35k-50k", label: "$35,000 - $49,999" },
+  { id: "50k-75k", label: "$50,000 - $74,999" },
+  { id: "75k-100k", label: "$75,000 - $99,999" },
+  { id: "100k+", label: "$100,000+" },
 ];
 
 const housingStatusOptions = [
-  "Renting",
-  "Own home",
-  "Staying with friends/family",
-  "Homeless",
-  "Emergency shelter",
-  "Transitional housing",
-  "Vehicle",
-  "Other"
+  { id: "own", label: "Homeowner" },
+  { id: "rent", label: "Renter" },
+  { id: "homeless", label: "Experiencing homelessness" },
+  { id: "temp", label: "Temporary housing" },
+  { id: "subsidized", label: "Subsidized housing" },
+  { id: "sharing", label: "Sharing housing" },
+  { id: "other", label: "Other" },
 ];
 
 const assistanceTypeOptions = [
   { value: "rental", label: "Rental Assistance" },
-  { value: "utilities", label: "Utility Bill Assistance" },
-  { value: "foodAssistance", label: "Food Assistance" },
-  { value: "housingPlacement", label: "Housing Placement" },
-  { value: "shelterServices", label: "Emergency Shelter Services" },
-  { value: "mentalHealth", label: "Mental Health Services" },
-  { value: "substanceAbuse", label: "Substance Abuse Services" },
-  { value: "medicalServices", label: "Medical Services/Supplies" },
-  { value: "transportation", label: "Transportation Assistance" },
-  { value: "employmentSupport", label: "Employment Support" },
+  { value: "utility", label: "Utility Bill Assistance" },
+  { value: "food", label: "Food Assistance" },
+  { value: "medical", label: "Medical Expense Help" },
   { value: "childcare", label: "Childcare Assistance" },
-  { value: "legalAid", label: "Legal Aid" },
-  { value: "financialCounseling", label: "Financial Counseling" },
-  { value: "depositAssistance", label: "Security Deposit Assistance" },
-  { value: "furnitureAppliances", label: "Furniture/Appliances" },
-  { value: "clothingAssistance", label: "Clothing Assistance" },
-  { value: "other", label: "Other (please specify)" }
+  { value: "transportation", label: "Transportation Aid" },
+  { value: "job", label: "Job Placement" },
+  { value: "housing", label: "Housing Search Help" },
+  { value: "mental", label: "Mental Health Services" },
+  { value: "legal", label: "Legal Aid" },
+  { value: "education", label: "Education Support" },
+  { value: "senior", label: "Senior Services" },
+];
+
+const urgencyOptions = [
+  { id: "emergency", label: "Emergency (24-48 hours)" },
+  { id: "urgent", label: "Urgent (3-7 days)" },
+  { id: "soon", label: "Needed Soon (1-2 weeks)" },
+  { id: "planning", label: "Planning Ahead (1+ months)" },
+];
+
+const languageOptions = [
+  { id: "english", label: "English" },
+  { id: "spanish", label: "Spanish" },
+  { id: "french", label: "French" },
+  { id: "mandarin", label: "Mandarin" },
+  { id: "cantonese", label: "Cantonese" },
+  { id: "vietnamese", label: "Vietnamese" },
+  { id: "arabic", label: "Arabic" },
+  { id: "russian", label: "Russian" },
+  { id: "korean", label: "Korean" },
+  { id: "other", label: "Other" },
+];
+
+const stateOptions = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", 
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", 
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", 
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", 
+  "New Hampshire", "New Jersey", "New Mexico", "New York", 
+  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", 
+  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", 
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", 
+  "West Virginia", "Wisconsin", "Wyoming", "District of Columbia"
 ];
 
 const AssistanceApplication = () => {
   const navigate = useNavigate();
-  const [showLandlordInfo, setShowLandlordInfo] = useState(false);
-  const [showHealthInfo, setShowHealthInfo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [householdMembers, setHouseholdMembers] = useState([
-    { name: "", relationship: "", age: "", isDependent: false }
-  ]);
-  
-  // Initialize form
+  const [step, setStep] = useState(1);
+  const today = new Date().toISOString().split('T')[0];
+
   const form = useForm<AssistanceFormValues>({
-    resolver: zodResolver(assistanceSchema),
+    resolver: zodResolver(assistanceFormSchema),
     defaultValues: {
       firstName: "",
-      middleName: "",
       lastName: "",
       dateOfBirth: "",
-      ssn: "",
-      idNumber: "",
-      idIssueDate: "",
-      idExpirationDate: "",
       email: "",
       phone: "",
       address: "",
@@ -216,1042 +180,688 @@ const AssistanceApplication = () => {
       state: "",
       zipCode: "",
       householdSize: "",
-      race: "",
-      ethnicity: "",
-      gender: "",
-      disabilityStatus: "",
-      veteranStatus: false,
-      employmentStatus: "",
-      monthlyIncome: "",
-      incomeSource: "",
-      noIncomeReason: "",
+      householdIncome: "",
       housingStatus: "",
-      evictionNotice: false,
-      evictionDate: "",
-      landlordName: "",
-      landlordPhone: "",
-      landlordEmail: "",
       assistanceTypes: [],
-      crisisDescription: "",
-      emergencyContactName: "",
-      emergencyContactPhone: "",
-      emergencyContactRelationship: "",
-      hasHealthConcerns: false,
-      healthConcerns: "",
-      medications: "",
-      informationRelease: false,
-      accuracyAcknowledgment: false,
-      privacyConsent: false,
-    }
+      urgencyLevel: "",
+      assistanceReason: "",
+      previousAssistance: false,
+      previousAssistanceDetails: "",
+      isVeteran: false,
+      hasDisability: false,
+      needsInterpreter: false,
+      preferredLanguage: "",
+      additionalNotes: "",
+      documentationAgreement: false,
+      verificationAgreement: false,
+      truthfulnessAgreement: false,
+      signature: null,
+      signatureDate: today,
+    },
   });
-  
-  // Watch specific form values to display conditional fields
-  const housingStatus = form.watch("housingStatus");
-  const hasHealthConcerns = form.watch("hasHealthConcerns");
-  const evictionNotice = form.watch("evictionNotice");
-  const employmentStatus = form.watch("employmentStatus");
-  
-  // Update conditional fields display based on form values
-  React.useEffect(() => {
-    if (housingStatus === "Renting") {
-      setShowLandlordInfo(true);
-    } else {
-      setShowLandlordInfo(false);
-      form.setValue("landlordName", "");
-      form.setValue("landlordPhone", "");
-      form.setValue("landlordEmail", "");
-    }
-    
-    setShowHealthInfo(hasHealthConcerns === true);
-    
-    if (employmentStatus === "Unemployed") {
-      form.setValue("monthlyIncome", "0");
-    }
-  }, [housingStatus, hasHealthConcerns, employmentStatus, form]);
-  
-  // Submit form
+
   const onSubmit = (data: AssistanceFormValues) => {
-    console.log("Form data:", data);
     setIsSubmitting(true);
     
-    // Simulate API call
+    // Simulating API submission with a delay
     setTimeout(() => {
-      console.log("Form submitted successfully");
+      console.log("Form submitted:", data);
+      toast.success("Application submitted successfully!");
       setIsSubmitted(true);
       setIsSubmitting(false);
-      toast.success("Application submitted successfully");
-      window.scrollTo(0, 0);
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 1500);
   };
-  
-  // Add household member
-  const addHouseholdMember = () => {
-    setHouseholdMembers([
-      ...householdMembers,
-      { name: "", relationship: "", age: "", isDependent: false }
-    ]);
-  };
-  
-  // Remove household member
-  const removeHouseholdMember = (index: number) => {
-    const updatedMembers = [...householdMembers];
-    updatedMembers.splice(index, 1);
-    setHouseholdMembers(updatedMembers);
-  };
-  
-  // Update household member
-  const updateHouseholdMember = (index: number, field: string, value: string | boolean) => {
-    const updatedMembers = [...householdMembers];
-    updatedMembers[index] = {
-      ...updatedMembers[index],
-      [field]: value
-    };
-    setHouseholdMembers(updatedMembers);
-    form.setValue("householdMembers", updatedMembers);
-  };
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+      <Navbar />
+      
       <div className="container mx-auto py-8 px-4 md:px-6">
-        {isSubmitted ? (
-          <div className="bg-white p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="rounded-full bg-green-100 p-3">
-                <Check className="h-8 w-8 text-green-600" />
+        <ApplicationWrapper 
+          title="Assistance Application"
+          subtitle="Complete this application to request assistance. Fields marked with * are required."
+        >
+          {isSubmitted ? (
+            <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-green-100 animate-fade-in">
+              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="h-10 w-10 text-green-500" />
               </div>
-              <h1 className="text-2xl font-bold text-center">Application Submitted Successfully</h1>
-              <p className="text-gray-600 text-center">
-                Thank you for submitting your assistance application. Our team will review your information and contact you within 2-3 business days regarding next steps. Your application ID is: APP-{Math.floor(Math.random() * 900000) + 100000}.
+              <h2 className="text-2xl font-bold mb-4 text-green-800">Application Submitted Successfully!</h2>
+              <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+                Thank you for submitting your assistance application. Our team will review your information and contact you within 2-3 business days regarding next steps.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  variant="outline" 
                   onClick={() => navigate("/")}
-                  className="flex items-center gap-2"
+                  variant="outline"
+                  className="group flex items-center gap-2"
                 >
-                  <ArrowLeft className="h-4 w-4" /> Return to Home
+                  Return Home
                 </Button>
                 <Button
                   onClick={() => {
                     setIsSubmitted(false);
                     form.reset();
                   }}
-                  className="flex items-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 flex items-center gap-2 group"
                 >
-                  <FileText className="h-4 w-4" /> Submit Another Application
+                  <FileText className="h-4 w-4 group-hover:animate-pulse" />
+                  Submit Another Application
                 </Button>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="bg-white p-6 rounded-xl shadow-lg max-w-4xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-center">Assistance Application</h1>
-              <p className="text-gray-600 text-center mt-2">
-                Please complete all required fields (marked with *) to apply for assistance.
-              </p>
-            </div>
-            
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
-              {/* Personal Information Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <User className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Personal Information</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide your personal identification details. All information is kept confidential and secure.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="flex items-center">
-                      First Name <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="firstName"
-                      {...form.register("firstName")}
-                      className={`${form.formState.errors.firstName ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.firstName && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.firstName.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="middleName">
-                      Middle Name <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Input
-                      id="middleName"
-                      {...form.register("middleName")}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="flex items-center">
-                      Last Name <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="lastName"
-                      {...form.register("lastName")}
-                      className={`${form.formState.errors.lastName ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.lastName && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.lastName.message}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth" className="flex items-center">
-                      Date of Birth <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="dateOfBirth"
-                      type="date"
-                      {...form.register("dateOfBirth")}
-                      className={`${form.formState.errors.dateOfBirth ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.dateOfBirth && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.dateOfBirth.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="ssn" className="flex items-center">
-                      Social Security Number <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="ssn"
-                      placeholder="XXX-XX-XXXX"
-                      {...form.register("ssn")}
-                      className={`${form.formState.errors.ssn ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.ssn && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.ssn.message}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="idNumber" className="flex items-center">
-                      Government ID Number <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="idNumber"
-                      {...form.register("idNumber")}
-                      className={`${form.formState.errors.idNumber ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.idNumber && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.idNumber.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="idIssueDate" className="flex items-center">
-                      ID Issue Date <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="idIssueDate"
-                      type="date"
-                      {...form.register("idIssueDate")}
-                      className={`${form.formState.errors.idIssueDate ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.idIssueDate && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.idIssueDate.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="idExpirationDate" className="flex items-center">
-                      ID Expiration Date <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="idExpirationDate"
-                      type="date"
-                      {...form.register("idExpirationDate")}
-                      className={`${form.formState.errors.idExpirationDate ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.idExpirationDate && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.idExpirationDate.message}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="flex items-center">
-                      <Phone className="h-4 w-4 mr-1" />
-                      Phone Number <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="phone"
-                      placeholder="(123) 456-7890"
-                      {...form.register("phone")}
-                      className={`${form.formState.errors.phone ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.phone && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.phone.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="flex items-center">
-                      <Mail className="h-4 w-4 mr-1" />
-                      Email Address <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      {...form.register("email")}
-                      className={`${form.formState.errors.email ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.email && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.email.message}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="space-y-2 mt-4">
-                  <Label htmlFor="address" className="flex items-center">
-                    <Home className="h-4 w-4 mr-1" />
-                    Current Address <span className="text-red-500 ml-1">*</span>
-                  </Label>
-                  <Input
-                    id="address"
-                    placeholder="Street address"
-                    {...form.register("address")}
-                    className={`${form.formState.errors.address ? "border-red-500 focus:ring-red-500" : ""}`}
-                  />
-                  {form.formState.errors.address && (
-                    <p className="text-red-500 text-sm">{form.formState.errors.address.message}</p>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city" className="flex items-center">
-                      City <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="city"
-                      {...form.register("city")}
-                      className={`${form.formState.errors.city ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.city && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.city.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="state" className="flex items-center">
-                      State <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("state", value, { shouldValidate: true })}
-                      defaultValue={form.watch("state")}
-                    >
-                      <SelectTrigger 
-                        id="state"
-                        className={`${form.formState.errors.state ? "border-red-500 focus:ring-red-500" : ""}`}
-                      >
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {stateOptions.map((state) => (
-                          <SelectItem key={state} value={state}>{state}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {form.formState.errors.state && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.state.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="zipCode" className="flex items-center">
-                      ZIP Code <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="zipCode"
-                      {...form.register("zipCode")}
-                      className={`${form.formState.errors.zipCode ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.zipCode && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.zipCode.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Household Information Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <Users className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Household Information</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide information about all individuals living in your household.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="householdSize" className="flex items-center">
-                      Total Household Size <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("householdSize", value, { shouldValidate: true })}
-                      defaultValue={form.watch("householdSize")}
-                    >
-                      <SelectTrigger 
-                        id="householdSize"
-                        className={`${form.formState.errors.householdSize ? "border-red-500 focus:ring-red-500" : ""}`}
-                      >
-                        <SelectValue placeholder="Select household size" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 10 }, (_, i) => (
-                          <SelectItem key={i + 1} value={(i + 1).toString()}>{i + 1}</SelectItem>
-                        ))}
-                        <SelectItem value="10+">10+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {form.formState.errors.householdSize && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.householdSize.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="flex items-center">
-                      Household Members <span className="text-gray-400 text-sm">(if applicable)</span>
-                    </Label>
-                    <p className="text-sm text-gray-500 mb-2">List all household members excluding yourself</p>
-                    
-                    {householdMembers.map((member, index) => (
-                      <div key={index} className="p-4 bg-gray-50 rounded-md mb-2">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-1">
-                            <Label htmlFor={`member-${index}-name`}>Name</Label>
-                            <Input
-                              id={`member-${index}-name`}
-                              value={member.name}
-                              onChange={(e) => updateHouseholdMember(index, "name", e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor={`member-${index}-relationship`}>Relationship</Label>
-                            <Input
-                              id={`member-${index}-relationship`}
-                              value={member.relationship}
-                              onChange={(e) => updateHouseholdMember(index, "relationship", e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor={`member-${index}-age`}>Age</Label>
-                            <Input
-                              id={`member-${index}-age`}
-                              value={member.age}
-                              onChange={(e) => updateHouseholdMember(index, "age", e.target.value)}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-center mt-2">
-                          <Checkbox
-                            id={`member-${index}-dependent`}
-                            checked={member.isDependent}
-                            onCheckedChange={(checked) => 
-                              updateHouseholdMember(index, "isDependent", checked === true)
-                            }
-                          />
-                          <Label htmlFor={`member-${index}-dependent`} className="ml-2 text-sm">
-                            This person is my dependent
-                          </Label>
-                          
-                          {index > 0 && (
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              className="ml-auto"
-                              onClick={() => removeHouseholdMember(index)}
-                            >
-                              Remove
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addHouseholdMember}
-                      className="mt-2"
-                    >
-                      + Add Household Member
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Demographics Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <BarChart4 className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Demographic Information</h3>
-                    <p className="text-sm text-blue-700">
-                      This information is optional and used only for statistical purposes to improve our services and meet reporting requirements.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="race">
-                      Race <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("race", value)}
-                      defaultValue={form.watch("race")}
-                    >
-                      <SelectTrigger id="race">
-                        <SelectValue placeholder="Select race" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {raceOptions.map((race) => (
-                          <SelectItem key={race} value={race}>{race}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="ethnicity">
-                      Ethnicity <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("ethnicity", value)}
-                      defaultValue={form.watch("ethnicity")}
-                    >
-                      <SelectTrigger id="ethnicity">
-                        <SelectValue placeholder="Select ethnicity" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ethnicityOptions.map((ethnicity) => (
-                          <SelectItem key={ethnicity} value={ethnicity}>{ethnicity}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">
-                      Gender <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("gender", value)}
-                      defaultValue={form.watch("gender")}
-                    >
-                      <SelectTrigger id="gender">
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {genderOptions.map((gender) => (
-                          <SelectItem key={gender} value={gender}>{gender}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="disabilityStatus">
-                      Disability Status <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("disabilityStatus", value)}
-                      defaultValue={form.watch("disabilityStatus")}
-                    >
-                      <SelectTrigger id="disabilityStatus">
-                        <SelectValue placeholder="Select disability status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="no-disability">No disability</SelectItem>
-                        <SelectItem value="disability">Person with disability</SelectItem>
-                        <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2 mt-4">
-                  <Checkbox
-                    id="veteranStatus"
-                    checked={form.watch("veteranStatus")}
-                    onCheckedChange={(checked) => {
-                      form.setValue("veteranStatus", checked === true);
-                    }}
-                  />
-                  <Label htmlFor="veteranStatus">
-                    I am a veteran <span className="text-gray-400 text-sm">(optional)</span>
-                  </Label>
-                </div>
-              </div>
-              
-              {/* Income Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <DollarSign className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Income and Financial Information</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide information about your current financial situation to help us determine eligible assistance programs.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="employmentStatus" className="flex items-center">
-                      Employment Status <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("employmentStatus", value, { shouldValidate: true })}
-                      defaultValue={form.watch("employmentStatus")}
-                    >
-                      <SelectTrigger 
-                        id="employmentStatus"
-                        className={`${form.formState.errors.employmentStatus ? "border-red-500 focus:ring-red-500" : ""}`}
-                      >
-                        <SelectValue placeholder="Select employment status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {employmentStatusOptions.map((status) => (
-                          <SelectItem key={status} value={status}>{status}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {form.formState.errors.employmentStatus && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.employmentStatus.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="monthlyIncome" className="flex items-center">
-                      Monthly Household Income <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
-                      <Input
-                        id="monthlyIncome"
-                        placeholder="0.00"
-                        {...form.register("monthlyIncome")}
-                        className={`pl-8 ${form.formState.errors.monthlyIncome ? "border-red-500 focus:ring-red-500" : ""}`}
-                      />
+          ) : (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                {/* Important Notice Section */}
+                <div className="p-5 bg-blue-50 rounded-lg shadow-sm border border-blue-100">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-blue-800 mb-2">Important Information</h3>
+                      <ul className="text-sm text-gray-700 space-y-1.5 list-disc pl-4">
+                        <li>Complete all required fields marked with an asterisk (*)</li>
+                        <li>Have documentation ready to verify your information</li>
+                        <li>All information provided will be kept confidential</li>
+                        <li>Applications are typically processed within 2-3 business days</li>
+                        <li>You may be contacted for additional information</li>
+                      </ul>
                     </div>
-                    {form.formState.errors.monthlyIncome && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.monthlyIncome.message}</p>
-                    )}
                   </div>
+                </div>
+
+                {/* Personal Information Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <User className="text-redcross h-5 w-5" />
+                    Personal Information
+                  </h2>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="incomeSource">
-                      Source of Income <span className="text-gray-400 text-sm">(optional)</span>
-                    </Label>
-                    <Input
-                      id="incomeSource"
-                      placeholder="Employment, benefits, etc."
-                      {...form.register("incomeSource")}
-                    />
-                  </div>
-                  
-                  {employmentStatus === "Unemployed" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="firstName" className="flex items-center gap-1">
+                        <span>First Name</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="firstName"
+                        {...form.register("firstName")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.firstName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.firstName && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.firstName.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="lastName" className="flex items-center gap-1">
+                        <span>Last Name</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="lastName"
+                        {...form.register("lastName")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.lastName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.lastName && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.lastName.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="dateOfBirth" className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        <span>Date of Birth</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="dateOfBirth"
+                        type="date"
+                        {...form.register("dateOfBirth")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.dateOfBirth ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.dateOfBirth && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.dateOfBirth.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="email" className="flex items-center gap-1">
+                        <Mail className="h-4 w-4" />
+                        <span>Email</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        {...form.register("email")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.email && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.email.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="phone" className="flex items-center gap-1">
+                        <Phone className="h-4 w-4" />
+                        <span>Phone Number</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        {...form.register("phone")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        placeholder="(123) 456-7890"
+                      />
+                      {form.formState.errors.phone && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.phone.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="md:col-span-2 space-y-2 relative group">
+                      <Label htmlFor="address" className="flex items-center gap-1">
+                        <Home className="h-4 w-4" />
+                        <span>Address</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="address"
+                        {...form.register("address")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.address ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.address && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.address.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="city" className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        <span>City</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="city"
+                        {...form.register("city")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.city ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.city && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.city.message}</p>
+                      )}
+                    </div>
+                    
                     <div className="space-y-2">
-                      <Label htmlFor="noIncomeReason">
-                        Reason for No Income <span className="text-gray-400 text-sm">(if unemployed)</span>
+                      <Label htmlFor="state" className="flex items-center gap-1">
+                        <span>State</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        onValueChange={(value) => form.setValue("state", value, { shouldValidate: true })}
+                        defaultValue={form.watch("state")}
+                      >
+                        <SelectTrigger 
+                          id="state"
+                          className={`bg-white border transition-all duration-300 ${form.formState.errors.state ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        >
+                          <SelectValue placeholder="Select state" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[200px]">
+                          {stateOptions.map((state) => (
+                            <SelectItem key={state} value={state}>
+                              {state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.state && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.state.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 relative group">
+                      <Label htmlFor="zipCode" className="flex items-center gap-1">
+                        <span>ZIP Code</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="zipCode"
+                        {...form.register("zipCode")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.zipCode ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.zipCode && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.zipCode.message}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Household Information Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <Users className="text-redcross h-5 w-5" />
+                    Household Information
+                  </h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="householdSize" className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        <span>Household Size</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        onValueChange={(value) => form.setValue("householdSize", value, { shouldValidate: true })}
+                        defaultValue={form.watch("householdSize")}
+                      >
+                        <SelectTrigger 
+                          id="householdSize"
+                          className={`bg-white border transition-all duration-300 ${form.formState.errors.householdSize ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        >
+                          <SelectValue placeholder="Select size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {householdSizeOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.householdSize && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.householdSize.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="householdIncome" className="flex items-center gap-1">
+                        <DollarSign className="h-4 w-4" />
+                        <span>Annual Household Income</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        onValueChange={(value) => form.setValue("householdIncome", value, { shouldValidate: true })}
+                        defaultValue={form.watch("householdIncome")}
+                      >
+                        <SelectTrigger 
+                          id="householdIncome"
+                          className={`bg-white border transition-all duration-300 ${form.formState.errors.householdIncome ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        >
+                          <SelectValue placeholder="Select income range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {householdIncomeOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.householdIncome && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.householdIncome.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="housingStatus" className="flex items-center gap-1">
+                        <Home className="h-4 w-4" />
+                        <span>Housing Status</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        onValueChange={(value) => form.setValue("housingStatus", value, { shouldValidate: true })}
+                        defaultValue={form.watch("housingStatus")}
+                      >
+                        <SelectTrigger 
+                          id="housingStatus"
+                          className={`bg-white border transition-all duration-300 ${form.formState.errors.housingStatus ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        >
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {housingStatusOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.housingStatus && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.housingStatus.message}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Assistance Information Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <Shield className="text-redcross h-5 w-5" />
+                    Assistance Information
+                  </h2>
+                  
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-1">
+                        <Clipboard className="h-4 w-4 text-redcross" />
+                        <span>Type of Assistance Needed</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <MultiSelectAssistance
+                        options={assistanceTypeOptions}
+                        selectedValues={form.watch("assistanceTypes")}
+                        onChange={(values) => form.setValue("assistanceTypes", values, { shouldValidate: true })}
+                        placeholder="Select assistance types"
+                        error={!!form.formState.errors.assistanceTypes}
+                      />
+                      {form.formState.errors.assistanceTypes && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.assistanceTypes.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="urgencyLevel" className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-redcross" />
+                        <span>Urgency Level</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        onValueChange={(value) => form.setValue("urgencyLevel", value, { shouldValidate: true })}
+                        defaultValue={form.watch("urgencyLevel")}
+                      >
+                        <SelectTrigger 
+                          id="urgencyLevel"
+                          className={`bg-white border transition-all duration-300 ${form.formState.errors.urgencyLevel ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        >
+                          <SelectValue placeholder="Select urgency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {urgencyOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.urgencyLevel && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.urgencyLevel.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="assistanceReason" className="flex items-center gap-1">
+                        <Info className="h-4 w-4" />
+                        <span>Reason for Seeking Assistance</span> <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
-                        id="noIncomeReason"
-                        placeholder="Please explain your current situation..."
-                        rows={3}
-                        {...form.register("noIncomeReason")}
+                        id="assistanceReason"
+                        {...form.register("assistanceReason")}
+                        className={`bg-white border transition-all duration-300 min-h-[120px] ${form.formState.errors.assistanceReason ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                        placeholder="Please explain your current situation and why you're seeking assistance..."
                       />
+                      {form.formState.errors.assistanceReason && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.assistanceReason.message}</p>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Housing Status Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <Home className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Housing Status</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide information about your current housing situation.
-                    </p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="previousAssistance"
+                          checked={form.watch("previousAssistance")}
+                          onCheckedChange={(checked) => {
+                            form.setValue("previousAssistance", checked === true);
+                            if (!checked) {
+                              form.setValue("previousAssistanceDetails", "");
+                            }
+                          }}
+                          className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                        />
+                        <div>
+                          <Label htmlFor="previousAssistance" className="font-medium">Have you received assistance from us before?</Label>
+                        </div>
+                      </div>
+                      
+                      {form.watch("previousAssistance") && (
+                        <div className="space-y-2 ml-7 animate-fade-in">
+                          <Label htmlFor="previousAssistanceDetails">
+                            <span>When and what type of assistance did you receive?</span>
+                          </Label>
+                          <Textarea
+                            id="previousAssistanceDetails"
+                            {...form.register("previousAssistanceDetails")}
+                            className="bg-white border border-gray-300 focus:border-redcross focus:ring-redcross transition-all duration-300"
+                            placeholder="Please provide details about previous assistance..."
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="housingStatus" className="flex items-center">
-                      Current Housing Situation <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(value) => form.setValue("housingStatus", value, { shouldValidate: true })}
-                      defaultValue={form.watch("housingStatus")}
-                    >
-                      <SelectTrigger 
-                        id="housingStatus"
-                        className={`${form.formState.errors.housingStatus ? "border-red-500 focus:ring-red-500" : ""}`}
-                      >
-                        <SelectValue placeholder="Select housing status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {housingStatusOptions.map((status) => (
-                          <SelectItem key={status} value={status}>{status}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {form.formState.errors.housingStatus && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.housingStatus.message}</p>
-                    )}
-                  </div>
+                {/* Additional Information Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <Info className="text-redcross h-5 w-5" />
+                    Additional Information
+                  </h2>
                   
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="evictionNotice"
-                      checked={form.watch("evictionNotice")}
-                      onCheckedChange={(checked) => {
-                        form.setValue("evictionNotice", checked === true);
-                      }}
-                    />
-                    <Label htmlFor="evictionNotice">
-                      I have received an eviction notice
-                    </Label>
-                  </div>
-                  
-                  {evictionNotice && (
-                    <div className="space-y-2">
-                      <Label htmlFor="evictionDate">
-                        Eviction Date
-                      </Label>
-                      <Input
-                        id="evictionDate"
-                        type="date"
-                        {...form.register("evictionDate")}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex items-start space-x-3">
+                      <Checkbox
+                        id="isVeteran"
+                        checked={form.watch("isVeteran")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("isVeteran", checked === true);
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
                       />
-                    </div>
-                  )}
-                  
-                  {showLandlordInfo && (
-                    <div className="space-y-4 p-4 bg-gray-50 rounded-md">
-                      <h4 className="font-medium">Landlord Information</h4>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="landlordName">
-                          Landlord Name
-                        </Label>
-                        <Input
-                          id="landlordName"
-                          {...form.register("landlordName")}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="landlordPhone">
-                          Landlord Phone
-                        </Label>
-                        <Input
-                          id="landlordPhone"
-                          {...form.register("landlordPhone")}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="landlordEmail">
-                          Landlord Email
-                        </Label>
-                        <Input
-                          id="landlordEmail"
-                          type="email"
-                          {...form.register("landlordEmail")}
-                        />
+                      <div>
+                        <Label htmlFor="isVeteran" className="font-medium">Are you a veteran?</Label>
+                        <p className="text-sm text-gray-500">We have special programs for veterans</p>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Assistance Needed Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <Heart className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Assistance Needed</h3>
-                    <p className="text-sm text-blue-700">
-                      Please select all types of assistance you are currently seeking and describe your situation.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="assistanceTypes" className="flex items-center">
-                      Types of Assistance Needed <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <p className="text-sm text-gray-500 mb-2">Select all that apply</p>
                     
-                    <MultiSelectAssistance
-                      id="assistanceTypes"
-                      options={assistanceTypeOptions}
-                      selectedValues={form.watch("assistanceTypes") || []}
-                      onChange={(values) => form.setValue("assistanceTypes", values, { shouldValidate: true })}
-                      placeholder="Select assistance types"
-                      error={!!form.formState.errors.assistanceTypes}
-                    />
+                    <div className="flex items-start space-x-3">
+                      <Checkbox
+                        id="hasDisability"
+                        checked={form.watch("hasDisability")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("hasDisability", checked === true);
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                      />
+                      <div>
+                        <Label htmlFor="hasDisability" className="font-medium">Do you have a disability?</Label>
+                        <p className="text-sm text-gray-500">This helps us provide appropriate accommodations</p>
+                      </div>
+                    </div>
                     
-                    {form.formState.errors.assistanceTypes && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {form.formState.errors.assistanceTypes.message}
-                      </p>
+                    <div className="flex items-start space-x-3">
+                      <Checkbox
+                        id="needsInterpreter"
+                        checked={form.watch("needsInterpreter")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("needsInterpreter", checked === true);
+                          if (!checked) {
+                            form.setValue("preferredLanguage", "");
+                          }
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                      />
+                      <div>
+                        <Label htmlFor="needsInterpreter" className="font-medium">Do you need an interpreter?</Label>
+                        <p className="text-sm text-gray-500">We can provide language assistance</p>
+                      </div>
+                    </div>
+                    
+                    {form.watch("needsInterpreter") && (
+                      <div className="space-y-2 animate-fade-in">
+                        <Label htmlFor="preferredLanguage">Preferred Language</Label>
+                        <Select
+                          onValueChange={(value) => form.setValue("preferredLanguage", value)}
+                          defaultValue={form.watch("preferredLanguage")}
+                        >
+                          <SelectTrigger id="preferredLanguage" className="bg-white border border-gray-300 focus:border-redcross focus:ring-redcross">
+                            <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {languageOptions.map((option) => (
+                              <SelectItem key={option.id} value={option.id}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="crisisDescription" className="flex items-center">
-                      Please describe your current situation and needs <span className="text-red-500 ml-1">*</span>
+                  <div className="space-y-2 mt-4">
+                    <Label htmlFor="additionalNotes">
+                      Additional Notes or Special Circumstances
                     </Label>
                     <Textarea
-                      id="crisisDescription"
-                      placeholder="Please provide details about your current situation and what specific help you need..."
-                      rows={5}
-                      {...form.register("crisisDescription")}
-                      className={`${form.formState.errors.crisisDescription ? "border-red-500 focus:ring-red-500" : ""}`}
+                      id="additionalNotes"
+                      {...form.register("additionalNotes")}
+                      className="bg-white border border-gray-300 focus:border-redcross focus:ring-redcross transition-all duration-300 min-h-[100px]"
+                      placeholder="Is there anything else you would like us to know about your situation?"
                     />
-                    {form.formState.errors.crisisDescription && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.crisisDescription.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Emergency Contact Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <Phone className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Emergency Contact</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide information for someone we can contact in case of emergency.
-                    </p>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="emergencyContactName" className="flex items-center">
-                      Name <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="emergencyContactName"
-                      {...form.register("emergencyContactName")}
-                      className={`${form.formState.errors.emergencyContactName ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.emergencyContactName && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactName.message}</p>
-                    )}
-                  </div>
+                {/* Rights and Signature Section */}
+                <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2 text-gray-800">
+                    <FileText className="text-redcross h-5 w-5" />
+                    Applicant Rights & Signature
+                  </h2>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="emergencyContactPhone" className="flex items-center">
-                      Phone <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="emergencyContactPhone"
-                      {...form.register("emergencyContactPhone")}
-                      className={`${form.formState.errors.emergencyContactPhone ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.emergencyContactPhone && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactPhone.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="emergencyContactRelationship" className="flex items-center">
-                      Relationship <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Input
-                      id="emergencyContactRelationship"
-                      {...form.register("emergencyContactRelationship")}
-                      className={`${form.formState.errors.emergencyContactRelationship ? "border-red-500 focus:ring-red-500" : ""}`}
-                    />
-                    {form.formState.errors.emergencyContactRelationship && (
-                      <p className="text-red-500 text-sm">{form.formState.errors.emergencyContactRelationship.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Health Information Section */}
-              <div>
-                <div className="bg-blue-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <HelpCircle className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-800">Health Information</h3>
-                    <p className="text-sm text-blue-700">
-                      Please provide any health information relevant to the assistance you are seeking.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="hasHealthConcerns"
-                      checked={form.watch("hasHealthConcerns")}
-                      onCheckedChange={(checked) => {
-                        form.setValue("hasHealthConcerns", checked === true);
-                      }}
-                    />
-                    <Label htmlFor="hasHealthConcerns">
-                      I have health concerns relevant to the assistance I am seeking
-                    </Label>
-                  </div>
-                  
-                  {showHealthInfo && (
-                    <div className="space-y-4 p-4 bg-gray-50 rounded-md">
-                      <div className="space-y-2">
-                        <Label htmlFor="healthConcerns">
-                          Describe Health Concerns
-                        </Label>
-                        <Textarea
-                          id="healthConcerns"
-                          placeholder="Please describe any health conditions relevant to your needs..."
-                          rows={3}
-                          {...form.register("healthConcerns")}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="medications">
-                          Current Medications <span className="text-gray-400 text-sm">(optional)</span>
-                        </Label>
-                        <Textarea
-                          id="medications"
-                          placeholder="List any current medications..."
-                          rows={2}
-                          {...form.register("medications")}
-                        />
+                  <div className="p-5 bg-gray-50 rounded-md border border-gray-200 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-semibold text-gray-800 mb-2">Your Rights as an Applicant</h3>
+                        <ul className="text-sm text-gray-700 space-y-2 list-disc pl-4">
+                          <li>You have the right to be treated with dignity and respect.</li>
+                          <li>You have the right to confidentiality regarding your personal information.</li>
+                          <li>You have the right to receive assistance without discrimination based on race, color, national origin, religion, sex, familial status, disability, or age.</li>
+                          <li>You have the right to appeal decisions regarding your application.</li>
+                          <li>You have the right to request reasonable accommodations for disabilities.</li>
+                          <li>You have the right to receive clear information about the assistance program requirements and your responsibilities.</li>
+                        </ul>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Agreements and Consents Section */}
-              <div>
-                <div className="bg-amber-50 p-4 rounded-md mb-6 flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-amber-800">Authorization & Consent</h3>
-                    <p className="text-sm text-amber-700">
-                      Please review and acknowledge the following statements before submitting your application.
-                    </p>
+                  </div>
+                  
+                  <div className="space-y-4 mt-4">
+                    <div className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-md">
+                      <Checkbox
+                        id="documentationAgreement"
+                        checked={form.watch("documentationAgreement")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("documentationAgreement", checked === true, { shouldValidate: true });
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                      />
+                      <div>
+                        <Label htmlFor="documentationAgreement" className="font-medium flex items-center">
+                          Documentation Agreement <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          I agree to provide all necessary documentation to verify the information provided in this application upon request.
+                        </p>
+                        {form.formState.errors.documentationAgreement && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.documentationAgreement.message}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-md">
+                      <Checkbox
+                        id="verificationAgreement"
+                        checked={form.watch("verificationAgreement")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("verificationAgreement", checked === true, { shouldValidate: true });
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                      />
+                      <div>
+                        <Label htmlFor="verificationAgreement" className="font-medium flex items-center">
+                          Verification Agreement <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          I authorize verification of all information provided in this application, including contacting employers, landlords, or other parties as needed.
+                        </p>
+                        {form.formState.errors.verificationAgreement && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.verificationAgreement.message}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-md">
+                      <Checkbox
+                        id="truthfulnessAgreement"
+                        checked={form.watch("truthfulnessAgreement")}
+                        onCheckedChange={(checked) => {
+                          form.setValue("truthfulnessAgreement", checked === true, { shouldValidate: true });
+                        }}
+                        className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                      />
+                      <div>
+                        <Label htmlFor="truthfulnessAgreement" className="font-medium flex items-center">
+                          Truthfulness Certification <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          I certify that all information provided in this application is true and complete to the best of my knowledge.
+                        </p>
+                        {form.formState.errors.truthfulnessAgreement && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.truthfulnessAgreement.message}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-6 mt-4 pt-4 border-t border-gray-200">
+                    <DigitalSignature 
+                      onChange={(signatureData) => form.setValue("signature", signatureData, { shouldValidate: true })}
+                      value={form.watch("signature")}
+                    />
+                    {form.formState.errors.signature && (
+                      <p className="text-red-500 text-sm animate-fade-in">{form.formState.errors.signature.message}</p>
+                    )}
+                    
+                    <div className="space-y-2 relative group max-w-xs">
+                      <Label htmlFor="signatureDate" className="flex items-center gap-1">
+                        <CalendarDays className="h-4 w-4" />
+                        <span>Date</span> <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="signatureDate"
+                        type="date"
+                        {...form.register("signatureDate")}
+                        className={`bg-white border transition-all duration-300 ${form.formState.errors.signatureDate ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+                      />
+                      {form.formState.errors.signatureDate && (
+                        <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.signatureDate.message}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-md">
-                    <Checkbox
-                      id="informationRelease"
-                      checked={form.watch("informationRelease")}
-                      onCheckedChange={(checked) => {
-                        form.setValue("informationRelease", checked === true, { shouldValidate: true });
-                      }}
-                      className="mt-1"
-                    />
-                    <div>
-                      <Label htmlFor="informationRelease" className="font-medium">Information Release Consent</Label>
-                      <p className="text-sm text-gray-600 mt-1">
-                        I authorize the organization to collect, store, and share my information with relevant service providers for the purpose of providing assistance. I understand that my information will be kept confidential and secure.
-                      </p>
-                      {form.formState.errors.informationRelease && (
-                        <p className="text-red-500 text-sm mt-1">{form.formState.errors.informationRelease.message}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-md">
-                    <Checkbox
-                      id="accuracyAcknowledgment"
-                      checked={form.watch("accuracyAcknowledgment")}
-                      onCheckedChange={(checked) => {
-                        form.setValue("accuracyAcknowledgment", checked === true, { shouldValidate: true });
-                      }}
-                      className="mt-1"
-                    />
-                    <div>
-                      <Label htmlFor="accuracyAcknowledgment" className="font-medium">Accuracy of Information</Label>
-                      <p className="text-sm text-gray-600 mt-1">
-                        I certify that all information provided in this application is true and accurate to the best of my knowledge. I understand that providing false information may result in denial of assistance and potential legal consequences.
-                      </p>
-                      {form.formState.errors.accuracyAcknowledgment && (
-                        <p className="text-red-500 text-sm mt-1">{form.formState.errors.accuracyAcknowledgment.message}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-md">
-                    <Checkbox
-                      id="privacyConsent"
-                      checked={form.watch("privacyConsent")}
-                      onCheckedChange={(checked) => {
-                        form.setValue("privacyConsent", checked === true, { shouldValidate: true });
-                      }}
-                      className="mt-1"
-                    />
-                    <div>
-                      <Label htmlFor="privacyConsent" className="font-medium">Privacy Policy Consent</Label>
-                      <p className="text-sm text-gray-600 mt-1">
-                        I acknowledge that I have read and understand the organization's privacy policy regarding the collection, use, and protection of my personal information.
-                      </p>
-                      {form.formState.errors.privacyConsent && (
-                        <p className="text-red-500 text-sm mt-1">{form.formState.errors.privacyConsent.message}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 bg-gray-50 rounded-md">
-                    <p className="text-sm text-gray-600">
-                      <strong>Appeal Process:</strong> If your application is denied, you have the right to appeal the decision within 14 days of notification. Please contact our office for information on how to file an appeal.
-                    </p>
-                  </div>
+                <div className="flex justify-end pt-6">
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="flex items-center gap-2 bg-redcross hover:bg-redcross-dark text-white px-6 py-2 rounded-md transition-all duration-300 shadow-md hover:shadow-lg"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Submitting...
+                      </div>
+                    ) : (
+                      <>
+                        Submit Application
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x.5 transition-transform" />
+                      </>
+                    )}
+                  </Button>
                 </div>
-              </div>
-              
-              {/* Submission Button */}
-              <div className="flex justify-between mt-8">
-                <Button type="button" variant="outline" onClick={() => navigate("/")}>
-                  <ArrowLeft className="h-4 w-4 mr-2" /> Cancel
-                </Button>
-                <Button type="submit" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700">
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
-                </Button>
-              </div>
-            </form>
-          </div>
-        )}
+              </form>
+            </Form>
+          )}
+        </ApplicationWrapper>
       </div>
     </div>
   );
