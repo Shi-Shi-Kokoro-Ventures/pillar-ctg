@@ -56,16 +56,18 @@ const SSNField: React.FC<SSNFieldProps> = ({
           <Shield className="h-4 w-4 mr-2 text-redcross" />
           Social Security Number <span className="text-red-500 ml-1">*</span>
         </Label>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => alert("Your SSN is required for identity verification purposes and may be required by funding sources. It is protected under our privacy policy and applicable federal laws.")}
-          className="text-xs text-redcross hover:text-redcross-dark flex items-center gap-1"
+          className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 p-0 h-auto"
         >
           <Info className="h-3 w-3" /> Why do we need this?
-        </button>
+        </Button>
       </div>
       
-      <div className={`relative ${focused ? 'ring-2 ring-redcross rounded-md' : ''}`}>
+      <div className={`relative ${focused ? 'ring-2 ring-blue-500 rounded-md' : ''}`}>
         <Input
           id="ssn"
           value={displayValue}
@@ -73,7 +75,7 @@ const SSNField: React.FC<SSNFieldProps> = ({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="XXX-XX-XXXX"
-          className={`pr-10 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-redcross focus:ring-redcross'}`}
+          className={`pr-10 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'}`}
           maxLength={11}
           aria-describedby="ssn-description"
         />
@@ -91,9 +93,11 @@ const SSNField: React.FC<SSNFieldProps> = ({
       
       {error && <p className="text-red-500 text-sm">{error}</p>}
       
-      <div className="flex items-start space-x-2 text-xs text-gray-500 mt-1">
-        <Shield className="h-3 w-3 mt-0.5 text-gray-400" />
-        <p id="ssn-description">Your SSN is securely encrypted and will only be used for verification purposes and as required by our funding sources.</p>
+      <div className="flex items-start bg-gray-50 p-3 rounded-md border border-gray-200 shadow-sm">
+        <Shield className="h-4 w-4 mt-0.5 text-gray-500 flex-shrink-0" />
+        <p id="ssn-description" className="text-xs text-gray-600 ml-2">
+          Your SSN is securely encrypted and will only be used for verification purposes and as required by our funding sources.
+        </p>
       </div>
     </div>
   );
