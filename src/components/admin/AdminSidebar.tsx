@@ -21,23 +21,23 @@ type SidebarItem = {
   badge?: string | number;
 };
 
-// Updated paths to match the actual routes in the application
+// Fixed paths to match the actual routes in App.tsx
 const sidebarItems: SidebarItem[] = [
   {
     title: "Dashboard Overview",
     icon: LayoutDashboard,
-    href: "/AdminDashboard",
+    href: "/admin-dashboard",
   },
   {
     title: "Applications",
     icon: ClipboardList,
-    href: "/AdminApplications",
+    href: "/admin-applications",
     badge: 15,
   },
   {
     title: "User Management",
     icon: Users,
-    href: "/UserManagement",
+    href: "/user-management",
   },
   {
     title: "Reports",
