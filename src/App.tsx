@@ -70,6 +70,7 @@ const Time = lazy(() => import("./pages/Time"));
 const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
 const EmploymentApplication = lazy(() => import("./pages/EmploymentApplication"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const UserManagement = lazy(() => import("./pages/UserManagement"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
@@ -176,6 +177,7 @@ const App = () => (
               
               {/* Admin Routes */}
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/user-management" element={<UserManagement />} />
               
               {/* Redirect routes for referenced but unimplemented pages */}
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
