@@ -21,22 +21,23 @@ type SidebarItem = {
   badge?: string | number;
 };
 
+// Updated paths to match the actual routes in the application
 const sidebarItems: SidebarItem[] = [
   {
     title: "Dashboard Overview",
     icon: LayoutDashboard,
-    href: "/admin-dashboard",
+    href: "/AdminDashboard",
   },
   {
     title: "Applications",
     icon: ClipboardList,
-    href: "/admin-applications",
+    href: "/AdminApplications",
     badge: 15,
   },
   {
     title: "User Management",
     icon: Users,
-    href: "/user-management",
+    href: "/UserManagement",
   },
   {
     title: "Reports",
