@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Rocket, Clock, CalendarClock, Bell, Gamepad } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ZipCodeSearch from "@/components/ZipCodeSearch";
 
 // We can pass a title and description as props to make this component reusable
@@ -24,7 +24,13 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    // Check if there's history to go back to
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      // If no history, navigate to home page
+      navigate('/');
+    }
   };
 
   const handleSearch = (zipCode: string) => {
@@ -43,6 +49,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
               onClick={handleGoBack}
               variant="outline"
               className="rounded-md hover:bg-blue-50 transition-all duration-300 button-hover-glow"
+              aria-label="Go back to previous page"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Go Back
@@ -96,6 +103,13 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
                 <ZipCodeSearch onSearch={handleSearch} />
               </div>
             )}
+            
+            {/* Home Link for additional way back */}
+            <div className="mt-8">
+              <Link to="/" className="text-blue-600 hover:text-blue-800 underline">
+                Return to Home Page
+              </Link>
+            </div>
           </div>
         </div>
       </main>
