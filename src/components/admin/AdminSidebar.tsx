@@ -1,0 +1,155 @@
+
+import React, { useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  ClipboardList,
+  BarChart3,
+  Settings,
+  ChevronRight,
+  Menu,
+  X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+type SidebarItem = {
+  title: string;
+  icon: React.ElementType;
+  href: string;
+  badge?: string | number;
+};
+
+const sidebarItems: SidebarItem[] = [
+  {
+    title: "Dashboard Overview",
+    icon: LayoutDashboard,
+    href: "/admin-dashboard",
+  },
+  {
+    title: "Applications",
+    icon: ClipboardList,
+    href: "/admin-applications",
+    badge: 15,
+  },
+  {
+    title: "User Management",
+    icon: Users,
+    href: "/user-management",
+  },
+  {
+    title: "Reports",
+    icon: BarChart3,
+    href: "/admin-reports",
+  },
+  {
+    title: "Settings",
+    icon: Settings,
+    href: "/admin-settings",
+  },
+];
+
+const AdminSidebar = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const toggleMobileSidebar = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  return (
+    <>
+      {/* Mobile Sidebar Trigger */}
+      <div className="fixed top-4 left-4 z-50 md:hidden">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMobileSidebar}
+          className="bg-white shadow-md"
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={toggleMobileSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 z-40 h-screen bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
+          collapsed ? "w-16" : "w-64",
+          mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )}
+      >
+        {/* Sidebar Header */}
+        <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-gray-800">P.I.L.L.A.R.</h1>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="hidden md:flex"
+          >
+            <ChevronRight
+              className={cn(
+                "h-5 w-5 transition-transform",
+                collapsed ? "" : "rotate-180"
+              )}
+            />
+          </Button>
+        </div>
+
+        {/* Sidebar Content */}
+        <nav className="mt-5 px-2">
+          <ul className="space-y-2">
+            {sidebarItems.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <li key={item.title}>
+                  <Link to={item.href}>
+                    <div
+                      className={cn(
+                        "flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors",
+                        isActive
+                          ? "bg-gradient-to-r from-redcross to-redcross-light text-white"
+                          : "text-gray-700 hover:bg-gray-100",
+                        collapsed ? "justify-center" : "justify-start"
+                      )}
+                    >
+                      <item.icon className={cn("h-5 w-5", collapsed ? "mr-0" : "mr-3")} />
+                      {!collapsed && <span>{item.title}</span>}
+                      {!collapsed && item.badge && (
+                        <span className="ml-auto bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Content Spacer for Fixed Sidebar */}
+      <div className={cn("transition-all duration-300", collapsed ? "md:ml-16" : "md:ml-64")} />
+    </>
+  );
+};
+
+export default AdminSidebar;
