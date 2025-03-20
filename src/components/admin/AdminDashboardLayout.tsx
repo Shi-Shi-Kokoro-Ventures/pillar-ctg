@@ -14,9 +14,9 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
       <Navbar />
       <div className="flex min-h-screen bg-gray-50">
         <AdminSidebar />
-        <div className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8" aria-label="Admin dashboard content">
           {children}
-        </div>
+        </main>
       </div>
       <Footer />
     </>

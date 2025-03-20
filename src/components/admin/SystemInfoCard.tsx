@@ -12,8 +12,8 @@ interface SystemInfoCardProps {
 
 const SystemInfoCard = ({ infoItems }: SystemInfoCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">System Information</h3>
+    <section className="bg-white rounded-lg shadow-sm border p-6" aria-labelledby="system-info-title">
+      <h3 id="system-info-title" className="text-lg font-medium text-gray-900 mb-4">System Information</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {infoItems.map((item, index) => (
           <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -22,7 +22,7 @@ const SystemInfoCard = ({ infoItems }: SystemInfoCardProps) => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
