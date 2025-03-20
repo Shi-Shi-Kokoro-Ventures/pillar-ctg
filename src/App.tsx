@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { Helmet } from "react-helmet";
 import AccessibilityControls from "./components/AccessibilityControls";
+import { adminRoutes } from "./routes/adminRoutes";
 
 // Eagerly load the Index page for better initial load experience
 import Index from "./pages/Index";
@@ -68,9 +69,6 @@ const ComingSoon = lazy(() => import("./pages/ComingSoon"));
 const Time = lazy(() => import("./pages/Time"));
 const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
 const EmploymentApplication = lazy(() => import("./pages/EmploymentApplication"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const AdminApplications = lazy(() => import("./pages/AdminApplications"));
-const UserManagement = lazy(() => import("./pages/UserManagement"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
@@ -168,6 +166,9 @@ const App = () => (
                 />
               ))}
 
+              {/* Admin Routes - Organized in a separate file */}
+              {adminRoutes}
+
               {/* Integration Routes */}
               <Route path="/n8n-integration" element={<N8nIntegration />} />
               
@@ -175,22 +176,14 @@ const App = () => (
               <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
               <Route path="/apply-for-employment" element={<EmploymentApplication />} />
               
-              {/* Admin Routes */}
-              <Route path="/admin-dashboard" element={<AdminDashboard />} />
-              <Route path="/admin-applications" element={<AdminApplications />} />
-              <Route path="/user-management" element={<UserManagement />} />
-              <Route path="/admin-reports" element={<Navigate to="/coming-soon" />} />
-              <Route path="/admin-settings" element={<Navigate to="/coming-soon" />} />
-              
               {/* Redirect routes for referenced but unimplemented pages */}
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
               <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
               
               {/* Additional routes */}
               <Route path="/time" element={<Time />} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="/coming-soon" element={<ComingSoon />} />
+              
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
