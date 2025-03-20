@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 import Navbar from "@/components/Navbar";
@@ -802,7 +801,7 @@ const VolunteerApplication = () => {
                         <Checkbox
                           id="agreeToBackground"
                           checked={form.watch("agreeToBackground")}
-                          onCheckedChange={(checked) => form.setValue("agreeToBackgroun", checked as boolean, { shouldValidate: true })}
+                          onCheckedChange={(checked) => form.setValue("agreeToBackground", checked as boolean, { shouldValidate: true })}
                           className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
                         />
                         <div>
