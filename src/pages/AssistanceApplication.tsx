@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 import Navbar from "@/components/Navbar";
@@ -645,4 +646,214 @@ const VolunteerApplication = () => {
                         className={`w-full bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.motivationForVolunteering ? "border-red-500" : ""}`}
                       />
                       {form.formState.errors.motivationForVolunteering && (
-                        <p className="text-red
+                        <p className="text-red-500 text-sm">{form.formState.errors.motivationForVolunteering.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 neo-glass p-6 rounded-lg">
+                      <Label htmlFor="experience" className="flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4 text-redcross" />
+                        <span>Relevant Experience or Skills</span>
+                      </Label>
+                      <Textarea
+                        id="experience"
+                        {...form.register("experience")}
+                        rows={4}
+                        className="w-full bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300"
+                        placeholder="Please describe any relevant experience or skills you have that may benefit our organization"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Emergency Contact Section */}
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+                      <AlertTriangle className="text-redcross h-5 w-5" />
+                      Emergency Contact Information
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="emergencyContactName" className="flex items-center gap-1">
+                          <User className="h-4 w-4" />
+                          <span>Full Name</span> <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="emergencyContactName"
+                          {...form.register("emergencyContactName")}
+                          className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactName ? 'border-red-500' : ''}`}
+                        />
+                        {form.formState.errors.emergencyContactName && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.emergencyContactName.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="emergencyContactRelationship" className="flex items-center gap-1">
+                          <Heart className="h-4 w-4" />
+                          <span>Relationship</span> <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="emergencyContactRelationship"
+                          {...form.register("emergencyContactRelationship")}
+                          className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactRelationship ? 'border-red-500' : ''}`}
+                        />
+                        {form.formState.errors.emergencyContactRelationship && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.emergencyContactRelationship.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="emergencyContactPhone" className="flex items-center gap-1">
+                          <Phone className="h-4 w-4" />
+                          <span>Phone Number</span> <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="emergencyContactPhone"
+                          {...form.register("emergencyContactPhone")}
+                          className={`bg-white/5 backdrop-blur-sm border-white/20 focus:border-redcross focus:ring-1 focus:ring-redcross transition-all duration-300 ${form.formState.errors.emergencyContactPhone ? 'border-red-500' : ''}`}
+                          placeholder="(123) 456-7890"
+                        />
+                        {form.formState.errors.emergencyContactPhone && (
+                          <p className="text-red-500 text-sm mt-1 animate-fade-in">{form.formState.errors.emergencyContactPhone.message}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Security Verification */}
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+                      <Shield className="text-redcross h-5 w-5" />
+                      Security Verification
+                    </h2>
+                    
+                    <div className="bg-white/5 p-6 rounded-lg border border-white/10 shadow-inner">
+                      <VolunteerCaptcha onVerify={() => setIsCaptchaVerified(true)} />
+                      {!isCaptchaVerified && form.formState.isSubmitted && (
+                        <p className="text-red-500 text-sm mt-3">Please complete the security verification</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Legal Agreements */}
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-semibold border-b pb-2 flex items-center gap-2">
+                      <FileCheck className="text-redcross h-5 w-5" />
+                      Agreements
+                    </h2>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3 p-4 rounded-lg bg-white/5 border border-white/10">
+                        <Checkbox
+                          id="agreeToTerms"
+                          checked={form.watch("agreeToTerms")}
+                          onCheckedChange={(checked) => form.setValue("agreeToTerms", checked as boolean, { shouldValidate: true })}
+                          className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                        />
+                        <div>
+                          <Label htmlFor="agreeToTerms" className="font-medium">Terms and Conditions <span className="text-red-500">*</span></Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I have read and agree to the <Button variant="link" className="h-auto p-0 text-redcross">Terms and Conditions</Button> of volunteering with our organization.
+                          </p>
+                          {form.formState.errors.agreeToTerms && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToTerms.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-4 rounded-lg bg-white/5 border border-white/10">
+                        <Checkbox
+                          id="agreeToCodeOfConduct"
+                          checked={form.watch("agreeToCodeOfConduct")}
+                          onCheckedChange={(checked) => form.setValue("agreeToCodeOfConduct", checked as boolean, { shouldValidate: true })}
+                          className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                        />
+                        <div>
+                          <Label htmlFor="agreeToCodeOfConduct" className="font-medium">Code of Conduct <span className="text-red-500">*</span></Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I agree to abide by the <Button variant="link" className="h-auto p-0 text-redcross">Code of Conduct</Button> for volunteers.
+                          </p>
+                          {form.formState.errors.agreeToCodeOfConduct && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToCodeOfConduct.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-4 rounded-lg bg-white/5 border border-white/10">
+                        <Checkbox
+                          id="agreeToRelease"
+                          checked={form.watch("agreeToRelease")}
+                          onCheckedChange={(checked) => form.setValue("agreeToRelease", checked as boolean, { shouldValidate: true })}
+                          className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                        />
+                        <div>
+                          <Label htmlFor="agreeToRelease" className="font-medium">Liability Release <span className="text-red-500">*</span></Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I understand and agree to the <Button variant="link" className="h-auto p-0 text-redcross">Liability Release</Button> for volunteer activities.
+                          </p>
+                          {form.formState.errors.agreeToRelease && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToRelease.message}</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3 p-4 rounded-lg bg-white/5 border border-white/10">
+                        <Checkbox
+                          id="agreeToBackground"
+                          checked={form.watch("agreeToBackground")}
+                          onCheckedChange={(checked) => form.setValue("agreeToBackgroun", checked as boolean, { shouldValidate: true })}
+                          className="mt-1 data-[state=checked]:bg-redcross data-[state=checked]:border-redcross"
+                        />
+                        <div>
+                          <Label htmlFor="agreeToBackground" className="font-medium">Background Check <span className="text-red-500">*</span></Label>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I consent to a background check as required for certain volunteer positions.
+                          </p>
+                          {form.formState.errors.agreeToBackground && (
+                            <p className="text-red-500 text-sm mt-1">{form.formState.errors.agreeToBackground.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => navigate("/")}
+                      className="flex items-center gap-2"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Cancel
+                    </Button>
+                    
+                    <Button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-redcross hover:bg-redcross-dark text-white flex items-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin h-4 w-4 border-2 border-white/20 border-t-white rounded-full mr-2" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Application
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+              </form>
+            </Form>
+          )}
+        </ApplicationWrapper>
+      </div>
+    </div>
+  );
+};
+
+export default VolunteerApplication;
