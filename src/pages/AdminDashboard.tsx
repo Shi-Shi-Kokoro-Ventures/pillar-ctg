@@ -38,7 +38,8 @@ const AdminDashboard = () => {
   const { data: applications, isLoading, error } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Use type assertion to bypass TypeScript type checking for this query
+      const { data, error } = await (supabase as any)
         .from("applications")
         .select("*");
       
