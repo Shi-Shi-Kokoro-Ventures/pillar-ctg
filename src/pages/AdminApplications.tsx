@@ -3,10 +3,25 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Application } from "@/types/application";
-import { Search, Filter, FileText, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { 
+  Search, 
+  Filter, 
+  FileText, 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle, 
+  DownloadIcon,
+  RefreshCw,
+  ChevronDown,
+  AlertTriangle,
+  CalendarIcon,
+  UsersIcon,
+  HomeIcon
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import ApplicationStats from "@/components/admin/ApplicationStats";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -35,6 +50,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const AdminApplications = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +80,10 @@ const AdminApplications = () => {
   const [adminNote, setAdminNote] = useState("");
   const [applicationStatus, setApplicationStatus] = useState<Application["status"]>("pending");
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [bulkAction, setBulkAction] = useState<string>("");
+  const [activeTab, setActiveTab] = useState("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
 
   // Mock fetch applications (will connect to Supabase later)
   const fetchApplications = async (): Promise<Application[]> => {
@@ -188,6 +225,73 @@ const AdminApplications = () => {
         created_at: "2023-11-18T16:20:00Z",
         status: "in-review",
       },
+      {
+        id: "ap-1005",
+        firstName: "David",
+        lastName: "Chen",
+        email: "dchen@example.com",
+        phone: "555-888-9999",
+        address: "456 Willow St",
+        city: "Metro City",
+        state: "CA",
+        zipCode: "94501",
+        dateOfBirth: "1992-09-28",
+        householdMembers: [
+          {
+            id: "hm-5",
+            firstName: "Mei",
+            lastName: "Chen",
+            relationship: "Spouse",
+            dateOfBirth: "1993-11-15",
+          },
+          {
+            id: "hm-6",
+            firstName: "Lily",
+            lastName: "Chen",
+            relationship: "Daughter",
+            dateOfBirth: "2018-03-12",
+          }
+        ],
+        emergencyContact: {
+          firstName: "Wei",
+          lastName: "Chen",
+          relationship: "Father",
+          phone: "555-123-9876",
+          address: "789 Oak Dr",
+          city: "Metro City",
+          state: "CA",
+          zipCode: "94502",
+        },
+        assistanceTypes: ["housing", "childcare", "education"],
+        created_at: "2023-10-29T09:15:00Z",
+        status: "pending",
+      },
+      {
+        id: "ap-1006",
+        firstName: "Michael",
+        lastName: "Thompson",
+        email: "mthompson@example.com",
+        phone: "555-444-2222",
+        address: "321 Pine St",
+        city: "Highland",
+        state: "WA",
+        zipCode: "98001",
+        dateOfBirth: "1980-07-15",
+        householdMembers: [],
+        emergencyContact: {
+          firstName: "Susan",
+          lastName: "Thompson",
+          relationship: "Sister",
+          phone: "555-333-1111",
+          address: "456 Fir Dr",
+          city: "Highland",
+          state: "WA",
+          zipCode: "98002",
+        },
+        assistanceTypes: ["food", "medical", "employment"],
+        created_at: "2023-11-03T14:30:00Z",
+        status: "approved",
+      },
     ];
   };
 
@@ -196,17 +300,47 @@ const AdminApplications = () => {
     queryFn: fetchApplications,
   });
 
-  // Filter applications based on search term and status filter
+  // Filter applications based on search, status, and date filters
   const filteredApplications = applications.filter((app) => {
+    // Search term filter
     const matchesSearch =
       searchTerm === "" ||
       `${app.firstName} ${app.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.email.toLowerCase().includes(searchTerm.toLowerCase());
 
+    // Status filter
     const matchesStatus = statusFilter === null || app.status === statusFilter;
+    
+    // Tab filter
+    const matchesTab = 
+      activeTab === "all" || 
+      (activeTab === "pending" && app.status === "pending") ||
+      (activeTab === "in-review" && app.status === "in-review") ||
+      (activeTab === "approved" && app.status === "approved") ||
+      (activeTab === "denied" && app.status === "denied");
 
-    return matchesSearch && matchesStatus;
+    // Date filter
+    let matchesDate = true;
+    const appDate = new Date(app.created_at);
+    const now = new Date();
+    
+    if (dateFilter === "today") {
+      const today = new Date();
+      matchesDate = 
+        appDate.getDate() === today.getDate() &&
+        appDate.getMonth() === today.getMonth() &&
+        appDate.getFullYear() === today.getFullYear();
+    } else if (dateFilter === "this-week") {
+      const weekStart = new Date();
+      weekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
+      matchesDate = appDate >= weekStart;
+    } else if (dateFilter === "this-month") {
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      matchesDate = appDate >= monthStart;
+    }
+
+    return matchesSearch && matchesStatus && matchesTab && matchesDate;
   });
 
   // Sort applications
@@ -291,6 +425,48 @@ const AdminApplications = () => {
     }
   };
 
+  // Toggle selection of an item
+  const toggleSelectItem = (id: string) => {
+    setSelectedItems(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  // Select or deselect all items
+  const toggleSelectAll = () => {
+    if (selectedItems.length === sortedApplications.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(sortedApplications.map(app => app.id));
+    }
+  };
+
+  // Handle bulk actions
+  const handleBulkAction = () => {
+    if (!bulkAction || selectedItems.length === 0) return;
+    
+    switch (bulkAction) {
+      case "approve":
+        toast.success(`${selectedItems.length} applications marked as approved`);
+        break;
+      case "deny":
+        toast.success(`${selectedItems.length} applications marked as denied`);
+        break;
+      case "review":
+        toast.success(`${selectedItems.length} applications set to in-review`);
+        break;
+      case "export":
+        toast.success(`${selectedItems.length} applications exported`);
+        break;
+      default:
+        toast.error("No action selected");
+    }
+    
+    // Reset selections after action
+    setSelectedItems([]);
+    setBulkAction("");
+  };
+
   return (
     <>
       <Navbar />
@@ -304,115 +480,323 @@ const AdminApplications = () => {
             </p>
           </header>
 
+          {/* Application Statistics */}
+          <ApplicationStats applications={applications} />
+
           {/* Filters and Search */}
-          <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm">
-            <div className="w-full sm:w-auto relative">
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 type="text"
                 placeholder="Search by name, ID or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full sm:w-64"
+                className="pl-10"
               />
             </div>
-            <div className="flex gap-4 items-center w-full sm:w-auto">
-              <Select
-                value={statusFilter || ""}
-                onValueChange={(value) => setStatusFilter(value === "" ? null : value)}
+            
+            <Select
+              value={statusFilter || ""}
+              onValueChange={(value) => setStatusFilter(value === "" ? null : value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Status Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="in-review">In Review</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="denied">Denied</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select
+              value={dateFilter}
+              onValueChange={setDateFilter}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Date Range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Time</SelectItem>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="this-week">This Week</SelectItem>
+                <SelectItem value="this-month">This Month</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => {
+                  setSearchTerm("");
+                  setStatusFilter(null);
+                  setDateFilter("all");
+                  setActiveTab("all");
+                }}
               >
-                <SelectTrigger className="w-full sm:w-40">
-                  <SelectValue placeholder="Status Filter" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="in-review">In Review</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="denied">Denied</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" onClick={handleExportCSV}>Export CSV</Button>
+                <RefreshCw className="h-4 w-4 mr-1" /> Reset
+              </Button>
+              <Button variant="outline" className="flex-1" onClick={handleExportCSV}>
+                <DownloadIcon className="h-4 w-4 mr-1" /> Export CSV
+              </Button>
             </div>
           </div>
 
-          {/* Applications Table */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            {isLoading ? (
-              <div className="p-8 text-center">Loading applications...</div>
-            ) : error ? (
-              <div className="p-8 text-center text-red-500">Error loading applications</div>
-            ) : sortedApplications.length === 0 ? (
-              <div className="p-8 text-center">No applications found</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead 
-                        className="cursor-pointer"
-                        onClick={() => handleSort("id")}
-                      >
-                        Application ID
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer"
-                        onClick={() => handleSort("lastName")}
-                      >
-                        Applicant Name
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer"
-                        onClick={() => handleSort("created_at")}
-                      >
-                        Submission Date
-                      </TableHead>
-                      <TableHead 
-                        className="cursor-pointer"
-                        onClick={() => handleSort("status")}
-                      >
-                        Status
-                      </TableHead>
-                      <TableHead>Assistance Types</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedApplications.map((application) => (
-                      <TableRow key={application.id}>
-                        <TableCell className="font-medium">{application.id}</TableCell>
-                        <TableCell>{`${application.firstName} ${application.lastName}`}</TableCell>
-                        <TableCell>{formatDate(application.created_at)}</TableCell>
-                        <TableCell>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(application.status)}`}>
-                            {application.status.charAt(0).toUpperCase() + application.status.slice(1).replace("-", " ")}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {application.assistanceTypes.map((type) => (
-                              <span key={type} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs">
-                                {type}
-                              </span>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => viewApplicationDetails(application)}
+          {/* Applications Tabs and Table */}
+          <Card className="mb-6">
+            <CardHeader className="pb-2">
+              <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+                <TabsList>
+                  <TabsTrigger value="all" className="relative">
+                    All
+                    <Badge variant="secondary" className="ml-1">{applications.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="pending" className="relative">
+                    Pending
+                    <Badge variant="secondary" className="ml-1">
+                      {applications.filter(app => app.status === "pending").length}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="in-review" className="relative">
+                    In Review
+                    <Badge variant="secondary" className="ml-1">
+                      {applications.filter(app => app.status === "in-review").length}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="approved" className="relative">
+                    Approved
+                    <Badge variant="secondary" className="ml-1">
+                      {applications.filter(app => app.status === "approved").length}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="denied" className="relative">
+                    Denied
+                    <Badge variant="secondary" className="ml-1">
+                      {applications.filter(app => app.status === "denied").length}
+                    </Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="p-8 text-center">
+                  <RefreshCw className="h-8 w-8 animate-spin text-gray-400 mx-auto mb-4" />
+                  <p>Loading applications...</p>
+                </div>
+              ) : error ? (
+                <div className="p-8 text-center text-red-500">
+                  <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-4" />
+                  <p>Error loading applications</p>
+                </div>
+              ) : sortedApplications.length === 0 ? (
+                <div className="p-8 text-center">
+                  <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No applications found</p>
+                  <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
+                </div>
+              ) : (
+                <>
+                  {/* Bulk Action Controls */}
+                  {selectedItems.length > 0 && (
+                    <div className="bg-gray-50 p-3 rounded-lg mb-4 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Checkbox 
+                          id="select-all" 
+                          checked={selectedItems.length === sortedApplications.length}
+                          onCheckedChange={toggleSelectAll}
+                          className="mr-2"
+                        />
+                        <label htmlFor="select-all" className="text-sm text-gray-700">
+                          {selectedItems.length} of {sortedApplications.length} selected
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Select value={bulkAction} onValueChange={setBulkAction}>
+                          <SelectTrigger className="w-40">
+                            <SelectValue placeholder="Bulk Actions" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="approve">Mark as Approved</SelectItem>
+                            <SelectItem value="deny">Mark as Denied</SelectItem>
+                            <SelectItem value="review">Set to In-Review</SelectItem>
+                            <SelectItem value="export">Export Selected</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button 
+                          size="sm" 
+                          disabled={!bulkAction || selectedItems.length === 0} 
+                          onClick={handleBulkAction}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                
+                  {/* Applications Table */}
+                  <div className="overflow-x-auto border rounded-md">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">
+                            <Checkbox 
+                              checked={selectedItems.length === sortedApplications.length && sortedApplications.length > 0}
+                              onCheckedChange={toggleSelectAll}
+                            />
+                          </TableHead>
+                          <TableHead 
+                            className="cursor-pointer"
+                            onClick={() => handleSort("id")}
                           >
-                            <FileText className="h-4 w-4 mr-1" /> View Details
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </div>
+                            ID
+                            {sortBy.field === "id" && (
+                              <ChevronDown 
+                                className={`inline h-4 w-4 transition-transform ${
+                                  sortBy.direction === "desc" ? "rotate-180" : ""
+                                }`}
+                              />
+                            )}
+                          </TableHead>
+                          <TableHead 
+                            className="cursor-pointer"
+                            onClick={() => handleSort("lastName")}
+                          >
+                            Applicant Name
+                            {sortBy.field === "lastName" && (
+                              <ChevronDown 
+                                className={`inline h-4 w-4 transition-transform ${
+                                  sortBy.direction === "desc" ? "rotate-180" : ""
+                                }`}
+                              />
+                            )}
+                          </TableHead>
+                          <TableHead 
+                            className="cursor-pointer"
+                            onClick={() => handleSort("created_at")}
+                          >
+                            Submission Date
+                            {sortBy.field === "created_at" && (
+                              <ChevronDown 
+                                className={`inline h-4 w-4 transition-transform ${
+                                  sortBy.direction === "desc" ? "rotate-180" : ""
+                                }`}
+                              />
+                            )}
+                          </TableHead>
+                          <TableHead 
+                            className="cursor-pointer"
+                            onClick={() => handleSort("status")}
+                          >
+                            Status
+                            {sortBy.field === "status" && (
+                              <ChevronDown 
+                                className={`inline h-4 w-4 transition-transform ${
+                                  sortBy.direction === "desc" ? "rotate-180" : ""
+                                }`}
+                              />
+                            )}
+                          </TableHead>
+                          <TableHead>Assistance Types</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {sortedApplications.map((application) => (
+                          <TableRow key={application.id} className="group">
+                            <TableCell>
+                              <Checkbox 
+                                checked={selectedItems.includes(application.id)}
+                                onCheckedChange={() => toggleSelectItem(application.id)}
+                              />
+                            </TableCell>
+                            <TableCell className="font-medium">{application.id}</TableCell>
+                            <TableCell>
+                              <div>
+                                {`${application.firstName} ${application.lastName}`}
+                              </div>
+                              <div className="text-xs text-gray-500">{application.email}</div>
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">{formatDate(application.created_at)}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(application.status)}`}>
+                                {application.status.charAt(0).toUpperCase() + application.status.slice(1).replace("-", " ")}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {application.assistanceTypes.map((type) => (
+                                  <span key={type} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs">
+                                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                                  </span>
+                                ))}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="focus:ring-0">
+                                    <span>Actions</span> <ChevronDown className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => viewApplicationDetails(application)}>
+                                    <FileText className="h-4 w-4 mr-2" /> View Details
+                                  </DropdownMenuItem>
+                                  
+                                  <DropdownMenuSeparator />
+                                  
+                                  {application.status !== "approved" && (
+                                    <DropdownMenuItem onClick={() => {
+                                      setSelectedApplication(application);
+                                      setApplicationStatus("approved");
+                                      handleStatusUpdate();
+                                    }}>
+                                      <CheckCircle className="h-4 w-4 mr-2 text-green-600" /> Approve
+                                    </DropdownMenuItem>
+                                  )}
+                                  
+                                  {application.status !== "denied" && (
+                                    <DropdownMenuItem onClick={() => {
+                                      setSelectedApplication(application);
+                                      setApplicationStatus("denied");
+                                      handleStatusUpdate();
+                                    }}>
+                                      <XCircle className="h-4 w-4 mr-2 text-red-600" /> Deny
+                                    </DropdownMenuItem>
+                                  )}
+                                  
+                                  {application.status !== "in-review" && (
+                                    <DropdownMenuItem onClick={() => {
+                                      setSelectedApplication(application);
+                                      setApplicationStatus("in-review");
+                                      handleStatusUpdate();
+                                    }}>
+                                      <AlertCircle className="h-4 w-4 mr-2 text-yellow-600" /> Mark as In-Review
+                                    </DropdownMenuItem>
+                                  )}
+                                  
+                                  <DropdownMenuSeparator />
+                                  
+                                  <DropdownMenuItem>
+                                    <DownloadIcon className="h-4 w-4 mr-2" /> Export
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Application Detail Dialog */}
           <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
@@ -432,121 +816,162 @@ const AdminApplications = () => {
                   </DialogHeader>
                   
                   <div className="mt-6 space-y-8">
-                    {/* Applicant Information */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-3">Applicant Information</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Application Tabs */}
+                    <Tabs defaultValue="personal">
+                      <TabsList className="mb-4 w-full">
+                        <TabsTrigger value="personal" className="flex items-center">
+                          <UsersIcon className="h-4 w-4 mr-2" /> Personal Info
+                        </TabsTrigger>
+                        <TabsTrigger value="household" className="flex items-center">
+                          <HomeIcon className="h-4 w-4 mr-2" /> Household
+                        </TabsTrigger>
+                        <TabsTrigger value="assistance" className="flex items-center">
+                          <AlertCircle className="h-4 w-4 mr-2" /> Assistance
+                        </TabsTrigger>
+                        <TabsTrigger value="notes" className="flex items-center">
+                          <FileText className="h-4 w-4 mr-2" /> Notes & Status
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="personal">
+                        {/* Applicant Information */}
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Full Name</p>
-                          <p className="text-base">{`${selectedApplication.firstName} ${selectedApplication.lastName}`}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Date of Birth</p>
-                          <p className="text-base">{formatDate(selectedApplication.dateOfBirth)}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Email</p>
-                          <p className="text-base">{selectedApplication.email}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Phone</p>
-                          <p className="text-base">{selectedApplication.phone}</p>
-                        </div>
-                        <div className="md:col-span-2">
-                          <p className="text-sm font-medium text-gray-500">Address</p>
-                          <p className="text-base">
-                            {`${selectedApplication.address}, ${selectedApplication.city}, ${selectedApplication.state} ${selectedApplication.zipCode}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Household Members */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-3">Household Members</h3>
-                      {selectedApplication.householdMembers.length === 0 ? (
-                        <p className="text-gray-500">No household members listed</p>
-                      ) : (
-                        <div className="grid grid-cols-1 gap-4">
-                          {selectedApplication.householdMembers.map((member) => (
-                            <div key={member.id} className="bg-gray-50 p-3 rounded-md">
-                              <p className="font-medium">{`${member.firstName} ${member.lastName}`}</p>
-                              <p className="text-sm text-gray-500">{`${member.relationship} • DOB: ${formatDate(member.dateOfBirth)}`}</p>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3">Applicant Information</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Full Name</p>
+                              <p className="text-base">{`${selectedApplication.firstName} ${selectedApplication.lastName}`}</p>
                             </div>
-                          ))}
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Date of Birth</p>
+                              <p className="text-base">{formatDate(selectedApplication.dateOfBirth)}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Email</p>
+                              <p className="text-base">{selectedApplication.email}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Phone</p>
+                              <p className="text-base">{selectedApplication.phone}</p>
+                            </div>
+                            <div className="md:col-span-2">
+                              <p className="text-sm font-medium text-gray-500">Address</p>
+                              <p className="text-base">
+                                {`${selectedApplication.address}, ${selectedApplication.city}, ${selectedApplication.state} ${selectedApplication.zipCode}`}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
 
-                    {/* Emergency Contact */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-3">Emergency Contact</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Name</p>
-                          <p className="text-base">{`${selectedApplication.emergencyContact.firstName} ${selectedApplication.emergencyContact.lastName}`}</p>
+                        {/* Emergency Contact */}
+                        <div className="mt-6">
+                          <h3 className="text-lg font-medium text-gray-900 mb-3">Emergency Contact</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Name</p>
+                              <p className="text-base">{`${selectedApplication.emergencyContact.firstName} ${selectedApplication.emergencyContact.lastName}`}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Relationship</p>
+                              <p className="text-base">{selectedApplication.emergencyContact.relationship}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Phone</p>
+                              <p className="text-base">{selectedApplication.emergencyContact.phone}</p>
+                            </div>
+                            <div className="md:col-span-2">
+                              <p className="text-sm font-medium text-gray-500">Address</p>
+                              <p className="text-base">
+                                {`${selectedApplication.emergencyContact.address}, ${selectedApplication.emergencyContact.city}, ${selectedApplication.emergencyContact.state} ${selectedApplication.emergencyContact.zipCode}`}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Relationship</p>
-                          <p className="text-base">{selectedApplication.emergencyContact.relationship}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Phone</p>
-                          <p className="text-base">{selectedApplication.emergencyContact.phone}</p>
-                        </div>
-                        <div className="md:col-span-2">
-                          <p className="text-sm font-medium text-gray-500">Address</p>
-                          <p className="text-base">
-                            {`${selectedApplication.emergencyContact.address}, ${selectedApplication.emergencyContact.city}, ${selectedApplication.emergencyContact.state} ${selectedApplication.emergencyContact.zipCode}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Assistance Types */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-3">Requested Assistance</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedApplication.assistanceTypes.map((type) => (
-                          <span key={type} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Admin Actions */}
-                    <div className="border-t pt-6 space-y-4">
-                      <h3 className="text-lg font-medium text-gray-900">Admin Actions</h3>
+                      </TabsContent>
                       
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-500">Update Status</p>
-                        <Select
-                          value={applicationStatus}
-                          onValueChange={(value: Application["status"]) => setApplicationStatus(value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="in-review">In Review</SelectItem>
-                            <SelectItem value="approved">Approved</SelectItem>
-                            <SelectItem value="denied">Denied</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <TabsContent value="household">
+                        {/* Household Members */}
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3">Household Members</h3>
+                          {selectedApplication.householdMembers.length === 0 ? (
+                            <div className="bg-gray-50 p-6 rounded-md text-center">
+                              <p className="text-gray-500">No household members listed</p>
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 gap-4">
+                              {selectedApplication.householdMembers.map((member) => (
+                                <div key={member.id} className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                                  <div className="flex justify-between">
+                                    <p className="font-medium">{`${member.firstName} ${member.lastName}`}</p>
+                                    <p className="text-sm text-gray-500">
+                                      <CalendarIcon className="h-4 w-4 inline mr-1" />
+                                      {formatDate(member.dateOfBirth)}
+                                    </p>
+                                  </div>
+                                  <p className="text-sm text-gray-500 mt-1">{member.relationship}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </TabsContent>
                       
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-500">Admin Notes</p>
-                        <Textarea
-                          placeholder="Add internal notes about this application..."
-                          value={adminNote}
-                          onChange={(e) => setAdminNote(e.target.value)}
-                          rows={4}
-                        />
-                      </div>
-                    </div>
+                      <TabsContent value="assistance">
+                        {/* Assistance Types */}
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3">Requested Assistance</h3>
+                          <div className="flex flex-wrap gap-2 mb-6">
+                            {selectedApplication.assistanceTypes.map((type) => (
+                              <Badge key={type} variant="secondary" className="px-3 py-1.5 text-base bg-gray-100">
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          {/* Additional assistance details would go here */}
+                          <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                            <p className="text-sm text-gray-500">
+                              Additional details about requested assistance would be displayed here.
+                            </p>
+                          </div>
+                        </div>
+                      </TabsContent>
+                      
+                      <TabsContent value="notes">
+                        {/* Admin Actions */}
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-medium text-gray-900">Admin Actions</h3>
+                          
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium text-gray-500">Update Status</p>
+                            <Select
+                              value={applicationStatus}
+                              onValueChange={(value: Application["status"]) => setApplicationStatus(value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="in-review">In Review</SelectItem>
+                                <SelectItem value="approved">Approved</SelectItem>
+                                <SelectItem value="denied">Denied</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium text-gray-500">Admin Notes</p>
+                            <Textarea
+                              placeholder="Add internal notes about this application..."
+                              value={adminNote}
+                              onChange={(e) => setAdminNote(e.target.value)}
+                              rows={4}
+                            />
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </div>
                   
                   <DialogFooter className="mt-6 space-x-2">
