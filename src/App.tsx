@@ -1,4 +1,3 @@
-
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -70,6 +69,7 @@ const Time = lazy(() => import("./pages/Time"));
 const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
 const EmploymentApplication = lazy(() => import("./pages/EmploymentApplication"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminApplications = lazy(() => import("./pages/AdminApplications"));
 const UserManagement = lazy(() => import("./pages/UserManagement"));
 
 // Enhanced QueryClient configuration with proper TypeScript support
@@ -177,7 +177,10 @@ const App = () => (
               
               {/* Admin Routes */}
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/admin-applications" element={<AdminApplications />} />
               <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/admin-reports" element={<Navigate to="/coming-soon" />} />
+              <Route path="/admin-settings" element={<Navigate to="/coming-soon" />} />
               
               {/* Redirect routes for referenced but unimplemented pages */}
               <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
