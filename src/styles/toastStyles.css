@@ -1,17 +1,17 @@
 
 /* Custom Sonner Toast Styles */
 :root {
-  --toast-bg: rgba(226, 242, 255, 0.85);
+  --toast-bg: rgba(255, 255, 255, 0.98);
   --toast-text: #333;
-  --toast-border: rgba(30, 174, 219, 0.2);
-  --toast-success-bg: rgba(240, 253, 244, 0.9);
+  --toast-border: rgba(0, 0, 0, 0.1);
+  --toast-success-bg: rgba(255, 255, 255, 0.98);
   --toast-success-border: #10b981;
-  --toast-error-bg: rgba(254, 242, 242, 0.9);
+  --toast-error-bg: rgba(255, 255, 255, 0.98);
   --toast-error-border: #ef4444;
-  --toast-warning-bg: rgba(255, 251, 235, 0.9);
+  --toast-warning-bg: rgba(255, 255, 255, 0.98);
   --toast-warning-border: #f59e0b;
-  --toast-info-bg: rgba(214, 240, 255, 0.9);
-  --toast-info-border: #1EAEDB;
+  --toast-info-bg: rgba(255, 255, 255, 0.98);
+  --toast-info-border: #3b82f6;
 }
 
 /* Fix toast positioning to ensure it's always visible */
@@ -24,16 +24,14 @@
   max-width: 380px;
 }
 
-/* Base toast styling with frosted blue glass effect */
+/* Base toast styling to match the notification dropdown */
 [data-sonner-toast] {
   background-color: var(--toast-bg) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
   color: var(--toast-text) !important;
   border: 1px solid var(--toast-border) !important;
   padding: 1rem !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 4px 15px rgba(30, 174, 219, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   font-size: 0.9rem !important;
   margin-bottom: 0.75rem !important;
   max-width: 100% !important;
@@ -41,7 +39,6 @@
   line-height: 1.5 !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;
-  border-left: 3px solid #1EAEDB !important;
 }
 
 /* Success toast styling */
@@ -75,7 +72,7 @@
   font-size: 0.95rem !important;
   white-space: normal !important;
   line-height: 1.4 !important;
-  color: #0D6E97 !important;
+  color: #000 !important;
 }
 
 [data-sonner-toast] [data-description] {
@@ -86,30 +83,31 @@
   max-width: 100% !important;
   overflow-wrap: break-word !important;
   word-break: break-word !important;
+  color: #666 !important;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
-    --toast-bg: rgba(13, 110, 151, 0.25);
+    --toast-bg: rgba(30, 30, 30, 0.95);
     --toast-text: #f3f3f3;
-    --toast-border: rgba(30, 174, 219, 0.3);
-    --toast-success-bg: rgba(22, 101, 52, 0.25);
+    --toast-border: rgba(255, 255, 255, 0.1);
+    --toast-success-bg: rgba(30, 30, 30, 0.95);
     --toast-success-border: #10b981;
-    --toast-error-bg: rgba(153, 27, 27, 0.25);
+    --toast-error-bg: rgba(30, 30, 30, 0.95);
     --toast-error-border: #ef4444;
-    --toast-warning-bg: rgba(120, 53, 15, 0.25);
+    --toast-warning-bg: rgba(30, 30, 30, 0.95);
     --toast-warning-border: #f59e0b;
-    --toast-info-bg: rgba(30, 58, 138, 0.25);
+    --toast-info-bg: rgba(30, 30, 30, 0.95);
     --toast-info-border: #3b82f6;
   }
   
-  [data-sonner-toast] {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  [data-sonner-toast] [data-title] {
+    color: #fff !important;
   }
   
-  [data-sonner-toast] [data-title] {
-    color: #33C3F0 !important;
+  [data-sonner-toast] [data-description] {
+    color: #ccc !important;
   }
 }
 
@@ -134,10 +132,43 @@
 @keyframes toast-slide-in {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
+}
+
+/* Add icon styling for different toast types */
+[data-sonner-toast]::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 14px;
+}
+
+[data-sonner-toast][data-type="success"]::before {
+  background-color: rgba(16, 185, 129, 0.1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3E%3C/path%3E%3Cpolyline points='22 4 12 14.01 9 11.01'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+[data-sonner-toast][data-type="error"]::before {
+  background-color: rgba(239, 68, 68, 0.1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='15' y1='9' x2='9' y2='15'%3E%3C/line%3E%3Cline x1='9' y1='9' x2='15' y2='15'%3E%3C/line%3E%3C/svg%3E");
+}
+
+[data-sonner-toast][data-type="warning"]::before {
+  background-color: rgba(245, 158, 11, 0.1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'%3E%3C/path%3E%3Cline x1='12' y1='9' x2='12' y2='13'%3E%3C/line%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+}
+
+[data-sonner-toast][data-type="info"]::before {
+  background-color: rgba(59, 130, 246, 0.1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='16' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='8' x2='12.01' y2='8'%3E%3C/line%3E%3C/svg%3E");
 }
