@@ -3,7 +3,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
-import { NotificationsDemo } from "@/components/admin/NotificationsDemo";
 
 interface AdminDashboardLayoutProps {
   children: React.ReactNode;
@@ -26,11 +25,6 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
         <AdminSidebar />
         <main className="flex-1 p-6">
           {children}
-          
-          {/* Smaller notification demo in the corner */}
-          <div className="fixed bottom-4 right-4 w-72 z-10">
-            <NotificationsDemo />
-          </div>
         </main>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
 import DashboardHeader from "@/components/admin/DashboardHeader";
+import { NotificationsDemo } from "@/components/admin/NotificationsDemo";
 import { Settings, User, Bell, Shield, Database, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -127,87 +128,96 @@ const AdminSettings = () => {
         </TabsContent>
 
         <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>
-                Manage how and when you receive notifications
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Communication Channels</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-notifications">Email Notifications</Label>
-                      <p className="text-sm text-gray-500">
-                        Receive notifications via email
-                      </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Notification Preferences</CardTitle>
+                  <CardDescription>
+                    Manage how and when you receive notifications
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Communication Channels</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="email-notifications">Email Notifications</Label>
+                          <p className="text-sm text-gray-500">
+                            Receive notifications via email
+                          </p>
+                        </div>
+                        <Switch 
+                          id="email-notifications" 
+                          checked={emailNotifications}
+                          onCheckedChange={setEmailNotifications}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="sms-notifications">SMS Notifications</Label>
+                          <p className="text-sm text-gray-500">
+                            Receive notifications via text message
+                          </p>
+                        </div>
+                        <Switch 
+                          id="sms-notifications" 
+                          checked={smsNotifications}
+                          onCheckedChange={setSmsNotifications}
+                        />
+                      </div>
                     </div>
-                    <Switch 
-                      id="email-notifications" 
-                      checked={emailNotifications}
-                      onCheckedChange={setEmailNotifications}
-                    />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="sms-notifications">SMS Notifications</Label>
-                      <p className="text-sm text-gray-500">
-                        Receive notifications via text message
-                      </p>
-                    </div>
-                    <Switch 
-                      id="sms-notifications" 
-                      checked={smsNotifications}
-                      onCheckedChange={setSmsNotifications}
-                    />
-                  </div>
-                </div>
-              </div>
 
-              <Separator />
+                  <Separator />
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Notification Types</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="system-updates">System Updates</Label>
-                      <p className="text-sm text-gray-500">
-                        Notifications about system updates and maintenance
-                      </p>
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Notification Types</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="system-updates">System Updates</Label>
+                          <p className="text-sm text-gray-500">
+                            Notifications about system updates and maintenance
+                          </p>
+                        </div>
+                        <Switch 
+                          id="system-updates" 
+                          checked={systemUpdates}
+                          onCheckedChange={setSystemUpdates}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="application-alerts">Application Alerts</Label>
+                          <p className="text-sm text-gray-500">
+                            Notifications about new applications and status changes
+                          </p>
+                        </div>
+                        <Switch 
+                          id="application-alerts" 
+                          checked={applicationAlerts}
+                          onCheckedChange={setApplicationAlerts}
+                        />
+                      </div>
                     </div>
-                    <Switch 
-                      id="system-updates" 
-                      checked={systemUpdates}
-                      onCheckedChange={setSystemUpdates}
-                    />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="application-alerts">Application Alerts</Label>
-                      <p className="text-sm text-gray-500">
-                        Notifications about new applications and status changes
-                      </p>
-                    </div>
-                    <Switch 
-                      id="application-alerts" 
-                      checked={applicationAlerts}
-                      onCheckedChange={setApplicationAlerts}
-                    />
-                  </div>
-                </div>
-              </div>
 
-              <div className="flex justify-end">
-                <Button onClick={handleSavePreferences}>
-                  Save Preferences
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="flex justify-end">
+                    <Button onClick={handleSavePreferences}>
+                      Save Preferences
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Notification Demo Card */}
+            <div>
+              <NotificationsDemo />
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="security">
