@@ -12,6 +12,7 @@ interface AuthContextType {
   roleInfo: typeof ROLE_DEFINITIONS[keyof typeof ROLE_DEFINITIONS] | null;
   hasRole: (roles: string | string[]) => boolean;
   logout: () => Promise<void>;
+  login: (email: string, password: string, role: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType>({
   roleInfo: null,
   hasRole: () => false,
   logout: async () => {},
+  login: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -35,22 +37,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  // For demo purposes - in a real app this would come from the backend
   useEffect(() => {
-    // Mock user authentication
-    const mockUser: User = {
-      id: 'current-admin-id',
-      email: 'admin@example.com',
-      firstName: 'Admin',
-      lastName: 'User',
-      role: 'admin',
-      status: 'active',
-      created_at: new Date().toISOString(),
-      last_login: new Date().toISOString(),
-    };
+    // Check for a stored role in localStorage for persisting role between page refreshes
+    const storedRole = localStorage.getItem('userRole');
+    const storedUser = localStorage.getItem('user');
     
-    setUser(mockUser);
-    setUserRole(mockUser.role);
+    if (storedUser && storedRole) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setUserRole(storedRole);
+    }
+    
     setIsLoading(false);
     
     // In a real implementation, we would use Supabase auth
@@ -104,6 +101,45 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     */
   }, []);
 
+  // Mock login function for testing different roles
+  const login = async (email: string, password: string, role: string): Promise<void> => {
+    // For demo purposes, we'll accept any login credentials and just use the selected role
+    try {
+      // Mock user
+      const mockUser: User = {
+        id: `mock-${role}-id`,
+        email: email,
+        firstName: role.charAt(0).toUpperCase() + role.slice(1),
+        lastName: 'User',
+        role: role,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        last_login: new Date().toISOString(),
+      };
+      
+      setUser(mockUser);
+      setUserRole(role);
+      
+      // Store in localStorage for persistence
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('userRole', role);
+      
+      // In a real app, we would use Supabase auth
+      /*
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      */
+    } catch (error) {
+      console.error('Error during login:', error);
+      toast.error('Login failed');
+      throw error;
+    }
+  };
+
   // Check if user has a specific permission
   const hasPermission = (permission: string): boolean => {
     if (!user || !userRole) return false;
@@ -138,6 +174,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // For demo - just clear the user state
       setUser(null);
       setUserRole(null);
+      
+      // Remove from localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      
       toast.success('Logged out successfully');
     } catch (error) {
       console.error('Error during logout:', error);
@@ -155,7 +196,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       userRole, 
       roleInfo,
       hasRole,
-      logout
+      logout,
+      login
     }}>
       {children}
     </AuthContext.Provider>
