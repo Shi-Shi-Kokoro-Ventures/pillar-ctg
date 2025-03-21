@@ -9,6 +9,7 @@ interface RoleBasedLinkProps extends Omit<LinkProps, 'to'> {
   allowedRoles?: string[];
   requiredPermission?: string;
   hide?: boolean;
+  respectPerspective?: boolean; // New prop to check if we should respect perspective
 }
 
 /**
@@ -21,12 +22,16 @@ const RoleBasedLink = ({
   allowedRoles = [],
   requiredPermission,
   hide = false,
+  respectPerspective = true, // Default to respecting perspective
   ...rest
 }: RoleBasedLinkProps) => {
-  const { hasRole, hasPermission } = useAuth();
+  const { hasRole, hasPermission, perspectiveRole } = useAuth();
+  
+  // Determine which role to check
+  const roleToCheck = respectPerspective ? perspectiveRole : undefined;
   
   const hasAccess = (
-    (allowedRoles.length === 0 || hasRole(allowedRoles)) &&
+    (allowedRoles.length === 0 || hasRole(allowedRoles, roleToCheck)) &&
     (!requiredPermission || hasPermission(requiredPermission))
   );
   

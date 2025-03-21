@@ -7,13 +7,21 @@ import { ROLE_DEFINITIONS } from '@/types/user';
  * Provides consistent interface for checking permissions throughout the application
  */
 export function useRolePermissions() {
-  const { userRole, hasPermission: authHasPermission, hasRole: authHasRole } = useAuth();
+  const { 
+    userRole, 
+    perspectiveRole,
+    hasPermission: authHasPermission, 
+    hasRole: authHasRole 
+  } = useAuth();
   
-  // Get all permissions for the current user role
+  // Get effective role - perspective role if available, otherwise user role
+  const effectiveRole = perspectiveRole || userRole;
+  
+  // Get all permissions for the current effective role
   const getAllPermissions = () => {
-    if (!userRole) return [];
+    if (!effectiveRole) return [];
     
-    const roleInfo = ROLE_DEFINITIONS[userRole];
+    const roleInfo = ROLE_DEFINITIONS[effectiveRole];
     if (!roleInfo) return [];
     
     return roleInfo.permissions
@@ -41,10 +49,10 @@ export function useRolePermissions() {
   
   // Get user's role display name
   const getRoleDisplayName = (): string => {
-    if (!userRole) return 'Unknown';
+    if (!effectiveRole) return 'Unknown';
     
-    const roleInfo = ROLE_DEFINITIONS[userRole];
-    return roleInfo ? roleInfo.name : userRole;
+    const roleInfo = ROLE_DEFINITIONS[effectiveRole];
+    return roleInfo ? roleInfo.name : effectiveRole;
   };
   
   return {

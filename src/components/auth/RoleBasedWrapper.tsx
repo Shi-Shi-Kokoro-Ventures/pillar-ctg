@@ -10,6 +10,7 @@ interface RoleBasedWrapperProps {
   requiredPermission?: string;
   fallbackPath?: string;
   showDeniedMessage?: boolean;
+  respectPerspective?: boolean; // New prop to check if we should respect perspective role
 }
 
 const RoleBasedWrapper = ({
@@ -18,8 +19,9 @@ const RoleBasedWrapper = ({
   requiredPermission,
   fallbackPath = '/admin-dashboard',
   showDeniedMessage = true,
+  respectPerspective = true, // Default to respecting perspective
 }: RoleBasedWrapperProps) => {
-  const { user, isLoading, hasPermission, userRole, roleInfo } = useAuth();
+  const { user, isLoading, hasPermission, userRole, perspectiveRole, roleInfo } = useAuth();
 
   if (isLoading) {
     return (
@@ -34,8 +36,11 @@ const RoleBasedWrapper = ({
     return <Navigate to="/login" replace />;
   }
 
+  // Determine which role to check against
+  const roleToCheck = respectPerspective ? perspectiveRole || userRole : userRole;
+
   // Check role-based access
-  const hasRoleAccess = allowedRoles.length === 0 || (userRole && allowedRoles.includes(userRole));
+  const hasRoleAccess = allowedRoles.length === 0 || (roleToCheck && allowedRoles.includes(roleToCheck));
   
   // Check permission-based access
   const hasPermissionAccess = !requiredPermission || hasPermission(requiredPermission);

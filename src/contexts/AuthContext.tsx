@@ -9,8 +9,10 @@ interface AuthContextType {
   isLoading: boolean;
   hasPermission: (permission: string) => boolean;
   userRole: string | null;
+  perspectiveRole: string | null; // Add perspectiveRole to context
+  setPerspectiveRole: (role: string | null) => void; // Add setter for perspectiveRole
   roleInfo: typeof ROLE_DEFINITIONS[keyof typeof ROLE_DEFINITIONS] | null;
-  hasRole: (roles: string | string[]) => boolean;
+  hasRole: (roles: string | string[], checkRole?: string | null) => boolean;
   logout: () => Promise<void>;
 }
 
@@ -19,6 +21,8 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   hasPermission: () => false,
   userRole: null,
+  perspectiveRole: null,
+  setPerspectiveRole: () => {},
   roleInfo: null,
   hasRole: () => false,
   logout: async () => {},
@@ -34,6 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [perspectiveRole, setPerspectiveRole] = useState<string | null>(null);
 
   // For demo purposes - in a real app this would come from the backend
   useEffect(() => {
@@ -51,6 +56,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     setUser(mockUser);
     setUserRole(mockUser.role);
+    setPerspectiveRole(mockUser.role); // Initialize perspective role with user role
     setIsLoading(false);
     
     // In a real implementation, we would use Supabase auth
@@ -106,9 +112,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Check if user has a specific permission
   const hasPermission = (permission: string): boolean => {
-    if (!user || !userRole) return false;
+    if (!user) return false;
     
-    const rolePermissions = ROLE_DEFINITIONS[userRole as keyof typeof ROLE_DEFINITIONS];
+    // Use perspective role if available, otherwise use actual role
+    const roleToUse = perspectiveRole || userRole;
+    if (!roleToUse) return false;
+    
+    const rolePermissions = ROLE_DEFINITIONS[roleToUse as keyof typeof ROLE_DEFINITIONS];
     if (!rolePermissions) return false;
     
     const permissionObj = rolePermissions.permissions.find(p => p.name === permission);
@@ -116,14 +126,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   // Check if user has one of the specified roles
-  const hasRole = (roles: string | string[]): boolean => {
-    if (!userRole) return false;
+  const hasRole = (roles: string | string[], checkRole?: string | null): boolean => {
+    // Determine which role to check against
+    const roleToCheck = checkRole || perspectiveRole || userRole;
+    
+    if (!roleToCheck) return false;
     
     if (typeof roles === 'string') {
-      return userRole === roles;
+      return roleToCheck === roles;
     }
     
-    return roles.includes(userRole);
+    return roles.includes(roleToCheck);
   };
 
   // Logout function
@@ -138,6 +151,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // For demo - just clear the user state
       setUser(null);
       setUserRole(null);
+      setPerspectiveRole(null); // Clear perspective role on logout
       toast.success('Logged out successfully');
     } catch (error) {
       console.error('Error during logout:', error);
@@ -145,7 +159,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const roleInfo = userRole ? ROLE_DEFINITIONS[userRole as keyof typeof ROLE_DEFINITIONS] : null;
+  // Use perspective role for roleInfo if available, otherwise use actual role
+  const roleToUse = perspectiveRole || userRole;
+  const roleInfo = roleToUse ? ROLE_DEFINITIONS[roleToUse as keyof typeof ROLE_DEFINITIONS] : null;
 
   return (
     <AuthContext.Provider value={{ 
@@ -153,6 +169,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       isLoading, 
       hasPermission, 
       userRole, 
+      perspectiveRole,
+      setPerspectiveRole,
       roleInfo,
       hasRole,
       logout

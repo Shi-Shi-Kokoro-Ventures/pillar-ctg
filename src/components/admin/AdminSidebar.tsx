@@ -155,18 +155,15 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
   return [...commonItems, ...(role && roleItems[role] ? roleItems[role] : [])];
 };
 
-interface AdminSidebarProps {
-  perspectiveRole?: string | null;
-}
-
-const AdminSidebar = ({ perspectiveRole }: AdminSidebarProps) => {
+const AdminSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { userRole, roleInfo } = useAuth();
+  const { userRole, perspectiveRole, roleInfo } = useAuth();
   const { getRoleDisplayName } = useRolePermissions();
   
-  // If perspectiveRole is provided and the user is an admin, use that role for the sidebar
+  // Use perspectiveRole from auth context
+  // If user is admin and has set a perspective role, use that role for the sidebar
   // Otherwise use the user's actual role
   const displayRole = (perspectiveRole && userRole === 'admin') ? perspectiveRole : userRole;
 

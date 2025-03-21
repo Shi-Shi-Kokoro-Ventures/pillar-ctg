@@ -6,6 +6,7 @@ interface PermissionGuardProps {
   children: ReactNode;
   permission: string;
   fallback?: ReactNode;
+  respectPerspective?: boolean; // New prop to check if we should respect perspective
 }
 
 /**
@@ -15,7 +16,8 @@ interface PermissionGuardProps {
 const PermissionGuard = ({ 
   children, 
   permission, 
-  fallback = null 
+  fallback = null,
+  respectPerspective = true // Default to respecting perspective
 }: PermissionGuardProps) => {
   const { hasPermission } = useAuth();
   

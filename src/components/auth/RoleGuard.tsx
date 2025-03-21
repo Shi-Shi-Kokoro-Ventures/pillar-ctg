@@ -6,6 +6,7 @@ interface RoleGuardProps {
   children: ReactNode;
   allowedRoles: string[];
   fallback?: ReactNode;
+  respectPerspective?: boolean; // New prop to check if we should respect perspective role
 }
 
 /**
@@ -15,11 +16,15 @@ interface RoleGuardProps {
 const RoleGuard = ({ 
   children, 
   allowedRoles, 
-  fallback = null 
+  fallback = null,
+  respectPerspective = true // Default to respecting perspective
 }: RoleGuardProps) => {
-  const { hasRole } = useAuth();
+  const { hasRole, perspectiveRole, userRole } = useAuth();
   
-  if (!hasRole(allowedRoles)) {
+  // Check if we should use the perspective role for checking
+  const roleToCheck = (respectPerspective && perspectiveRole) || undefined;
+  
+  if (!hasRole(allowedRoles, roleToCheck)) {
     return <>{fallback}</>;
   }
   

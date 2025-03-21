@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
@@ -15,13 +15,19 @@ interface AdminDashboardLayoutProps {
 }
 
 const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children }) => {
-  const { userRole, roleInfo } = useAuth();
-  const [perspective, setPerspective] = useState<string | null>(userRole);
+  const { userRole, perspectiveRole, setPerspectiveRole, roleInfo } = useAuth();
   const isAdmin = userRole === 'admin';
+
+  // Use perspectiveRole from auth context instead of local state
+  useEffect(() => {
+    if (!perspectiveRole && userRole) {
+      setPerspectiveRole(userRole);
+    }
+  }, [userRole, perspectiveRole, setPerspectiveRole]);
 
   // Only show perspective options for admin users
   const handlePerspectiveChange = (value: string) => {
-    setPerspective(value);
+    setPerspectiveRole(value);
     toast.info(`Viewing dashboard as ${ROLE_DEFINITIONS[value as keyof typeof ROLE_DEFINITIONS]?.name || value}`, {
       description: "This is a view-only perspective change. Your admin permissions remain active.",
       duration: 3000,
@@ -42,7 +48,7 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
                   <Button variant="outline" size="sm" className="h-9 gap-1 border-dashed">
                     <Shield className="h-4 w-4 text-blue-600" />
                     <span>
-                      View as: <span className="font-semibold">{ROLE_DEFINITIONS[perspective as keyof typeof ROLE_DEFINITIONS]?.name || perspective}</span>
+                      View as: <span className="font-semibold">{ROLE_DEFINITIONS[perspectiveRole as keyof typeof ROLE_DEFINITIONS]?.name || perspectiveRole}</span>
                     </span>
                     <ChevronsUpDown className="h-3.5 w-3.5 opacity-50" />
                   </Button>
@@ -55,12 +61,12 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
                     {Object.entries(ROLE_DEFINITIONS).map(([key, role]) => (
                       <Button
                         key={key}
-                        variant={perspective === key ? "secondary" : "ghost"}
+                        variant={perspectiveRole === key ? "secondary" : "ghost"}
                         className="w-full justify-start text-left mb-1"
                         onClick={() => handlePerspectiveChange(key)}
                       >
                         <div className="flex items-center">
-                          <span className={`h-2 w-2 rounded-full mr-2 ${perspective === key ? 'bg-blue-600' : 'bg-gray-300'}`}></span>
+                          <span className={`h-2 w-2 rounded-full mr-2 ${perspectiveRole === key ? 'bg-blue-600' : 'bg-gray-300'}`}></span>
                           {role.name}
                         </div>
                       </Button>
@@ -79,17 +85,17 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
         </div>
       </header>
       <div className="flex">
-        <AdminSidebar perspectiveRole={isAdmin ? perspective : userRole} />
+        <AdminSidebar />
         <main className="flex-1 p-6">
-          {isAdmin && perspective !== 'admin' && (
+          {isAdmin && perspectiveRole !== 'admin' && (
             <div className="mb-6 bg-blue-50 border border-blue-100 rounded-md p-3 text-sm text-blue-700 flex items-center">
               <Shield className="h-5 w-5 mr-2 text-blue-500" />
               <span>
                 <strong>Admin Mode:</strong> You are viewing the dashboard as{" "}
-                <span className="font-medium">{ROLE_DEFINITIONS[perspective as keyof typeof ROLE_DEFINITIONS]?.name}</span>.
+                <span className="font-medium">{ROLE_DEFINITIONS[perspectiveRole as keyof typeof ROLE_DEFINITIONS]?.name}</span>.
                 Your admin privileges remain active.
               </span>
-              <Button variant="link" className="ml-auto text-blue-600" onClick={() => setPerspective('admin')}>
+              <Button variant="link" className="ml-auto text-blue-600" onClick={() => setPerspectiveRole('admin')}>
                 Return to Admin View
               </Button>
             </div>
