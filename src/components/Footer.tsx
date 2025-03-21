@@ -1,7 +1,32 @@
-import React from "react";
-import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
+
+import React, { useState, useEffect } from "react";
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, ChevronRight, Mail, Phone, MapPin, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+
 const Footer = () => {
+  const [accessibilityVisible, setAccessibilityVisible] = useState(false);
+  
+  useEffect(() => {
+    // Check if accessibility features were previously enabled
+    const savedVisibility = localStorage.getItem('accessibility_visible');
+    setAccessibilityVisible(savedVisibility === 'true');
+  }, []);
+  
+  const toggleAccessibility = () => {
+    const newVisibility = !accessibilityVisible;
+    setAccessibilityVisible(newVisibility);
+    localStorage.setItem('accessibility_visible', newVisibility.toString());
+
+    // Trigger an event so AccessibilityControls component can react to this change
+    const event = new CustomEvent('accessibilityToggled', {
+      detail: {
+        visible: newVisibility
+      }
+    });
+    window.dispatchEvent(event);
+  };
+
   return <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
@@ -99,6 +124,20 @@ const Footer = () => {
                 <a href="mailto:info@pillarinitiativectg.org" className="text-gray-300 hover:text-white transition-colors">
                   info@pillarinitiativectg.org
                 </a>
+              </li>
+              <li className="flex items-center mt-5">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={toggleAccessibility} 
+                  aria-label={accessibilityVisible ? "Disable accessibility features" : "Enable accessibility features"} 
+                  className="flex items-center gap-1.5 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg"
+                >
+                  <Settings className="h-4 w-4" />
+                  <span className="text-xs font-medium">
+                    {accessibilityVisible ? "Accessibility On" : "Accessibility"}
+                  </span>
+                </Button>
               </li>
             </ul>
           </div>

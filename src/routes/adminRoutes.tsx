@@ -8,12 +8,14 @@ const AdminApplications = lazy(() => import("../pages/AdminApplications"));
 const UserManagement = lazy(() => import("../pages/UserManagement"));
 const AddUser = lazy(() => import("../pages/AddUser"));
 const ComingSoon = lazy(() => import("../pages/ComingSoon"));
+const Login = lazy(() => import("../pages/Login"));
 
 /**
  * Admin routes configuration
  * Groups all admin-related routes for better organization
  */
 export const adminRoutes = [
+  <Route key="login" path="/login" element={<Login />} />,
   <Route key="admin-dashboard" path="/admin-dashboard" element={<DashboardRouter />} />,
   <Route key="admin-applications" path="/admin-applications" element={<AdminApplications />} />,
   <Route key="user-management" path="/user-management" element={<UserManagement />} />,

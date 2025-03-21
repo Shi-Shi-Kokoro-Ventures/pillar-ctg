@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const hasPermission = (permission: string): boolean => {
     if (!user || !userRole) return false;
     
-    const rolePermissions = ROLE_DEFINITIONS[userRole];
+    const rolePermissions = ROLE_DEFINITIONS[userRole as keyof typeof ROLE_DEFINITIONS];
     if (!rolePermissions) return false;
     
     const permissionObj = rolePermissions.permissions.find(p => p.name === permission);
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const roleInfo = userRole ? ROLE_DEFINITIONS[userRole] : null;
+  const roleInfo = userRole ? ROLE_DEFINITIONS[userRole as keyof typeof ROLE_DEFINITIONS] : null;
 
   return (
     <AuthContext.Provider value={{ 

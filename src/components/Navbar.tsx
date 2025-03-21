@@ -1,17 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu, Search, X, Settings } from "lucide-react";
+import { ChevronDown, Menu, Search, X, LogIn, LogOut, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+
 export const Navbar = () => {
+  const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSubmenu, setActiveSubmenu] = useState<number | null>(null);
-  const [accessibilityVisible, setAccessibilityVisible] = useState(false);
   const location = useLocation();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [accessibilityVisible, setAccessibilityVisible] = useState(false);
+
   useEffect(() => {
     // Check if accessibility features were previously enabled
     const savedVisibility = localStorage.getItem('accessibility_visible');
@@ -28,18 +32,21 @@ export const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   useEffect(() => {
     // Close mobile menu when route changes
     setMobileMenuOpen(false);
     // Reset active submenu when route changes
     setActiveSubmenu(null);
   }, [location.pathname]);
+
   useEffect(() => {
     // Focus search input when opened
     if (searchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [searchOpen]);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Implement search functionality here
@@ -47,6 +54,7 @@ export const Navbar = () => {
     setSearchOpen(false);
     setSearchQuery("");
   };
+
   const toggleAccessibility = () => {
     const newVisibility = !accessibilityVisible;
     setAccessibilityVisible(newVisibility);
@@ -60,6 +68,7 @@ export const Navbar = () => {
     });
     window.dispatchEvent(event);
   };
+
   const menuItems = [{
     title: "Housing Services",
     submenu: [{
@@ -151,9 +160,15 @@ export const Navbar = () => {
       link: "/contact-us"
     }]
   }];
+
   const toggleSubmenu = (index: number) => {
     setActiveSubmenu(activeSubmenu === index ? null : index);
   };
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return <header className={cn("fixed top-0 w-full z-50 transition-all duration-500", isScrolled ? "bg-white/95 shadow-lg backdrop-blur-md py-2" : "bg-white/70 backdrop-blur-sm py-3")}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -200,13 +215,30 @@ export const Navbar = () => {
                 </button>}
             </div>
 
-            {/* Accessibility Toggle Button */}
-            <Button variant="outline" size="sm" onClick={toggleAccessibility} aria-label={accessibilityVisible ? "Disable accessibility features" : "Enable accessibility features"} className="hidden sm:flex items-center gap-1.5 border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg">
-              <Settings className="h-4 w-4" />
-              <span className="text-xs font-medium">
-                {accessibilityVisible ? "Accessibility On" : "Accessibility"}
-              </span>
-            </Button>
+            {/* Login/Logout Button - Replacing accessibility button */}
+            {user ? (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleLogout} 
+                className="hidden sm:flex items-center gap-1.5 border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-xs font-medium">Logout</span>
+              </Button>
+            ) : (
+              <Button 
+                asChild
+                variant="outline" 
+                size="sm" 
+                className="hidden sm:flex items-center gap-1.5 border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg"
+              >
+                <Link to="/login">
+                  <LogIn className="h-4 w-4" />
+                  <span className="text-xs font-medium">Login</span>
+                </Link>
+              </Button>
+            )}
 
             {/* Donate Button */}
             <Button asChild className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-full px-5 py-2.5 shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:-translate-y-0.5 button-hover-glow">
@@ -236,14 +268,29 @@ export const Navbar = () => {
                 </div>
               </div>)}
             
-            {/* Mobile Accessibility Toggle */}
+            {/* Mobile Login/Logout Button */}
             <div className="pt-3">
-              <Button variant="outline" className="w-full flex items-center justify-center gap-2 py-2.5 border-blue-200 text-blue-600 hover:bg-blue-50" onClick={toggleAccessibility}>
-                <Settings className="h-4 w-4" />
-                <span>
-                  {accessibilityVisible ? "Disable Accessibility" : "Enable Accessibility"}
-                </span>
-              </Button>
+              {user ? (
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 border-blue-200 text-blue-600 hover:bg-blue-50"
+                >
+                  <Link to="/login">
+                    <LogIn className="h-4 w-4" />
+                    <span>Login</span>
+                  </Link>
+                </Button>
+              )}
             </div>
 
             {/* Mobile Donate Button */}
@@ -256,4 +303,5 @@ export const Navbar = () => {
         </div>}
     </header>;
 };
+
 export default Navbar;
