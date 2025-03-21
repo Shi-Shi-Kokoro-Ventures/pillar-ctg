@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navigationItems } from "@/data/navigation";
@@ -141,4 +142,5 @@ const Navbar = () => {
   );
 };
 
+// Add default export for Navbar
 export default Navbar;

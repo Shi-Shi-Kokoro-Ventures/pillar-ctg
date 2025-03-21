@@ -1,5 +1,6 @@
+
 import React from "react";
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Shield, Lock, FileText, Info, Search } from "lucide-react";
 import { cn } from "@/lib/utils";

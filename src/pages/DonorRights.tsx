@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Gift, Check, Shield, FileText, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
