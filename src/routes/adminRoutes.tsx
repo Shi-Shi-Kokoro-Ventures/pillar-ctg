@@ -34,7 +34,7 @@ export const adminRoutes = [
   <Route key="admin-reports" path="/admin-reports" element={<AdminReports />} />,
   <Route key="admin-settings" path="/admin-settings" element={<AdminSettings />} />,
   
-  {/* Role-specific routes */}
+  // Role-specific routes
   <Route key="team-management" path="/team-management" element={<TeamManagement />} />,
   <Route key="department-resources" path="/department-resources" element={<DepartmentResources />} />,
   <Route key="my-cases" path="/my-cases" element={<MyCases />} />,
