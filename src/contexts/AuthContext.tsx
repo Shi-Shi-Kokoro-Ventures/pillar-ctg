@@ -8,11 +8,11 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   hasPermission: (permission: string) => boolean;
-  userRole: "admin" | "manager" | "case-worker" | "viewer" | null;
+  userRole: string | null;
   roleInfo: typeof ROLE_DEFINITIONS[keyof typeof ROLE_DEFINITIONS] | null;
   hasRole: (roles: string | string[]) => boolean;
   logout: () => Promise<void>;
-  login: (email: string, password: string, role: "admin" | "manager" | "case-worker" | "viewer") => Promise<void>;
+  login: (email: string, password: string, role: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -35,7 +35,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState<"admin" | "manager" | "case-worker" | "viewer" | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     // Check for a stored role in localStorage for persisting role between page refreshes
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (storedUser && storedRole) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      setUserRole(storedRole as "admin" | "manager" | "case-worker" | "viewer");
+      setUserRole(storedRole);
     }
     
     setIsLoading(false);
@@ -102,16 +102,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   // Mock login function for testing different roles
-  const login = async (email: string, password: string, role: "admin" | "manager" | "case-worker" | "viewer"): Promise<void> => {
+  const login = async (email: string, password: string, role: string): Promise<void> => {
     // For demo purposes, we'll accept any login credentials and just use the selected role
     try {
+      // Make sure role is one of the valid types
+      const validatedRole = role as 'admin' | 'manager' | 'case-worker' | 'viewer';
+      
       // Mock user
       const mockUser: User = {
         id: `mock-${role}-id`,
         email: email,
         firstName: role.charAt(0).toUpperCase() + role.slice(1),
         lastName: 'User',
-        role: role,
+        role: validatedRole,
         status: 'active',
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString(),
