@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { TeamMember } from './TeamMemberForm';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { ChartLineUp, ChartBar, Gauge, Activity } from 'lucide-react';
+import { ChartLine, ChartBar, Gauge, Activity } from 'lucide-react';
 
 interface TeamPerformanceMetricsProps {
   members: TeamMember[];
@@ -109,7 +109,7 @@ const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
         
         <div className="bg-white p-4 rounded-lg border shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <ChartLineUp className="h-5 w-5 text-green-600" />
+            <ChartLine className="h-5 w-5 text-green-600" />
             <h3 className="text-sm font-medium text-gray-700">Avg. Resolution Time</h3>
           </div>
           <p className="text-2xl font-bold">8.3 days</p>
