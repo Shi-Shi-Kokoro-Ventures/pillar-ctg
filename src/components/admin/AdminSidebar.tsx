@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -75,12 +76,12 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
       {
         title: "Team Management",
         icon: UserCircle,
-        href: "/admin-applications",
+        href: "/team-management", // Fixed: Changed from '/admin-applications' to '/team-management'
       },
       {
         title: "Department Resources",
         icon: Building,
-        href: "/admin-reports",
+        href: "/department-resources", // Fixed: Changed from '/admin-reports' to '/department-resources'
       },
       {
         title: "Applications",
@@ -98,18 +99,18 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
       {
         title: "My Cases",
         icon: ClipboardList,
-        href: "/admin-applications", 
+        href: "/my-cases", // Fixed: Changed from '/admin-applications' to '/my-cases'
         badge: 8,
       },
       {
         title: "Calendar",
         icon: Calendar,
-        href: "/admin-reports",
+        href: "/calendar", // Fixed: Changed from '/admin-reports' to '/calendar'
       },
       {
         title: "Resources",
         icon: SearchCheck,
-        href: "/admin-settings",
+        href: "/resources", // Fixed: Changed from '/admin-settings' to '/resources'
       },
     ],
     'viewer': [
@@ -121,7 +122,7 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
       {
         title: "Documents",
         icon: FileText,
-        href: "/admin-applications",
+        href: "/documents", // Fixed: Changed from '/admin-applications' to '/documents'
       },
     ],
   };
