@@ -1,17 +1,17 @@
 
 /* Custom Sonner Toast Styles */
 :root {
-  --toast-bg: rgba(255, 255, 255, 0.95);
+  --toast-bg: rgba(226, 242, 255, 0.85);
   --toast-text: #333;
-  --toast-border: rgba(0, 0, 0, 0.1);
-  --toast-success-bg: rgba(240, 253, 244, 0.98);
+  --toast-border: rgba(30, 174, 219, 0.2);
+  --toast-success-bg: rgba(240, 253, 244, 0.9);
   --toast-success-border: #10b981;
-  --toast-error-bg: rgba(254, 242, 242, 0.98);
+  --toast-error-bg: rgba(254, 242, 242, 0.9);
   --toast-error-border: #ef4444;
-  --toast-warning-bg: rgba(255, 251, 235, 0.98);
+  --toast-warning-bg: rgba(255, 251, 235, 0.9);
   --toast-warning-border: #f59e0b;
-  --toast-info-bg: rgba(239, 246, 255, 0.98);
-  --toast-info-border: #3b82f6;
+  --toast-info-bg: rgba(214, 240, 255, 0.9);
+  --toast-info-border: #1EAEDB;
 }
 
 /* Fix toast positioning to ensure it's always visible */
@@ -24,14 +24,16 @@
   max-width: 380px;
 }
 
-/* Base toast styling with cleaner design */
+/* Base toast styling with frosted blue glass effect */
 [data-sonner-toast] {
   background-color: var(--toast-bg) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   color: var(--toast-text) !important;
   border: 1px solid var(--toast-border) !important;
   padding: 1rem !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 15px rgba(30, 174, 219, 0.2) !important;
   font-size: 0.9rem !important;
   margin-bottom: 0.75rem !important;
   max-width: 100% !important;
@@ -39,6 +41,7 @@
   line-height: 1.5 !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;
+  border-left: 3px solid #1EAEDB !important;
 }
 
 /* Success toast styling */
@@ -72,6 +75,7 @@
   font-size: 0.95rem !important;
   white-space: normal !important;
   line-height: 1.4 !important;
+  color: #0D6E97 !important;
 }
 
 [data-sonner-toast] [data-description] {
@@ -87,23 +91,32 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
-    --toast-bg: rgba(30, 30, 30, 0.95);
+    --toast-bg: rgba(13, 110, 151, 0.25);
     --toast-text: #f3f3f3;
-    --toast-border: rgba(255, 255, 255, 0.1);
-    --toast-success-bg: rgba(22, 101, 52, 0.9);
+    --toast-border: rgba(30, 174, 219, 0.3);
+    --toast-success-bg: rgba(22, 101, 52, 0.25);
     --toast-success-border: #10b981;
-    --toast-error-bg: rgba(153, 27, 27, 0.9);
+    --toast-error-bg: rgba(153, 27, 27, 0.25);
     --toast-error-border: #ef4444;
-    --toast-warning-bg: rgba(120, 53, 15, 0.9);
+    --toast-warning-bg: rgba(120, 53, 15, 0.25);
     --toast-warning-border: #f59e0b;
-    --toast-info-bg: rgba(30, 58, 138, 0.9);
+    --toast-info-bg: rgba(30, 58, 138, 0.25);
     --toast-info-border: #3b82f6;
+  }
+  
+  [data-sonner-toast] {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  [data-sonner-toast] [data-title] {
+    color: #33C3F0 !important;
   }
 }
 
 /* Add a minimum height to prevent layout shifts */
 [data-sonner-toast] {
   min-height: 3.5rem !important;
+  transition: all 0.3s ease !important;
 }
 
 /* Fix placement and spacing of close button */
@@ -111,4 +124,20 @@
   top: 0.75rem !important;
   right: 0.75rem !important;
   opacity: 0.6 !important;
+}
+
+/* Add subtle animation for the toast */
+[data-sonner-toast][data-state="open"] {
+  animation: toast-slide-in 0.35s ease forwards !important;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
