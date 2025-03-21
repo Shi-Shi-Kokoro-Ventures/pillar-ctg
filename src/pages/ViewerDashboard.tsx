@@ -29,14 +29,14 @@ const ViewerDashboard = () => {
       value: "12",
       change: { value: 0, isPositive: true },
       icon: <BarChart3 className="h-5 w-5" />,
-      accentColor: "purple",
+      accentColor: "red", // Changed from "purple" to "red"
     },
     {
       title: "Resources",
       value: "48",
       change: { value: 5, isPositive: true },
       icon: <Search className="h-5 w-5" />,
-      accentColor: "amber",
+      accentColor: "yellow", // Changed from "amber" to "yellow"
     },
   ];
 

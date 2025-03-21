@@ -24,7 +24,7 @@ const CaseWorkerDashboard = () => {
       value: "4",
       change: { value: 1, isPositive: false },
       icon: <ClipboardList className="h-5 w-5" />,
-      accentColor: "amber",
+      accentColor: "yellow", // Changed from "amber" to "yellow"
     },
     {
       title: "Follow-ups Today",

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BarChart3, Users, Briefcase, Calendar } from "lucide-react";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
@@ -39,7 +38,7 @@ const ManagerDashboard = () => {
       value: "94%",
       change: { value: 2, isPositive: true },
       icon: <BarChart3 className="h-5 w-5" />,
-      accentColor: "purple",
+      accentColor: "red", // Changed from "purple" to "red"
     },
   ];
 
