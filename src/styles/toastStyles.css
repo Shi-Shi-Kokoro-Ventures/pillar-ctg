@@ -1,16 +1,16 @@
 
 /* Custom Sonner Toast Styles */
 :root {
-  --toast-bg: rgba(255, 255, 255, 0.9);
+  --toast-bg: rgba(255, 255, 255, 0.95);
   --toast-text: #333;
   --toast-border: rgba(0, 0, 0, 0.1);
-  --toast-success-bg: rgba(235, 251, 244, 0.95);
+  --toast-success-bg: rgba(240, 253, 244, 0.98);
   --toast-success-border: #10b981;
-  --toast-error-bg: rgba(254, 242, 242, 0.95);
+  --toast-error-bg: rgba(254, 242, 242, 0.98);
   --toast-error-border: #ef4444;
-  --toast-warning-bg: rgba(255, 251, 235, 0.95);
+  --toast-warning-bg: rgba(255, 251, 235, 0.98);
   --toast-warning-border: #f59e0b;
-  --toast-info-bg: rgba(239, 246, 255, 0.95);
+  --toast-info-bg: rgba(239, 246, 255, 0.98);
   --toast-info-border: #3b82f6;
 }
 
@@ -21,23 +21,24 @@
   right: 1rem;
   z-index: 100;
   width: auto !important;
-  max-width: 420px;
+  max-width: 380px;
 }
 
-/* Base toast styling with frosted glass effect */
+/* Base toast styling with cleaner design */
 [data-sonner-toast] {
   background-color: var(--toast-bg) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
   color: var(--toast-text) !important;
   border: 1px solid var(--toast-border) !important;
-  padding: 0.875rem !important;
+  padding: 1rem !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   font-size: 0.9rem !important;
   margin-bottom: 0.75rem !important;
   max-width: 100% !important;
   z-index: 9999 !important;
+  line-height: 1.5 !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 /* Success toast styling */
@@ -67,29 +68,47 @@
 /* Improve toast content readability */
 [data-sonner-toast] [data-title] {
   font-weight: 600 !important;
-  margin-bottom: 0.25rem !important;
-  font-size: 0.9rem !important;
+  margin-bottom: 0.4rem !important;
+  font-size: 0.95rem !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
 }
 
 [data-sonner-toast] [data-description] {
   opacity: 0.9 !important;
-  line-height: 1.4 !important;
-  font-size: 0.8rem !important;
+  line-height: 1.5 !important;
+  font-size: 0.85rem !important;
+  white-space: normal !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
-    --toast-bg: rgba(30, 30, 30, 0.9);
+    --toast-bg: rgba(30, 30, 30, 0.95);
     --toast-text: #f3f3f3;
     --toast-border: rgba(255, 255, 255, 0.1);
-    --toast-success-bg: rgba(22, 101, 52, 0.8);
+    --toast-success-bg: rgba(22, 101, 52, 0.9);
     --toast-success-border: #10b981;
-    --toast-error-bg: rgba(153, 27, 27, 0.8);
+    --toast-error-bg: rgba(153, 27, 27, 0.9);
     --toast-error-border: #ef4444;
-    --toast-warning-bg: rgba(120, 53, 15, 0.8);
+    --toast-warning-bg: rgba(120, 53, 15, 0.9);
     --toast-warning-border: #f59e0b;
-    --toast-info-bg: rgba(30, 58, 138, 0.8);
+    --toast-info-bg: rgba(30, 58, 138, 0.9);
     --toast-info-border: #3b82f6;
   }
+}
+
+/* Add a minimum height to prevent layout shifts */
+[data-sonner-toast] {
+  min-height: 3.5rem !important;
+}
+
+/* Fix placement and spacing of close button */
+[data-sonner-toast] [data-close-button] {
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  opacity: 0.6 !important;
 }
