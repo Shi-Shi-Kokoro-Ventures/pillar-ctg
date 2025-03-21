@@ -7,7 +7,8 @@ import DashboardRouter from "../components/admin/DashboardRouter";
 const AdminApplications = lazy(() => import("../pages/AdminApplications"));
 const UserManagement = lazy(() => import("../pages/UserManagement"));
 const AddUser = lazy(() => import("../pages/AddUser"));
-const ComingSoon = lazy(() => import("../pages/ComingSoon"));
+const AdminReports = lazy(() => import("../pages/AdminReports"));
+const AdminSettings = lazy(() => import("../pages/AdminSettings"));
 const Login = lazy(() => import("../pages/Login"));
 
 /**
@@ -20,6 +21,6 @@ export const adminRoutes = [
   <Route key="admin-applications" path="/admin-applications" element={<AdminApplications />} />,
   <Route key="user-management" path="/user-management" element={<UserManagement />} />,
   <Route key="add-user" path="/add-user" element={<AddUser />} />,
-  <Route key="admin-reports" path="/admin-reports" element={<Navigate to="/coming-soon" />} />,
-  <Route key="admin-settings" path="/admin-settings" element={<Navigate to="/coming-soon" />} />,
+  <Route key="admin-reports" path="/admin-reports" element={<AdminReports />} />,
+  <Route key="admin-settings" path="/admin-settings" element={<AdminSettings />} />,
 ];
