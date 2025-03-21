@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { UserCircle, Upload, Camera, User } from "lucide-react";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
 import DashboardHeader from "@/components/admin/DashboardHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +26,12 @@ const AddUser = () => {
     firstName: "",
     lastName: "",
     role: "viewer",
+    avatarUrl: "",
   });
+  
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarType, setAvatarType] = useState<"default" | "upload">("default");
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,6 +46,67 @@ const AddUser = () => {
       ...prev,
       role: value,
     }));
+  };
+
+  const handleAvatarTypeChange = (type: "default" | "upload") => {
+    setAvatarType(type);
+    
+    // Reset avatar preview if switching to default
+    if (type === "default") {
+      setAvatarPreview(null);
+      setFormData(prev => ({
+        ...prev,
+        avatarUrl: ""
+      }));
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    // Check file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size should be less than 2MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setAvatarPreview(event.target.result as string);
+        
+        // In a real implementation, we would upload this to Supabase storage
+        // and then set the URL in formData.avatarUrl
+        // For now, we'll just store the data URL for preview
+        setFormData(prev => ({
+          ...prev,
+          avatarUrl: event.target?.result as string
+        }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const getInitials = () => {
+    if (formData.firstName && formData.lastName) {
+      return `${formData.firstName[0]}${formData.lastName[0]}`.toUpperCase();
+    } else if (formData.firstName) {
+      return formData.firstName[0].toUpperCase();
+    } else if (formData.lastName) {
+      return formData.lastName[0].toUpperCase();
+    }
+    return "U";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,6 +151,74 @@ const AddUser = () => {
       <div className="bg-white p-6 rounded-lg shadow">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
+            {/* Avatar Section */}
+            <div className="flex flex-col items-center space-y-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="text-lg font-medium text-gray-900">Profile Picture</h3>
+              
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  className={`px-3 py-1 text-sm rounded-full ${
+                    avatarType === "default" 
+                      ? "bg-blue-100 text-blue-800" 
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                  onClick={() => handleAvatarTypeChange("default")}
+                >
+                  Default Avatar
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1 text-sm rounded-full ${
+                    avatarType === "upload" 
+                      ? "bg-blue-100 text-blue-800" 
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                  onClick={() => handleAvatarTypeChange("upload")}
+                >
+                  Upload Photo
+                </button>
+              </div>
+              
+              <div className="relative">
+                <Avatar className="h-24 w-24 border-2 border-gray-200">
+                  {avatarPreview ? (
+                    <AvatarImage src={avatarPreview} alt="Profile" />
+                  ) : (
+                    <AvatarFallback className="bg-blue-100 text-blue-800 text-xl">
+                      {getInitials()}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                
+                {avatarType === "upload" && (
+                  <button
+                    type="button"
+                    onClick={triggerFileUpload}
+                    className="absolute bottom-0 right-0 bg-blue-500 text-white p-1.5 rounded-full hover:bg-blue-600 transition-colors"
+                  >
+                    <Camera size={16} />
+                  </button>
+                )}
+              </div>
+              
+              {avatarType === "upload" && (
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              )}
+              
+              {avatarType === "upload" && !avatarPreview && (
+                <p className="text-sm text-gray-500">
+                  Click the camera icon to upload a photo
+                </p>
+              )}
+            </div>
+            
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
