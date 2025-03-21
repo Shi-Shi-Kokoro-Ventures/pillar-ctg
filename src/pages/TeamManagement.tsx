@@ -1,7 +1,7 @@
 
 import React from 'react';
 import AdminDashboardLayout from '@/components/admin/AdminDashboardLayout';
-import { RoleGuard } from '@/components/auth/RoleGuard';
+import RoleGuard from '@/components/auth/RoleGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserCircle, UsersRound, Users } from 'lucide-react';
