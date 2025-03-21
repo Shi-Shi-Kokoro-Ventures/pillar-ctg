@@ -40,5 +40,5 @@ export const adminRoutes = [
   <Route key="my-cases" path="/my-cases" element={<MyCases />} />,
   <Route key="calendar" path="/calendar" element={<Calendar />} />,
   <Route key="resources" path="/resources" element={<Resources />} />,
-  <Route key="documents" path="/documents" element={<Documents />} />,
+  <Route key="documents" path="/documents" element={<Documents />} />
 ];

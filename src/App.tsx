@@ -73,6 +73,14 @@ const Time = lazy(() => import("./pages/Time"));
 const AssistanceApplication = lazy(() => import("./pages/AssistanceApplication"));
 const EmploymentApplication = lazy(() => import("./pages/EmploymentApplication"));
 
+// Role-specific Pages
+const TeamManagement = lazy(() => import("./pages/TeamManagement"));
+const DepartmentResources = lazy(() => import("./pages/DepartmentResources"));
+const MyCases = lazy(() => import("./pages/MyCases"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Resources = lazy(() => import("./pages/Resources"));
+const Documents = lazy(() => import("./pages/Documents"));
+
 // Enhanced QueryClient configuration with proper TypeScript support
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -189,13 +197,13 @@ const App = () => (
                   <Route path="/time" element={<Time />} />
                   <Route path="/coming-soon" element={<ComingSoon />} />
                   
-                  {/* New pages for role-specific sidebar links */}
-                  <Route path="/team-management" element={<lazy(() => import("./pages/TeamManagement"))() />} />
-                  <Route path="/department-resources" element={<lazy(() => import("./pages/DepartmentResources"))() />} />
-                  <Route path="/my-cases" element={<lazy(() => import("./pages/MyCases"))() />} />
-                  <Route path="/calendar" element={<lazy(() => import("./pages/Calendar"))() />} />
-                  <Route path="/resources" element={<lazy(() => import("./pages/Resources"))() />} />
-                  <Route path="/documents" element={<lazy(() => import("./pages/Documents"))() />} />
+                  {/* Role-specific sidebar pages */}
+                  <Route path="/team-management" element={<TeamManagement />} />
+                  <Route path="/department-resources" element={<DepartmentResources />} />
+                  <Route path="/my-cases" element={<MyCases />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/documents" element={<Documents />} />
                   
                   {/* Catch-all route */}
                   <Route path="*" element={<NotFound />} />
