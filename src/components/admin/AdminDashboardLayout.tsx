@@ -56,7 +56,7 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
                     {Object.entries(ROLE_DEFINITIONS).map(([key, role]) => (
                       <Button
                         key={key}
-                        variant={perspective === key ? "subtle" : "ghost"}
+                        variant={perspective === key ? "secondary" : "ghost"}
                         className="w-full justify-start text-left mb-1"
                         onClick={() => handlePerspectiveChange(key)}
                       >

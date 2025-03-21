@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRolePermissions } from "@/hooks/useRolePermissions";
+import { ROLE_DEFINITIONS } from "@/types/user";
 
 type SidebarItem = {
   title: string;
