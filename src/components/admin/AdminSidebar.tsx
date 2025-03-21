@@ -15,6 +15,7 @@ import {
   UserCircle,
   Building,
   SearchCheck,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,11 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
         title: "User Management",
         icon: Users,
         href: "/user-management",
+      },
+      {
+        title: "User Activity",
+        icon: Activity,
+        href: "/user-activity",
       },
       {
         title: "Reports",

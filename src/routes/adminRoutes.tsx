@@ -9,6 +9,7 @@ const UserManagement = lazy(() => import("../pages/UserManagement"));
 const AddUser = lazy(() => import("../pages/AddUser"));
 const AdminReports = lazy(() => import("../pages/AdminReports"));
 const AdminSettings = lazy(() => import("../pages/AdminSettings"));
+const UserActivity = lazy(() => import("../pages/UserActivity"));
 const Login = lazy(() => import("../pages/Login"));
 
 /**
@@ -21,6 +22,7 @@ export const adminRoutes = [
   <Route key="admin-applications" path="/admin-applications" element={<AdminApplications />} />,
   <Route key="user-management" path="/user-management" element={<UserManagement />} />,
   <Route key="add-user" path="/add-user" element={<AddUser />} />,
+  <Route key="user-activity" path="/user-activity" element={<UserActivity />} />,
   <Route key="admin-reports" path="/admin-reports" element={<AdminReports />} />,
   <Route key="admin-settings" path="/admin-settings" element={<AdminSettings />} />,
 ];
