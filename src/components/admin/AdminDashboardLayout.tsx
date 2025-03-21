@@ -27,8 +27,8 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
         <main className="flex-1 p-6">
           {children}
           
-          {/* Temporary notification demo - can be removed or moved elsewhere */}
-          <div className="mt-8">
+          {/* Smaller notification demo in the corner */}
+          <div className="fixed bottom-4 right-4 w-72 z-10">
             <NotificationsDemo />
           </div>
         </main>

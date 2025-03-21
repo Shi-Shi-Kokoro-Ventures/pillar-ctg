@@ -31,10 +31,10 @@
   -webkit-backdrop-filter: blur(10px) !important;
   color: var(--toast-text) !important;
   border: 1px solid var(--toast-border) !important;
-  padding: 1rem !important;
+  padding: 0.875rem !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  font-size: 1rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  font-size: 0.9rem !important;
   margin-bottom: 0.75rem !important;
   max-width: 100% !important;
   z-index: 9999 !important;
@@ -68,11 +68,13 @@
 [data-sonner-toast] [data-title] {
   font-weight: 600 !important;
   margin-bottom: 0.25rem !important;
+  font-size: 0.9rem !important;
 }
 
 [data-sonner-toast] [data-description] {
   opacity: 0.9 !important;
   line-height: 1.4 !important;
+  font-size: 0.8rem !important;
 }
 
 /* Dark mode support */
