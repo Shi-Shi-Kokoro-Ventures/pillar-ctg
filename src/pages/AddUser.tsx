@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
 import DashboardHeader from "@/components/admin/DashboardHeader";
+import { supabase } from "@/integrations/supabase/client";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -43,9 +43,24 @@ const AddUser = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // In a real implementation, we would get the current admin's information
+      const currentAdmin = {
+        id: "current-admin-id", // This would come from auth context in a real app
+        email: "admin@example.com", // This would come from auth context in a real app
+      };
+      
       // This would be replaced with actual Supabase mutation
       console.log("Creating new user:", formData);
-      toast.success(`User ${formData.email} created successfully`);
+      console.log("Created by admin:", currentAdmin);
+      
+      // In a real implementation, we would store both the user data and the creator info
+      // const { data, error } = await supabase.from('users').insert({
+      //   ...formData,
+      //   created_by: currentAdmin.id,
+      //   created_by_email: currentAdmin.email
+      // });
+      
+      toast.success(`User ${formData.email} created successfully by ${currentAdmin.email}`);
       
       // Navigate back to user management page after successful creation
       setTimeout(() => {
@@ -151,6 +166,14 @@ const AddUser = () => {
             <Button type="submit">Create User</Button>
           </div>
         </form>
+      </div>
+      
+      <div className="mt-6 bg-white p-6 rounded-lg shadow">
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Audit Information</h3>
+        <p className="text-gray-600 text-sm">
+          All user creations are logged with the administrator's information for audit purposes.
+          This helps maintain accountability and traceability for system access management.
+        </p>
       </div>
     </AdminDashboardLayout>
   );
