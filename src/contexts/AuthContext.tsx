@@ -105,16 +105,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string, role: string): Promise<void> => {
     // For demo purposes, we'll accept any login credentials and just use the selected role
     try {
-      // Make sure role is one of the valid types
-      const validatedRole = role as 'admin' | 'manager' | 'case-worker' | 'viewer';
-      
       // Mock user
       const mockUser: User = {
         id: `mock-${role}-id`,
         email: email,
         firstName: role.charAt(0).toUpperCase() + role.slice(1),
         lastName: 'User',
-        role: validatedRole,
+        role: role,
         status: 'active',
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString(),

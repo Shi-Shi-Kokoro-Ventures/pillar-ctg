@@ -1,27 +1,11 @@
-
 import React, { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { navigationItems, NavigationItem, NavigationDropdownItem } from "@/data/navigation";
+import { Menu, X } from "lucide-react";
+import { navigationItems } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button"; 
 import { UserCircle, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,56 +66,20 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Main Menu - Desktop with Dropdowns */}
-          <div className="hidden md:flex">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {navigationItems.map((item) => (
-                  <NavigationMenuItem key={item.label}>
-                    {item.dropdown ? (
-                      <>
-                        <NavigationMenuTrigger className={cn(
-                          item.featured ? "text-redcross font-bold" : "text-gray-700"
-                        )}>
-                          {item.label}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="grid gap-3 p-4 w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-2">
-                            {item.dropdown.map((dropdownItem) => (
-                              <li key={dropdownItem.label}>
-                                <NavigationMenuLink asChild>
-                                  <Link
-                                    to={dropdownItem.href}
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                  >
-                                    <div className="text-sm font-medium leading-none">{dropdownItem.label}</div>
-                                    {dropdownItem.description && (
-                                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                        {dropdownItem.description}
-                                      </p>
-                                    )}
-                                  </Link>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          item.featured ? "text-redcross font-bold" : "text-gray-700"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+          {/* Main Menu - Desktop */}
+          <div className="hidden md:flex space-x-1">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={cn(
+                  "px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors duration-200",
+                  item.featured ? "text-redcross font-bold" : "text-gray-700"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
@@ -146,42 +94,13 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="mt-4 pb-4 md:hidden">
             {navigationItems.map((item) => (
-              <div key={item.label} className="py-1">
-                {item.dropdown ? (
-                  <div className="relative group">
-                    <button 
-                      className={cn(
-                        "flex items-center w-full px-3 py-2 text-left rounded-md font-medium hover:bg-gray-100 transition-colors duration-200",
-                        item.featured ? "text-redcross font-bold" : "text-gray-700"
-                      )}
-                    >
-                      <span>{item.label}</span>
-                      <ChevronDown className="h-4 w-4 ml-1" />
-                    </button>
-                    <div className="pl-6 mt-1 space-y-1">
-                      {item.dropdown.map((dropdownItem) => (
-                        <Link
-                          key={dropdownItem.label}
-                          to={dropdownItem.href}
-                          className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
-                        >
-                          {dropdownItem.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    to={item.href}
-                    className={cn(
-                      "block px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors duration-200",
-                      item.featured ? "text-redcross font-bold" : "text-gray-700"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </div>
+              <Link
+                key={item.label}
+                to={item.href}
+                className="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+              >
+                {item.label}
+              </Link>
             ))}
             
             {/* Auth Links - Mobile */}
