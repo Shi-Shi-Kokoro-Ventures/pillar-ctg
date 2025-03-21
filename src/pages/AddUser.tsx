@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -482,6 +481,13 @@ const AddUser = () => {
                       These should be assigned sparingly and only to trusted staff members.
                     </p>
                   </div>
+                  <div className="bg-blue-50 p-3 rounded-md border border-blue-200 text-blue-800 text-sm">
+                    <h4 className="font-medium mb-1">Manager Role</h4>
+                    <p className="text-xs">
+                      Managers have department-level access and can oversee case workers, 
+                      manage resources, and access reporting for their department.
+                    </p>
+                  </div>
                   <div className="bg-green-50 p-3 rounded-md border border-green-200 text-green-800 text-sm">
                     <h4 className="font-medium mb-1">Case Worker Role</h4>
                     <p className="text-xs">
@@ -489,7 +495,7 @@ const AddUser = () => {
                       but cannot perform administrative functions or see other case workers' clients.
                     </p>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-md border border-blue-200 text-blue-800 text-sm">
+                  <div className="bg-purple-50 p-3 rounded-md border border-purple-200 text-purple-800 text-sm">
                     <h4 className="font-medium mb-1">View-Only Role</h4>
                     <p className="text-xs">
                       View-only users can see reports and resources but cannot modify any data.

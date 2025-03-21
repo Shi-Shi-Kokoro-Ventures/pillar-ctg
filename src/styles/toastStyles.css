@@ -1,13 +1,17 @@
 
 /* Custom Sonner Toast Styles */
 :root {
-  --toast-bg: white;
+  --toast-bg: rgba(255, 255, 255, 0.9);
   --toast-text: #333;
   --toast-border: rgba(0, 0, 0, 0.1);
-  --toast-success-bg: #ebfbf4;
+  --toast-success-bg: rgba(235, 251, 244, 0.95);
   --toast-success-border: #10b981;
-  --toast-error-bg: #fef2f2;
+  --toast-error-bg: rgba(254, 242, 242, 0.95);
   --toast-error-border: #ef4444;
+  --toast-warning-bg: rgba(255, 251, 235, 0.95);
+  --toast-warning-border: #f59e0b;
+  --toast-info-bg: rgba(239, 246, 255, 0.95);
+  --toast-info-border: #3b82f6;
 }
 
 /* Fix toast positioning to ensure it's always visible */
@@ -20,14 +24,16 @@
   max-width: 420px;
 }
 
-/* Base toast styling */
+/* Base toast styling with frosted glass effect */
 [data-sonner-toast] {
   background-color: var(--toast-bg) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   color: var(--toast-text) !important;
   border: 1px solid var(--toast-border) !important;
   padding: 1rem !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   font-size: 1rem !important;
   margin-bottom: 0.75rem !important;
   max-width: 100% !important;
@@ -44,4 +50,44 @@
 [data-sonner-toast][data-type="error"] {
   background-color: var(--toast-error-bg) !important;
   border-left: 4px solid var(--toast-error-border) !important;
+}
+
+/* Warning toast styling */
+[data-sonner-toast][data-type="warning"] {
+  background-color: var(--toast-warning-bg) !important;
+  border-left: 4px solid var(--toast-warning-border) !important;
+}
+
+/* Info toast styling */
+[data-sonner-toast][data-type="info"] {
+  background-color: var(--toast-info-bg) !important;
+  border-left: 4px solid var(--toast-info-border) !important;
+}
+
+/* Improve toast content readability */
+[data-sonner-toast] [data-title] {
+  font-weight: 600 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+[data-sonner-toast] [data-description] {
+  opacity: 0.9 !important;
+  line-height: 1.4 !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --toast-bg: rgba(30, 30, 30, 0.9);
+    --toast-text: #f3f3f3;
+    --toast-border: rgba(255, 255, 255, 0.1);
+    --toast-success-bg: rgba(22, 101, 52, 0.8);
+    --toast-success-border: #10b981;
+    --toast-error-bg: rgba(153, 27, 27, 0.8);
+    --toast-error-border: #ef4444;
+    --toast-warning-bg: rgba(120, 53, 15, 0.8);
+    --toast-warning-border: #f59e0b;
+    --toast-info-bg: rgba(30, 58, 138, 0.8);
+    --toast-info-border: #3b82f6;
+  }
 }
