@@ -1,3 +1,4 @@
+
 import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -116,84 +117,92 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                 
-              {/* Housing Routes */}
-              {Object.entries(HousingRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* Housing Routes */}
+                  {Object.entries(HousingRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* Support Routes */}
-              {Object.entries(SupportRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* Support Routes */}
+                  {Object.entries(SupportRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* Get Involved Routes */}
-              {Object.entries(GetInvolvedRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* Get Involved Routes */}
+                  {Object.entries(GetInvolvedRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* Information Routes */}
-              {Object.entries(InformationRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* Information Routes */}
+                  {Object.entries(InformationRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* About Routes */}
-              {Object.entries(AboutRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* About Routes */}
+                  {Object.entries(AboutRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* Legal Routes */}
-              {Object.entries(LegalRoutes).map(([key, Component]) => (
-                <Route 
-                  key={key} 
-                  path={routeKeyToPath(key)} 
-                  element={<Component />} 
-                />
-              ))}
+                  {/* Legal Routes */}
+                  {Object.entries(LegalRoutes).map(([key, Component]) => (
+                    <Route 
+                      key={key} 
+                      path={routeKeyToPath(key)} 
+                      element={<Component />} 
+                    />
+                  ))}
 
-              {/* Admin Routes - Organized in a separate file */}
-              {adminRoutes}
+                  {/* Admin Routes - Organized in a separate file */}
+                  {adminRoutes}
 
-              {/* Integration Routes */}
-              <Route path="/n8n-integration" element={<N8nIntegration />} />
-              
-              {/* Application Routes */}
-              <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
-              <Route path="/apply-for-employment" element={<EmploymentApplication />} />
-              
-              {/* Redirect routes for referenced but unimplemented pages */}
-              <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
-              <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
-              
-              {/* Additional routes */}
-              <Route path="/time" element={<Time />} />
-              <Route path="/coming-soon" element={<ComingSoon />} />
-              
-              {/* Catch-all route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-        </Suspense>
-      </BrowserRouter>
+                  {/* Integration Routes */}
+                  <Route path="/n8n-integration" element={<N8nIntegration />} />
+                  
+                  {/* Application Routes */}
+                  <Route path="/apply-for-assistance" element={<AssistanceApplication />} />
+                  <Route path="/apply-for-employment" element={<EmploymentApplication />} />
+                  
+                  {/* Redirect routes for referenced but unimplemented pages */}
+                  <Route path="/contact-a-specialist" element={<Navigate to="/coming-soon" />} />
+                  <Route path="/apply-for-voucher" element={<Navigate to="/coming-soon" />} />
+                  
+                  {/* Additional routes */}
+                  <Route path="/time" element={<Time />} />
+                  <Route path="/coming-soon" element={<ComingSoon />} />
+                  
+                  {/* New pages for role-specific sidebar links */}
+                  <Route path="/team-management" element={<lazy(() => import("./pages/TeamManagement"))() />} />
+                  <Route path="/department-resources" element={<lazy(() => import("./pages/DepartmentResources"))() />} />
+                  <Route path="/my-cases" element={<lazy(() => import("./pages/MyCases"))() />} />
+                  <Route path="/calendar" element={<lazy(() => import("./pages/Calendar"))() />} />
+                  <Route path="/resources" element={<lazy(() => import("./pages/Resources"))() />} />
+                  <Route path="/documents" element={<lazy(() => import("./pages/Documents"))() />} />
+                  
+                  {/* Catch-all route */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </Suspense>
+          </BrowserRouter>
         </TooltipProvider>
       </NotificationsProvider>
     </AuthProvider>
