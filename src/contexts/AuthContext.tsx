@@ -10,6 +10,8 @@ interface AuthContextType {
   hasPermission: (permission: string) => boolean;
   userRole: string | null;
   roleInfo: typeof ROLE_DEFINITIONS[keyof typeof ROLE_DEFINITIONS] | null;
+  hasRole: (roles: string | string[]) => boolean;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,6 +20,8 @@ const AuthContext = createContext<AuthContextType>({
   hasPermission: () => false,
   userRole: null,
   roleInfo: null,
+  hasRole: () => false,
+  logout: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -111,10 +115,48 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return permissionObj ? permissionObj.enabled : false;
   };
 
+  // Check if user has one of the specified roles
+  const hasRole = (roles: string | string[]): boolean => {
+    if (!userRole) return false;
+    
+    if (typeof roles === 'string') {
+      return userRole === roles;
+    }
+    
+    return roles.includes(userRole);
+  };
+
+  // Logout function
+  const logout = async (): Promise<void> => {
+    try {
+      // In a real app, we would use Supabase auth
+      /*
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      */
+      
+      // For demo - just clear the user state
+      setUser(null);
+      setUserRole(null);
+      toast.success('Logged out successfully');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      toast.error('Failed to log out');
+    }
+  };
+
   const roleInfo = userRole ? ROLE_DEFINITIONS[userRole] : null;
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, hasPermission, userRole, roleInfo }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoading, 
+      hasPermission, 
+      userRole, 
+      roleInfo,
+      hasRole,
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   );
