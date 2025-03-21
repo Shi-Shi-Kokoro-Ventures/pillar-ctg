@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User, UserFormData } from "@/types/user";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ import { Label } from "@/components/ui/label";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 const UserManagement = () => {
+  const navigate = useNavigate();
   // State for user data
   const [search, setSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -138,19 +140,12 @@ const UserManagement = () => {
   const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
-  // Handle user dialog open/close
-  const openAddUserDialog = () => {
-    setIsEditMode(false);
-    setCurrentUser({
-      email: "",
-      firstName: "",
-      lastName: "",
-      role: "viewer",
-      password: "",
-    });
-    setUserDialogOpen(true);
+  // Navigate to Add User page instead of opening dialog
+  const handleAddUser = () => {
+    navigate("/add-user");
   };
 
+  // Open edit user dialog - keeping this as a dialog for editing
   const openEditUserDialog = (user: User) => {
     setIsEditMode(true);
     setCurrentUser({
@@ -274,7 +269,7 @@ const UserManagement = () => {
                 <option value="viewer">View-Only</option>
               </select>
               
-              <Button onClick={openAddUserDialog} className="flex items-center gap-2">
+              <Button onClick={handleAddUser} className="flex items-center gap-2">
                 <UserPlusIcon className="h-4 w-4" />
                 Add User
               </Button>
@@ -406,7 +401,7 @@ const UserManagement = () => {
             </>
           )}
 
-          {/* User Dialog */}
+          {/* User Dialog - keeping this for Edit functionality */}
           <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
