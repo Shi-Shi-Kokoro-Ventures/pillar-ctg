@@ -10,51 +10,129 @@ import {
   ChevronRight,
   Menu,
   X,
+  Calendar,
+  FileText,
+  UserCircle,
+  Building,
+  SearchCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRolePermissions } from "@/hooks/useRolePermissions";
 
 type SidebarItem = {
   title: string;
   icon: React.ElementType;
   href: string;
   badge?: string | number;
+  roles?: string[];
 };
 
-// Fixed paths to match the actual routes in App.tsx
-const sidebarItems: SidebarItem[] = [
-  {
-    title: "Dashboard Overview",
-    icon: LayoutDashboard,
-    href: "/admin-dashboard",
-  },
-  {
-    title: "Applications",
-    icon: ClipboardList,
-    href: "/admin-applications",
-    badge: 15,
-  },
-  {
-    title: "User Management",
-    icon: Users,
-    href: "/user-management",
-  },
-  {
-    title: "Reports",
-    icon: BarChart3,
-    href: "/admin-reports",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    href: "/admin-settings",
-  },
-];
+// Define sidebar items for different roles
+const getSidebarItems = (role: string | null): SidebarItem[] => {
+  // Items all roles can see
+  const commonItems: SidebarItem[] = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/admin-dashboard",
+    },
+  ];
+
+  // Role-specific items
+  const roleItems: Record<string, SidebarItem[]> = {
+    'admin': [
+      {
+        title: "Applications",
+        icon: ClipboardList,
+        href: "/admin-applications",
+        badge: 15,
+      },
+      {
+        title: "User Management",
+        icon: Users,
+        href: "/user-management",
+      },
+      {
+        title: "Reports",
+        icon: BarChart3,
+        href: "/admin-reports",
+      },
+      {
+        title: "Settings",
+        icon: Settings,
+        href: "/admin-settings",
+      },
+    ],
+    'manager': [
+      {
+        title: "Team Management",
+        icon: UserCircle,
+        href: "/admin-applications",
+      },
+      {
+        title: "Department Resources",
+        icon: Building,
+        href: "/admin-reports",
+      },
+      {
+        title: "Applications",
+        icon: ClipboardList,
+        href: "/admin-applications",
+        badge: 7,
+      },
+      {
+        title: "Reports",
+        icon: BarChart3,
+        href: "/admin-reports",
+      },
+    ],
+    'case-worker': [
+      {
+        title: "My Cases",
+        icon: ClipboardList,
+        href: "/admin-applications", 
+        badge: 8,
+      },
+      {
+        title: "Calendar",
+        icon: Calendar,
+        href: "/admin-reports",
+      },
+      {
+        title: "Resources",
+        icon: SearchCheck,
+        href: "/admin-settings",
+      },
+    ],
+    'viewer': [
+      {
+        title: "Reports",
+        icon: BarChart3,
+        href: "/admin-reports",
+      },
+      {
+        title: "Documents",
+        icon: FileText,
+        href: "/admin-applications",
+      },
+    ],
+  };
+
+  // Return common items plus role-specific items (or empty array if role not found)
+  return [...commonItems, ...(role && roleItems[role] ? roleItems[role] : [])];
+};
 
 const AdminSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { userRole, roleInfo } = useAuth();
+  const { getRoleDisplayName } = useRolePermissions();
+
+  // Get sidebar items based on user role
+  const sidebarItems = getSidebarItems(userRole);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -113,6 +191,14 @@ const AdminSidebar = () => {
             />
           </Button>
         </div>
+
+        {/* User Role Display */}
+        {!collapsed && userRole && (
+          <div className="px-4 py-3 border-b border-gray-200">
+            <p className="text-xs text-gray-500">Logged in as</p>
+            <p className="text-sm font-medium text-gray-800">{getRoleDisplayName()}</p>
+          </div>
+        )}
 
         {/* Sidebar Content */}
         <nav className="mt-5 px-2">
