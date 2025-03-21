@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -126,19 +125,52 @@ const getSidebarItems = (role: string | null): SidebarItem[] => {
     ],
   };
 
+  // For admin users, always include all items from all roles
+  if (role === 'admin') {
+    const allRoleItems: SidebarItem[] = [];
+    
+    // First add admin-specific items
+    allRoleItems.push(...roleItems['admin']);
+    
+    // Then add unique items from other roles not already in the admin items
+    const adminPaths = new Set(roleItems['admin'].map(item => item.href));
+    
+    // Add items from other roles that aren't duplicates
+    for (const otherRole of ['manager', 'case-worker', 'viewer']) {
+      if (otherRole === 'admin') continue;
+      
+      const uniqueItems = roleItems[otherRole].filter(item => 
+        !adminPaths.has(item.href) && 
+        !allRoleItems.some(existing => existing.href === item.href && existing.title === item.title)
+      );
+      
+      allRoleItems.push(...uniqueItems);
+    }
+    
+    return [...commonItems, ...allRoleItems];
+  }
+
   // Return common items plus role-specific items (or empty array if role not found)
   return [...commonItems, ...(role && roleItems[role] ? roleItems[role] : [])];
 };
 
-const AdminSidebar = () => {
+interface AdminSidebarProps {
+  perspectiveRole?: string | null;
+}
+
+const AdminSidebar = ({ perspectiveRole }: AdminSidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { userRole, roleInfo } = useAuth();
   const { getRoleDisplayName } = useRolePermissions();
+  
+  // If perspectiveRole is provided and the user is an admin, use that role for the sidebar
+  // Otherwise use the user's actual role
+  const displayRole = (perspectiveRole && userRole === 'admin') ? perspectiveRole : userRole;
 
-  // Get sidebar items based on user role
-  const sidebarItems = getSidebarItems(userRole);
+  // Get sidebar items based on display role
+  const sidebarItems = getSidebarItems(displayRole);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -147,6 +179,8 @@ const AdminSidebar = () => {
   const toggleMobileSidebar = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const isAdmin = userRole === 'admin';
 
   return (
     <>
@@ -199,10 +233,19 @@ const AdminSidebar = () => {
         </div>
 
         {/* User Role Display */}
-        {!collapsed && userRole && (
+        {!collapsed && displayRole && (
           <div className="px-4 py-3 border-b border-gray-200">
-            <p className="text-xs text-gray-500">Logged in as</p>
-            <p className="text-sm font-medium text-gray-800">{getRoleDisplayName()}</p>
+            <p className="text-xs text-gray-500">
+              {isAdmin && displayRole !== 'admin' ? 'Viewing as' : 'Logged in as'}
+            </p>
+            <p className="text-sm font-medium text-gray-800">
+              {isAdmin && displayRole && displayRole !== 'admin' 
+                ? ROLE_DEFINITIONS[displayRole as keyof typeof ROLE_DEFINITIONS]?.name
+                : getRoleDisplayName()}
+            </p>
+            {isAdmin && displayRole !== 'admin' && (
+              <p className="text-xs text-blue-600 mt-1">Admin privileges active</p>
+            )}
           </div>
         )}
 
