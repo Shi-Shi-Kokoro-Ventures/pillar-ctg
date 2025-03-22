@@ -458,6 +458,9 @@ const MyCases = () => {
                       <PaginationLink href="#" isActive>1</PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
+                      <PaginationLink href="#">2</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
                       <PaginationNext href="#" />
                     </PaginationItem>
                   </PaginationContent>
@@ -669,12 +672,7 @@ const MyCases = () => {
 
       {/* New Case Dialog */}
       <Dialog open={newCaseDialogOpen} onOpenChange={setNewCaseDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh]">
+        <DialogContent className="sm:max-w-[90vw] max-h-[90vh] p-0">
           <NewCaseForm onCancel={() => setNewCaseDialogOpen(false)} />
         </DialogContent>
-      </Dialog>
-    </AdminDashboardLayout>
-  );
-};
-
-export default MyCases;
+      </Dialog
