@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { TeamMember } from './TeamMemberForm';
-import { UsersRound, MoreVertical, UserCog, UserMinus, UserPlus } from 'lucide-react';
+import { UsersRound, MoreVertical, UserCog, UserMinus, UserPlus, Eye } from 'lucide-react';
 import { 
   Popover,
   PopoverContent,
@@ -23,9 +23,16 @@ interface TeamMemberCardProps {
   onEdit: (member: TeamMember) => void;
   onDelete: (id: string) => void;
   onAssignCase: (id: string) => void;
+  onViewDetails?: (member: TeamMember) => void;
 }
 
-const TeamMemberCard = ({ member, onEdit, onDelete, onAssignCase }: TeamMemberCardProps) => {
+const TeamMemberCard = ({ 
+  member, 
+  onEdit, 
+  onDelete, 
+  onAssignCase, 
+  onViewDetails 
+}: TeamMemberCardProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -89,6 +96,18 @@ const TeamMemberCard = ({ member, onEdit, onDelete, onAssignCase }: TeamMemberCa
             </PopoverTrigger>
             <PopoverContent className="w-48 p-0" align="end">
               <div className="flex flex-col">
+                {onViewDetails && (
+                  <button 
+                    onClick={() => {
+                      onViewDetails(member);
+                      setShowMenu(false);
+                    }}
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 text-left text-sm"
+                  >
+                    <Eye className="h-4 w-4" />
+                    View Details
+                  </button>
+                )}
                 <button 
                   onClick={() => {
                     onEdit(member);
@@ -131,9 +150,10 @@ const TeamMemberCard = ({ member, onEdit, onDelete, onAssignCase }: TeamMemberCa
           
           <div className="mt-3 flex gap-2">
             <button 
-              onClick={() => onEdit(member)} 
-              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+              onClick={() => onViewDetails ? onViewDetails(member) : onEdit(member)} 
+              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded flex items-center gap-1"
             >
+              <Eye className="h-3 w-3" />
               View Details
             </button>
             <button 

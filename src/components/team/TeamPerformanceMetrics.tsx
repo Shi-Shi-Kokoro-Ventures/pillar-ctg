@@ -1,36 +1,86 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TeamMember } from './TeamMemberForm';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line } from 'recharts';
 import { ChartLine, ChartBar, Gauge, Activity } from 'lucide-react';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { format, subDays, subMonths, isWithinInterval } from 'date-fns';
 
 interface TeamPerformanceMetricsProps {
   members: TeamMember[];
 }
 
+// Sample historical data generator
+const generateHistoricalData = (days: number, baseline: number, variance: number) => {
+  const data = [];
+  const today = new Date();
+  
+  for (let i = days; i >= 0; i--) {
+    const date = subDays(today, i);
+    const value = baseline + Math.random() * variance - variance / 2;
+    data.push({
+      date,
+      value: Math.max(0, Math.round(value * 10) / 10),
+    });
+  }
+  
+  return data;
+};
+
 const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
-  const [timeRange, setTimeRange] = useState('Last 7 days');
+  const today = new Date();
+  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
+    from: subDays(today, 7),
+    to: today
+  });
+  
+  // Historical data for trends
+  const [historicalCases] = useState(generateHistoricalData(90, 25, 10));
+  const [historicalResolution] = useState(generateHistoricalData(90, 8.3, 3));
+  
+  // Filter historical data based on selected date range
+  const filteredCasesData = useMemo(() => {
+    if (!dateRange.from || !dateRange.to) return historicalCases;
+    
+    return historicalCases.filter(item => 
+      isWithinInterval(item.date, { start: dateRange.from, end: dateRange.to })
+    );
+  }, [historicalCases, dateRange]);
+  
+  const filteredResolutionData = useMemo(() => {
+    if (!dateRange.from || !dateRange.to) return historicalResolution;
+    
+    return historicalResolution.filter(item => 
+      isWithinInterval(item.date, { start: dateRange.from, end: dateRange.to })
+    );
+  }, [historicalResolution, dateRange]);
   
   // Calculate performance metrics
   const totalCases = members.reduce((sum, member) => sum + member.activeCases, 0);
   const avgCasesPerMember = members.length > 0 ? totalCases / members.length : 0;
   
-  // Sample data for demonstration purposes
-  const generateRandomData = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-  
+  // Calculate case change based on historical data
   const calculateCaseChange = () => {
-    const previousValue = totalCases - generateRandomData(5, 15);
-    const percentChange = previousValue > 0 ? ((totalCases - previousValue) / previousValue) * 100 : 0;
+    if (filteredCasesData.length < 2) return { value: 0, isPositive: true };
+    
+    const currentValue = filteredCasesData[filteredCasesData.length - 1].value;
+    const previousValue = filteredCasesData[0].value;
+    const percentChange = previousValue > 0 ? ((currentValue - previousValue) / previousValue) * 100 : 0;
+    
     return {
       value: percentChange,
       isPositive: percentChange >= 0
     };
   };
   
+  // Calculate resolution time change based on historical data
   const calculateResolutionChange = () => {
-    const currentValue = 8.3;
-    const previousValue = currentValue + generateRandomData(1, 3) / 10;
+    if (filteredResolutionData.length < 2) return { value: 0, isPositive: true };
+    
+    const currentValue = filteredResolutionData[filteredResolutionData.length - 1].value;
+    const previousValue = filteredResolutionData[0].value;
     const percentChange = ((previousValue - currentValue) / previousValue) * 100;
+    
     return {
       value: percentChange,
       isPositive: percentChange >= 0
@@ -39,6 +89,11 @@ const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
 
   const caseChange = calculateCaseChange();
   const resolutionChange = calculateResolutionChange();
+  
+  // Current resolution time (latest value from historical data)
+  const currentResolutionTime = filteredResolutionData.length > 0 
+    ? filteredResolutionData[filteredResolutionData.length - 1].value 
+    : 8.3;
   
   // Department distribution data
   const departmentDistribution = members.reduce((acc: Record<string, number>, member) => {
@@ -78,20 +133,29 @@ const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
   // Colors for pie charts
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
+  // Format date for display
+  const formatDateForDisplay = (date: Date | undefined) => {
+    return date ? format(date, 'MMM dd, yyyy') : '';
+  };
+
   return (
     <div className="space-y-8">
       {/* Time range selector */}
-      <div className="flex justify-end">
-        <select 
-          value={timeRange} 
-          onChange={(e) => setTimeRange(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 text-sm"
-        >
-          <option>Last 7 days</option>
-          <option>Last 30 days</option>
-          <option>Last 90 days</option>
-          <option>This year</option>
-        </select>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h3 className="text-sm font-medium text-gray-700">
+          {dateRange.from && dateRange.to 
+            ? `Showing data from ${formatDateForDisplay(dateRange.from)} to ${formatDateForDisplay(dateRange.to)}`
+            : 'Select a date range'
+          }
+        </h3>
+        <DateRangePicker
+          from={dateRange.from}
+          to={dateRange.to}
+          onSelect={(range) => setDateRange({
+            from: range.from || subDays(today, 7),
+            to: range.to || today
+          })}
+        />
       </div>
 
       {/* KPI metrics */}
@@ -112,7 +176,7 @@ const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
             <ChartLine className="h-5 w-5 text-green-600" />
             <h3 className="text-sm font-medium text-gray-700">Avg. Resolution Time</h3>
           </div>
-          <p className="text-2xl font-bold">8.3 days</p>
+          <p className="text-2xl font-bold">{currentResolutionTime.toFixed(1)} days</p>
           <p className={`text-xs ${resolutionChange.isPositive ? 'text-green-600' : 'text-red-600'}`}>
             {resolutionChange.isPositive ? '↓' : '↑'} {Math.abs(resolutionChange.value).toFixed(1)}% from previous period
           </p>
@@ -127,6 +191,65 @@ const TeamPerformanceMetrics = ({ members }: TeamPerformanceMetricsProps) => {
           <p className="text-xs text-gray-500">
             Total of {members.length} active members
           </p>
+        </div>
+      </div>
+
+      {/* Historical trends */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white p-4 rounded-lg border shadow-sm">
+          <h3 className="text-sm font-medium text-gray-700 mb-4">Case Load Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={filteredCasesData}>
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={(date) => format(new Date(date), 'MM/dd')}
+                  minTickGap={30}
+                />
+                <YAxis />
+                <Tooltip
+                  labelFormatter={(label) => format(new Date(label), 'MMM dd, yyyy')}
+                  formatter={(value) => [`${value} cases`, 'Case Load']}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#0088FE" 
+                  name="Case Load"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg border shadow-sm">
+          <h3 className="text-sm font-medium text-gray-700 mb-4">Resolution Time Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={filteredResolutionData}>
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={(date) => format(new Date(date), 'MM/dd')}
+                  minTickGap={30}
+                />
+                <YAxis />
+                <Tooltip
+                  labelFormatter={(label) => format(new Date(label), 'MMM dd, yyyy')}
+                  formatter={(value) => [`${value} days`, 'Resolution Time']}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#00C49F" 
+                  name="Resolution Time"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
