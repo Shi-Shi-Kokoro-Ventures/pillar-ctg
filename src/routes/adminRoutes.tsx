@@ -12,6 +12,17 @@ const AdminSettings = lazy(() => import("../pages/AdminSettings"));
 const UserActivity = lazy(() => import("../pages/UserActivity"));
 const Login = lazy(() => import("../pages/Login"));
 
+// New Management Pages
+const DonationManagement = lazy(() => import("../pages/DonationManagement"));
+const GrantManagement = lazy(() => import("../pages/GrantManagement"));
+const VolunteerManagement = lazy(() => import("../pages/VolunteerManagement"));
+const ProgramOutcomes = lazy(() => import("../pages/ProgramOutcomes"));
+const BudgetFinance = lazy(() => import("../pages/BudgetFinance"));
+const ClientData = lazy(() => import("../pages/ClientData"));
+const DocumentManagement = lazy(() => import("../pages/DocumentManagement"));
+const AdminCalendar = lazy(() => import("../pages/AdminCalendar"));
+const TaskManagement = lazy(() => import("../pages/TaskManagement"));
+
 // Role-specific Pages
 const TeamManagement = lazy(() => import("../pages/TeamManagement"));
 const DepartmentResources = lazy(() => import("../pages/DepartmentResources"));
@@ -33,6 +44,17 @@ export const adminRoutes = [
   <Route key="user-activity" path="/user-activity" element={<UserActivity />} />,
   <Route key="admin-reports" path="/admin-reports" element={<AdminReports />} />,
   <Route key="admin-settings" path="/admin-settings" element={<AdminSettings />} />,
+  
+  // New Management Routes
+  <Route key="donation-management" path="/donation-management" element={<DonationManagement />} />,
+  <Route key="grant-management" path="/grant-management" element={<GrantManagement />} />,
+  <Route key="volunteer-management" path="/volunteer-management" element={<VolunteerManagement />} />,
+  <Route key="program-outcomes" path="/program-outcomes" element={<ProgramOutcomes />} />,
+  <Route key="budget-finance" path="/budget-finance" element={<BudgetFinance />} />,
+  <Route key="client-data" path="/client-data" element={<ClientData />} />,
+  <Route key="document-management" path="/document-management" element={<DocumentManagement />} />,
+  <Route key="admin-calendar" path="/admin-calendar" element={<AdminCalendar />} />,
+  <Route key="task-management" path="/task-management" element={<TaskManagement />} />,
   
   // Role-specific routes
   <Route key="team-management" path="/team-management" element={<TeamManagement />} />,
