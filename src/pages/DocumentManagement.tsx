@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
 import DashboardHeader from "@/components/admin/DashboardHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileBox, FileText, Clock, Upload, X, FileUp, FilePlus } from "lucide-react";
+import { FileBox, FileText, Clock, Upload, X, FileUp, FilePlus, Filter, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { DocumentStats, Document, DocumentTemplate, DocumentSearchParams } from "@/types/documents";
+import { secureSupabaseOperation } from "@/integrations/supabase/securityUtils";
 
 const DocumentManagement = () => {
   // State for managing the visibility of different dialogs
@@ -15,6 +18,102 @@ const DocumentManagement = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [templatesDialogOpen, setTemplatesDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  // Document states
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<DocumentSearchParams>({
+    query: '',
+    sortBy: 'date',
+    sortDirection: 'desc'
+  });
+  const [documentStats, setDocumentStats] = useState<DocumentStats>({
+    total: 1248,
+    categories: 24,
+    recentUploads: 87,
+    awaitingReview: 18,
+    needsUpdate: 35,
+    critical: 12
+  });
+
+  // Form states for document upload
+  const [documentTitle, setDocumentTitle] = useState('');
+  const [documentCategory, setDocumentCategory] = useState('');
+
+  // Fetch documents (placeholder for actual API call)
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      setIsLoading(true);
+      try {
+        // This would be replaced with an actual API call to fetch documents
+        // const response = await supabaseClient.from('documents').select('*');
+        // setDocuments(response.data || []);
+        
+        // For now, we're using mock data
+        setTimeout(() => {
+          setDocuments([]);
+          setIsLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.error('Error fetching documents:', error);
+        toast.error('Failed to load documents');
+        setIsLoading(false);
+      }
+    };
+
+    // Fetch templates
+    const fetchTemplates = async () => {
+      try {
+        // Mock data for templates
+        setTemplates([
+          { 
+            id: '1', 
+            name: 'Expense Report', 
+            fileType: 'XLSX', 
+            createdDate: new Date('2023-05-15'),
+            version: 1,
+            downloadUrl: '/templates/expense-report.xlsx' 
+          },
+          { 
+            id: '2', 
+            name: 'Client Intake Form', 
+            fileType: 'DOCX', 
+            createdDate: new Date('2023-06-22'),
+            version: 2,
+            downloadUrl: '/templates/client-intake.docx' 
+          },
+          { 
+            id: '3', 
+            name: 'Meeting Minutes', 
+            fileType: 'DOCX', 
+            createdDate: new Date('2023-07-10'),
+            version: 1,
+            downloadUrl: '/templates/meeting-minutes.docx' 
+          },
+          { 
+            id: '4', 
+            name: 'Project Proposal', 
+            fileType: 'DOCX', 
+            createdDate: new Date('2023-08-05'),
+            version: 3,
+            downloadUrl: '/templates/project-proposal.docx' 
+          }
+        ]);
+      } catch (error) {
+        console.error('Error fetching templates:', error);
+        toast.error('Failed to load templates');
+      }
+    };
+    
+    if (browseDialogOpen) {
+      fetchDocuments();
+    }
+    
+    if (templatesDialogOpen) {
+      fetchTemplates();
+    }
+  }, [browseDialogOpen, templatesDialogOpen]);
 
   // Handler for file selection
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,15 +122,54 @@ const DocumentManagement = () => {
     }
   };
 
+  // Handler for document search
+  const handleSearch = (query: string) => {
+    setSearchParams({
+      ...searchParams,
+      query
+    });
+    // This would trigger a refetch with the updated search params in a real app
+  };
+
   // Handler for file upload
-  const handleFileUpload = () => {
-    if (selectedFile) {
-      // Here you would typically handle the actual file upload to a server
-      // For now, we'll just show a success message
+  const handleFileUpload = async () => {
+    if (!selectedFile || !documentTitle || !documentCategory) {
+      toast.error('Please complete all required fields');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      // This is where we would call a secure operation to upload the file
+      // For now, we'll simulate a successful upload
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast.success(`File "${selectedFile.name}" uploaded successfully!`);
       setSelectedFile(null);
+      setDocumentTitle('');
+      setDocumentCategory('');
       setUploadDialogOpen(false);
+      
+      // Update the document stats to reflect the new upload
+      setDocumentStats({
+        ...documentStats,
+        total: documentStats.total + 1,
+        recentUploads: documentStats.recentUploads + 1
+      });
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Handler for template download
+  const handleTemplateDownload = (template: DocumentTemplate) => {
+    // In a real application, we would trigger a download here
+    // For now, we'll just show a success message
+    toast.success(`Template "${template.name}" downloaded successfully!`);
   };
 
   return (
@@ -52,9 +190,9 @@ const DocumentManagement = () => {
             <CardDescription>In system</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">1,248</div>
+            <div className="text-3xl font-bold">{documentStats.total.toLocaleString()}</div>
             <div className="text-sm text-orange-600 mt-1">
-              Across 24 categories
+              Across {documentStats.categories} categories
             </div>
           </CardContent>
         </Card>
@@ -68,9 +206,9 @@ const DocumentManagement = () => {
             <CardDescription>Last 30 days</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">87</div>
+            <div className="text-3xl font-bold">{documentStats.recentUploads}</div>
             <div className="text-sm text-green-600 mt-1">
-              18 awaiting review
+              {documentStats.awaitingReview} awaiting review
             </div>
           </CardContent>
         </Card>
@@ -84,9 +222,9 @@ const DocumentManagement = () => {
             <CardDescription>Requiring updates</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">35</div>
+            <div className="text-3xl font-bold">{documentStats.needsUpdate}</div>
             <div className="text-sm text-blue-600 mt-1">
-              12 critical documents need updates
+              {documentStats.critical} critical documents need updates
             </div>
           </CardContent>
         </Card>
@@ -103,7 +241,7 @@ const DocumentManagement = () => {
           </CardHeader>
           <CardContent>
             <div className="text-center py-10">
-              <p className="text-gray-500 mb-4">This is a placeholder for the document library interface</p>
+              <p className="text-gray-500 mb-4">Access your organization's document repository</p>
               <Button onClick={() => setBrowseDialogOpen(true)}>Browse Documents</Button>
             </div>
           </CardContent>
@@ -118,7 +256,7 @@ const DocumentManagement = () => {
           </CardHeader>
           <CardContent>
             <div className="text-center py-10">
-              <p className="text-gray-500 mb-4">This is a placeholder for the document upload interface</p>
+              <p className="text-gray-500 mb-4">Upload new documents to your organization's repository</p>
               <Button onClick={() => setUploadDialogOpen(true)}>Upload New</Button>
             </div>
           </CardContent>
@@ -133,7 +271,7 @@ const DocumentManagement = () => {
           </CardHeader>
           <CardContent>
             <div className="text-center py-10">
-              <p className="text-gray-500 mb-4">This is a placeholder for the templates repository</p>
+              <p className="text-gray-500 mb-4">Download and use standardized document templates</p>
               <Button onClick={() => setTemplatesDialogOpen(true)}>View Templates</Button>
             </div>
           </CardContent>
@@ -152,14 +290,55 @@ const DocumentManagement = () => {
           
           <div className="py-4">
             <div className="flex items-center gap-2 mb-4">
-              <Input placeholder="Search documents..." className="flex-1" />
-              <Button variant="outline">Search</Button>
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                <Input 
+                  placeholder="Search documents..." 
+                  className="pl-8" 
+                  value={searchParams.query}
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" size="icon">
+                <Filter className="h-4 w-4" />
+              </Button>
             </div>
             
-            <div className="border rounded-md p-4 text-center bg-gray-50">
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-500">No documents match your search criteria</p>
-            </div>
+            {isLoading ? (
+              <div className="border rounded-md p-8 text-center">
+                <div className="animate-pulse flex flex-col items-center">
+                  <div className="h-12 w-12 rounded-full bg-gray-200 mb-2"></div>
+                  <div className="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ) : documents.length > 0 ? (
+              <div className="space-y-2 max-h-80 overflow-y-auto">
+                {documents.map(doc => (
+                  <div key={doc.id} className="flex items-center justify-between p-3 border rounded-md hover:bg-gray-50">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">{doc.title}</p>
+                        <p className="text-xs text-gray-500">{doc.category.name} • {doc.fileType}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => toast.success(`Opened document "${doc.title}"`)}
+                    >
+                      View
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="border rounded-md p-4 text-center bg-gray-50">
+                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-500">No documents match your search criteria</p>
+              </div>
+            )}
           </div>
           
           <DialogFooter>
@@ -181,7 +360,12 @@ const DocumentManagement = () => {
           <div className="space-y-4 py-4">
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="document-title">Document Title</Label>
-              <Input id="document-title" placeholder="Enter document title" />
+              <Input 
+                id="document-title" 
+                placeholder="Enter document title" 
+                value={documentTitle}
+                onChange={(e) => setDocumentTitle(e.target.value)}
+              />
             </div>
             
             <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -189,6 +373,8 @@ const DocumentManagement = () => {
               <select 
                 id="document-category" 
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={documentCategory}
+                onChange={(e) => setDocumentCategory(e.target.value)}
               >
                 <option value="">Select a category</option>
                 <option value="policies">Policies</option>
@@ -205,6 +391,17 @@ const DocumentManagement = () => {
                   <div className="flex items-center justify-center gap-2">
                     <FileUp className="h-6 w-6 text-green-600" />
                     <span className="text-green-600 font-medium">{selectedFile.name}</span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 text-gray-400 hover:text-red-500"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFile(null);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 ) : (
                   <div>
@@ -225,8 +422,23 @@ const DocumentManagement = () => {
           </div>
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setUploadDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleFileUpload} disabled={!selectedFile}>Upload</Button>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setUploadDialogOpen(false);
+                setSelectedFile(null);
+                setDocumentTitle('');
+                setDocumentCategory('');
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleFileUpload} 
+              disabled={!selectedFile || !documentTitle || !documentCategory || isLoading}
+            >
+              {isLoading ? 'Uploading...' : 'Upload'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -243,32 +455,33 @@ const DocumentManagement = () => {
           
           <div className="py-4 space-y-4">
             <div className="flex items-center gap-2 mb-4">
-              <Input placeholder="Search templates..." className="flex-1" />
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                <Input placeholder="Search templates..." className="pl-8" />
+              </div>
               <Button variant="outline">Search</Button>
             </div>
             
-            <div className="space-y-2">
-              {[
-                { id: 1, name: "Expense Report", type: "XLSX" },
-                { id: 2, name: "Client Intake Form", type: "DOCX" },
-                { id: 3, name: "Meeting Minutes", type: "DOCX" },
-                { id: 4, name: "Project Proposal", type: "DOCX" }
-              ].map(template => (
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {templates.map(template => (
                 <div key={template.id} className="flex items-center justify-between p-3 border rounded-md hover:bg-gray-50">
                   <div className="flex items-center gap-3">
                     <FilePlus className="h-5 w-5 text-blue-600" />
                     <div>
                       <p className="font-medium">{template.name}</p>
-                      <p className="text-xs text-gray-500">{template.type}</p>
+                      <p className="text-xs text-gray-500">
+                        {template.fileType} • v{template.version} • 
+                        {template.createdDate.toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                   <Button 
                     size="sm" 
                     variant="outline"
-                    onClick={() => {
-                      toast.success(`Template "${template.name}" downloaded successfully!`);
-                    }}
+                    onClick={() => handleTemplateDownload(template)}
+                    className="flex items-center gap-1"
                   >
+                    <Download className="h-3 w-3" />
                     Download
                   </Button>
                 </div>
