@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AdminDashboardLayout from '@/components/admin/AdminDashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -11,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { NewCaseForm } from "@/components/admin/NewCaseForm";
 
 // Sample data - would typically come from an API
 const caseData = {
@@ -40,6 +41,7 @@ const MyCases = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCase, setSelectedCase] = useState(null);
+  const [newCaseDialogOpen, setNewCaseDialogOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     priority: [],
     type: [],
@@ -249,7 +251,10 @@ const MyCases = () => {
             >
               <Filter className={`h-5 w-5 ${filterOpen ? 'text-blue-700' : 'text-gray-700'}`} />
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => setNewCaseDialogOpen(true)}
+            >
               New Case
             </Button>
           </div>
@@ -403,6 +408,9 @@ const MyCases = () => {
                     </PaginationItem>
                     <PaginationItem>
                       <PaginationLink href="#" isActive>1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">2</PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
                       <PaginationNext href="#" />
@@ -658,6 +666,13 @@ const MyCases = () => {
           )}
         </SheetContent>
       </Sheet>
+
+      {/* New Case Dialog */}
+      <Dialog open={newCaseDialogOpen} onOpenChange={setNewCaseDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <NewCaseForm onCancel={() => setNewCaseDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </AdminDashboardLayout>
   );
 };
