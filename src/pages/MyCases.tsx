@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import AdminDashboardLayout from '@/components/admin/AdminDashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -675,4 +676,9 @@ const MyCases = () => {
         <DialogContent className="sm:max-w-[90vw] max-h-[90vh] p-0">
           <NewCaseForm onCancel={() => setNewCaseDialogOpen(false)} />
         </DialogContent>
-      </Dialog
+      </Dialog>
+    </AdminDashboardLayout>
+  );
+};
+
+export default MyCases;
