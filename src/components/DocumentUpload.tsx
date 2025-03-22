@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload, X, FileText, AlertTriangle, Check, Image } from "lucide-react";
+import { formatFileSize } from "@/types/documents";
 
 interface DocumentUploadProps {
   onChange: (files: File[]) => void;
@@ -10,6 +11,8 @@ interface DocumentUploadProps {
   type: "id" | "income" | "housing" | "crisis" | "other";
   id?: string;
   className?: string;
+  maxFileSize?: number; // in bytes
+  maxFiles?: number;
 }
 
 const getDocumentTypeLabel = (type: string): string => {
@@ -50,8 +53,11 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
   type,
   id,
   className,
+  maxFileSize = 10 * 1024 * 1024, // 10MB default
+  maxFiles = 5,
 }) => {
   const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   
   const typeLabel = getDocumentTypeLabel(type);
@@ -68,21 +74,57 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
     }
   };
   
+  const validateFile = (file: File): boolean => {
+    // Check file size
+    if (file.size > maxFileSize) {
+      setError(`File "${file.name}" is too large. Maximum size is ${formatFileSize(maxFileSize)}.`);
+      return false;
+    }
+    
+    // For ID type, only allow images and PDFs
+    if (type === "id" && !file.type.startsWith("image/") && file.type !== "application/pdf") {
+      setError("For ID documents, please upload only images or PDF files.");
+      return false;
+    }
+    
+    return true;
+  };
+  
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
+    setError(null);
     
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const newFiles = Array.from(e.dataTransfer.files);
-      onChange([...value, ...newFiles]);
+      
+      if (value.length + newFiles.length > maxFiles) {
+        setError(`You can upload a maximum of ${maxFiles} files.`);
+        return;
+      }
+      
+      const validFiles = newFiles.filter(validateFile);
+      if (validFiles.length > 0) {
+        onChange([...value, ...validFiles]);
+      }
     }
   };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
-      onChange([...value, ...newFiles]);
+      
+      if (value.length + newFiles.length > maxFiles) {
+        setError(`You can upload a maximum of ${maxFiles} files.`);
+        return;
+      }
+      
+      const validFiles = newFiles.filter(validateFile);
+      if (validFiles.length > 0) {
+        onChange([...value, ...validFiles]);
+      }
     }
   };
   
@@ -126,7 +168,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
         
         <div className="flex-grow min-w-0">
           <p className="text-sm font-medium truncate">{file.name}</p>
-          <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
         </div>
         
         <button
@@ -179,9 +221,19 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
             <p className="text-sm text-gray-500 mt-1">
               Upload JPG, PNG, or PDF files {type === "id" && "(front and back of ID required)"}
             </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Maximum file size: {formatFileSize(maxFileSize)}
+            </p>
           </div>
         </div>
       </div>
+      
+      {error && (
+        <div className="flex items-center text-red-600 bg-red-50 p-3 rounded-md text-sm">
+          <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
       
       {type === "id" && value.length < 2 && (
         <div className="flex items-center text-amber-600 bg-amber-50 p-3 rounded-md text-sm">
