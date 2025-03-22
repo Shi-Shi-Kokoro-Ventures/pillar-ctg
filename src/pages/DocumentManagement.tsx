@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import AdminDashboardLayout from "@/components/admin/AdminDashboardLayout";
 import DashboardHeader from "@/components/admin/DashboardHeader";
@@ -143,7 +142,7 @@ const DocumentManagement = () => {
 
       {/* Browse Documents Dialog */}
       <Dialog open={browseDialogOpen} onOpenChange={setBrowseDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white border shadow-lg"> {/* Removed glassmorphism, added solid background */}
           <DialogHeader>
             <DialogTitle>Document Library</DialogTitle>
             <DialogDescription>
@@ -171,7 +170,7 @@ const DocumentManagement = () => {
 
       {/* Upload Document Dialog */}
       <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white border shadow-lg"> {/* Removed glassmorphism, added solid background */}
           <DialogHeader>
             <DialogTitle>Upload Document</DialogTitle>
             <DialogDescription>
@@ -234,7 +233,7 @@ const DocumentManagement = () => {
 
       {/* Templates Dialog */}
       <Dialog open={templatesDialogOpen} onOpenChange={setTemplatesDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white border shadow-lg"> {/* Removed glassmorphism, added solid background */}
           <DialogHeader>
             <DialogTitle>Document Templates</DialogTitle>
             <DialogDescription>
